@@ -10,6 +10,9 @@
             <h2>Productos en Garant&iacute;a <i class="bi bi-award"></i></h2>
         </div>
         <div class="col-4 text-end">
+            <div class="fw-bold text-primary mb-2 fs-8">
+                Garant&iacute;as : {{$garantias->total()}}
+            </div>
             <a class="btn btn-success" href="{{route('creategarantia')}}" target="_blank">Nueva garant&iacute;a</a>
         </div>
     </div>
@@ -65,7 +68,6 @@
                 @endforeach
             </ul>
         </div>
-        {{$garantias->total()}}
     </div>
 </div>
 <script>
