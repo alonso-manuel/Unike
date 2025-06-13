@@ -184,6 +184,26 @@
                 </select>
             </div>
         </div>
+
+        <div class="row border shadow rounded-3 pt-3 pb-3 mb-3 mt-3">
+            <div class="row">
+                <div class="col-12">
+                    <h3>Videos (clips)</h3>
+                </div>
+            </div>
+            <div class="mb-3">
+                <label for="video1">URL del Video de Unike Store (Opcional)</label>
+                <input type="text" name="video1" id="video1" class="form-control" value="{{ old('video1') }}" placeholder="Video Unike Store">
+                placeholde
+                <small class="form-text text-muted">Ingrese la primera URL oficial o de referencia del producto.</small>
+            </div>
+            <div class="mb-3">
+                <label for="video2">URL del Video de la Marca (Opcional)</label>
+                <input type="text" name="video2" id="video2" class="form-control" value="{{ old('video2') }}" placeholder="Video Marca">
+                <small class="form-text text-muted">Ingrese la segunda URL oficial o de referencia del producto.</small>
+            </div>
+        </div>
+
         <div class="row border shadow rounded-3 pt-3 pb-3 mb-3 mt-3">
         <div class="row">
             <div class="col-12">
@@ -209,8 +229,9 @@
                     <input class="d-none img-input" name="imgfour" type="file" accept="image/*" id="imgfour-product" onchange="changeImage(event,this,'previewImage4','triggerImage4')">
                     <img src="{{ asset('storage/1000x1000image.webp') }}" alt="Click to upload" id="triggerImage4" class="w-100 border border-secondary rounded-3 img-preview" style="cursor: pointer; object-fit: cover;">
                 </div>
+                
             </div>
-        </div>
+        </div>        
         <div class="col-md-6">
             <label for="descripcion-product" class="form-label" >Descripcion:</label>
             <textarea name="desc" type="text" maxlength="5000" id="descripcion-product" class="form-control" style=" width: 100%;max-height: 500px;overflow-y: auto;" oninput="autoResize(this)">{{old('desc')}}</textarea>

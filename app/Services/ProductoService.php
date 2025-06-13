@@ -393,4 +393,11 @@ class ProductoService implements ProductoServiceInterface
         $newnumber = str_pad((int)$number + 1, strlen($number), "0", STR_PAD_LEFT);
         return $category.$newnumber;
     }
+
+    public function getYoutubeVideoId(string $url): ?string
+    {
+        preg_match("/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/", $url, $matches);
+        return $matches[1] ?? null;
+    }
+
 }

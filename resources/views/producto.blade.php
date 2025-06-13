@@ -2,10 +2,10 @@
 
 @section('title', 'Producto | '.$producto->codigoProducto)
 
-@section('og_title', 'Título de Ejemplo para Open Graph')
-@section('og_description', 'Descripción de ejemplo que aparece en la vista previa.')
+@section('og_title', 'T赤tulo de Ejemplo para Open Graph')
+@section('og_description', 'Descripci車n de ejemplo que aparece en la vista previa.')
 @section('og_image', 'https://www.tusitio.com/imagenes/ejemplo.jpg')
-@section('og_url', url()->current()) <!-- La URL actual de la página -->
+@section('og_url', url()->current()) <!-- La URL actual de la p芍gina -->
 @section('og_type', 'article')
 
 @section('content')
@@ -197,6 +197,26 @@
             </select>
         </div>
     </div>
+    {{-- Prueba de VIDEOS --}}
+    <div class="editButton row border shadow rounded-3 pt-3 pb-3 mb-3 mt-3">
+        <div class="col-6 mb-2">
+            <h3>Videos</h3>
+        </div>
+        <div class="col-6 mb-2 text-end">
+            <button type="button" class="btn btn-info text-light btn-edit">Editar <i class="bi bi-pencil"></i></button>
+        </div>
+        <div class="mb-3">
+            <label for="video1">URL del Video de Unike Store (Opcional)</label>
+            <input name="videoUrl1" value="{{$producto->videoUrl1}}" type="text" class="form-control input-edit" disabled>
+            <small class="form-text text-muted">Ingrese la primera URL oficial o de referencia del producto.</small>
+        </div>
+        <div class="mb-3">
+            <label for="video2">URL del Video de la Marca (Opcional)</label>
+            <input name="videoUrl2" value="{{$producto->videoUrl2}}" type="text" class="form-control input-edit" disabled>
+            <small class="form-text text-muted">Ingrese la segunda URL oficial o de referencia del producto.</small>
+        </div>
+    </div>
+    {{-- Fin videos --}}
     <div class="editButton row border shadow rounded-3 pt-3 pb-3 mb-3 mt-3">
         <div class="col-6 mb-2">
             <h3>Detalles</h3>
@@ -231,36 +251,38 @@
             <textarea name="descripcion" type="text" maxlength="5000" id="desc-producto" class="form-control input-edit" style=" width: 100%;max-height: 660px;overflow-y: auto;" oninput="autoResize(this)" disabled>{{ $producto->descripcionProducto }}</textarea>
         </div>
     </div>
-    <div class="row ">
-        <div class="col-3">
-            @php
-                $totalInv = 0;
-            @endphp
+    
+    <div class="row">
+        <div class="col-3 d-flex flex-column gap-2">
             @foreach ($producto->Inventario as $inv)
-                @php
-                    $totalInv += $inv->stock;
-                @endphp
-            @endforeach
-            @if($totalInv > 0)
-                <button class="btn btn-danger" onclick="reportSerials()"><i class="bi bi-file-earmark-pdf"></i> Series</button>
-            @endif
+            @php
+                $stockAlmacen = $inv->stock;
+                if ($stockAlmacen > 0) {
+                    $almacenId = $inv->idAlmacen;
+                    $descripcionAlmacen = $inv->almacen->descripcion ?? 'Almac谷n Desconocido';
+                    echo '<button class="btn btn-danger mb-1 text-nowrap" onclick="reportSerials(' . $almacenId . ')">';
+                    echo '<i class="bi bi-file-earmark-pdf"></i> Series - ' . $descripcionAlmacen . '</button>';
+                }
+            @endphp
+        @endforeach
         </div>
         <div class="col-6 text-center">
             <button type="submit" class="btn btn-success" id="btnSave" disabled>Guardar <i class="bi bi-floppy"></i></button>
         </div>
         <div class="col-3">
-
         </div>
     </div>
     </form>
     <br>
     <br>
-</div>
-<script src="{{ route('js.update-product-scripts',[$tc]) }}"></script>
-<script>
-    function reportSerials(){
-        var url = "{{route('seriesXProducto',[$producto->idProducto])}}";
-        window.open(url, '', 'width=800,height=600,scrollbars=yes,location=no,toolbar=no,status=no');
-    }
-</script>
-@endsection
+    </div>
+    
+    <script src="{{ route('js.update-product-scripts', [$tc]) }}"></script>
+    <script>
+        function reportSerials(idAlmacen = null) {
+            const baseUrl = "{{ route('seriesXProducto', [$producto->idProducto, 'ALMACEN_ID']) }}";
+            const url = baseUrl.replace('ALMACEN_ID', idAlmacen || '');
+            window.open(url, '_blank');
+        }
+    </script>
+    @endsection

@@ -33,6 +33,8 @@ class Producto extends Model
                             'imagenProducto2',
                             'imagenProducto3',
                             'imagenProducto4',
+                            'videoUrl1',   // Test Url 1     
+                            'videoUrl2',   // Test Url 2    
                             'estadoProductoWeb',
                             'stockMin',
                             'slugProducto'
@@ -51,6 +53,7 @@ class Producto extends Model
         'stockMin' => 'int',
         'precioDolar' => 'float',
         'gananciaExtra' => 'float'
+        
     ];
     
     public static function boot()
