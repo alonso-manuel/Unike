@@ -26,6 +26,6 @@ interface ProductoServiceInterface
     public function deleteCaracteristicaXProduct($idProducto,$idCaracteristica);
     public function filtroMarcas($column,$data);
     public function filtroEstados($column,$data);
-    public function getYoutubeVideoId(string $url): ?string;
+    public function getYoutubeVideoId(?string $url): ?string;
 
 }
