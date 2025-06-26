@@ -207,12 +207,12 @@
         </div>
         <div class="mb-3">
             <label for="video1">URL del Video de Unike Store (Opcional)</label>
-            <input name="videoUrl1" value="{{$producto->videoUrl1}}" type="text" class="form-control input-edit" disabled>
+            <input name="videoUrl1" value="https://www.youtube.com/watch?v={{ $producto->videoUrl1 }}" type="text" class="form-control input-edit" disabled>
             <small class="form-text text-muted">Ingrese la primera URL oficial o de referencia del producto.</small>
         </div>
         <div class="mb-3">
             <label for="video2">URL del Video de la Marca (Opcional)</label>
-            <input name="videoUrl2" value="{{$producto->videoUrl2}}" type="text" class="form-control input-edit" disabled>
+            <input name="videoUrl2" value="https://www.youtube.com/watch?v={{$producto->videoUrl2}}" type="text" class="form-control input-edit" disabled>
             <small class="form-text text-muted">Ingrese la segunda URL oficial o de referencia del producto.</small>
         </div>
     </div>

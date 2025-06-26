@@ -338,6 +338,7 @@ class ProductoController extends Controller
     }
     
     public function updateProduct($idProducto,Request $request){
+        
         $userModel = $this->headerService->getModelUser();
         foreach($userModel->Accesos as $acceso){
             if($acceso->idVista == 2){
@@ -419,24 +420,24 @@ class ProductoController extends Controller
                     }
 
                     // NUEVO: Procesar URLs de YouTube y guardar solo el ID
-                    // Video 1
+                    if ($request->has('videoUrl1')) {
                     if (!empty($video1)) {
                         $videoId1 = $this->productoService->getYoutubeVideoId($video1);
-                        $arrayProduct['videoUrl1'] = $videoId1 ?: null;
+                        $arrayProduct['videoUrl1'] = $videoId1;
                     } else {
-                        $arrayProduct['videoUrl1'] = null;
+                        $arrayProduct['videoUrl1'] = null; // Borra si está vacío
                     }
-
-                    // Video 2
-                    if (!empty($video2)) {
-                        $videoId2 = $this->productoService->getYoutubeVideoId($video2);
-                        $arrayProduct['videoUrl2'] = $videoId2 ?: null;
-                    } else {
-                        $arrayProduct['videoUrl2'] = null;
                     }
 
                     
-                    
+                    if ($request->has('videoUrl2')) {
+                        if (!empty($video2)) {
+                            $videoId2 = $this->productoService->getYoutubeVideoId($video2);
+                            $arrayProduct['videoUrl2'] = $videoId2;
+                        } else {
+                            $arrayProduct['videoUrl2'] = null;
+                        }
+                    }                        
                     $this->productoService->updateProduct(decrypt($idProducto),$arrayProduct,$request->file('imgone'),$request->file('imgtwo'),$request->file('imgtree'),$request->file('imgfour'));
                     
                     if (!is_null($stock)){
