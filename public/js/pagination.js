@@ -1,7 +1,7 @@
 function loadProducts(url) {
     let loader = document.getElementById('hidden-loader-paginate');
     let containerValue = document.getElementById('hidden-container').value;
-    let fullUrl = url + '&container=' + containerValue;
+    let fullUrl = url + (url.includes('?') ? '&' : '?') + 'container=' + containerValue;
 
     if(loader){
         loader.style.display = 'block';
