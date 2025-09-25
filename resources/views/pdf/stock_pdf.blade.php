@@ -38,7 +38,7 @@
         <thead>
             <tr>
                 <th class="index header">#</th>
-                <th class="header">C贸digo</th>
+                <th class="header">Código</th>
                 <th class="header">Modelo</th>
                 <th class="header almacen-column">{{ $almacen->descripcion }}</th>
             </tr>

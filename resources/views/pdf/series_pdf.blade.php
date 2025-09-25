@@ -36,7 +36,7 @@
                     <div>
                         <small>{{ $serie['serie'] }}</small>
                         <br>
-                        <small><img src="data:image/jpeg;base64,{{ $serie['barcode'] }}" alt="C贸digo de barras" width="100%"></small>
+                        <small><img src="data:image/jpeg;base64,{{ $serie['barcode'] }}" alt="Código de barras" width="100%"></small>
                     </div>
                     
                 </td>
