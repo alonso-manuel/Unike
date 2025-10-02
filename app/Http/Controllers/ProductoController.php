@@ -209,7 +209,6 @@ class ProductoController extends Controller
                 $videoId1 = $this->productoService->getYoutubeVideoId($video1);
                 $videoId2 = $this->productoService->getYoutubeVideoId($video2);
                 
-                
                 if(!empty($tipoprecio)){
                     if($tipoprecio == 'SOL'){
                         $precio = $request->input('precio') / $this->calculadoraService->getTasaCambio();
@@ -302,11 +301,11 @@ class ProductoController extends Controller
                                 $arrayProduct['descripcionProducto'] = $descripcion;
                                 $arrayProduct['estadoProductoWeb'] = $estado;
                                 $arrayProduct['stockMin'] = $stockminimo;
-
+                                
                                 //Videos
                                 $arrayProduct['video1_url'] = $videoId1;
                                 $arrayProduct['video2_url'] = $videoId2;
-                                                                
+                                
                                 $arrayProveedor['stock'] = $stockproveedor;
                                 $arrayProveedor['idProveedor'] = $proveedor;
                                 
@@ -338,7 +337,6 @@ class ProductoController extends Controller
     }
     
     public function updateProduct($idProducto,Request $request){
-        
         $userModel = $this->headerService->getModelUser();
         foreach($userModel->Accesos as $acceso){
             if($acceso->idVista == 2){
@@ -357,11 +355,9 @@ class ProductoController extends Controller
                 $descripcion = $request->input('descripcion');
                 $tipoprecio = $request->input('tipoprecio');
                 $stockminimo = $request->input('stockminimo');
-                // videos
-
+                //videos
                 $video1 = $request->input('videoUrl1');
                 $video2 = $request->input('videoUrl2');
-
 
                 try{
                     if(!is_null($titulo)){
@@ -417,27 +413,23 @@ class ProductoController extends Controller
 
                     if (!is_null($stockminimo)) {
                         $arrayProduct['stockMin'] = $stockminimo;
-                    }
-
-                    // NUEVO: Procesar URLs de YouTube y guardar solo el ID
-                    if ($request->has('videoUrl1')) {
+                    }// NUEVO: Procesar URLs de YouTube y guardar solo el ID
+                    // Video 1
                     if (!empty($video1)) {
                         $videoId1 = $this->productoService->getYoutubeVideoId($video1);
-                        $arrayProduct['videoUrl1'] = $videoId1;
+                        $arrayProduct['videoUrl1'] = $videoId1 ?: null;
                     } else {
-                        $arrayProduct['videoUrl1'] = null; // Borra si está vacío
-                    }
+                        $arrayProduct['videoUrl1'] = null;
                     }
 
+                    // Video 2
+                    if (!empty($video2)) {
+                        $videoId2 = $this->productoService->getYoutubeVideoId($video2);
+                        $arrayProduct['videoUrl2'] = $videoId2 ?: null;
+                    } else {
+                        $arrayProduct['videoUrl2'] = null;
+                    }
                     
-                    if ($request->has('videoUrl2')) {
-                        if (!empty($video2)) {
-                            $videoId2 = $this->productoService->getYoutubeVideoId($video2);
-                            $arrayProduct['videoUrl2'] = $videoId2;
-                        } else {
-                            $arrayProduct['videoUrl2'] = null;
-                        }
-                    }                        
                     $this->productoService->updateProduct(decrypt($idProducto),$arrayProduct,$request->file('imgone'),$request->file('imgtwo'),$request->file('imgtree'),$request->file('imgfour'));
                     
                     if (!is_null($stock)){
