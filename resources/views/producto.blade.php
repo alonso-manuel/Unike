@@ -207,7 +207,7 @@
         </div>
         <div class="mb-3">
             <label for="video1">URL del Video de Unike Store (Opcional)</label>
-            <input name="videoUrl1" value="https://www.youtube.com/watch?v={{ $producto->videoUrl1 }}" type="text" class="form-control input-edit" disabled>
+            <input name="videoUrl1" value="https://www.youtube.com/watch?v={{$producto->videoUrl1}}" type="text" class="form-control input-edit" disabled>
             <small class="form-text text-muted">Ingrese la primera URL oficial o de referencia del producto.</small>
         </div>
         <div class="mb-3">
@@ -251,7 +251,6 @@
             <textarea name="descripcion" type="text" maxlength="5000" id="desc-producto" class="form-control input-edit" style=" width: 100%;max-height: 660px;overflow-y: auto;" oninput="autoResize(this)" disabled>{{ $producto->descripcionProducto }}</textarea>
         </div>
     </div>
-    
     <div class="row">
         <div class="col-3 d-flex flex-column gap-2">
             @foreach ($producto->Inventario as $inv)
@@ -260,7 +259,7 @@
                 if ($stockAlmacen > 0) {
                     $almacenId = $inv->idAlmacen;
                     $descripcionAlmacen = $inv->almacen->descripcion ?? 'Almac谷n Desconocido';
-                    echo '<button class="btn btn-danger mb-1 text-nowrap" onclick="reportSerials(' . $almacenId . ')">';
+                    echo '<button class="btn btn-danger mb-2 text-nowrap" onclick="reportSerials(' . $almacenId . ')">';
                     echo '<i class="bi bi-file-earmark-pdf"></i> Series - ' . $descripcionAlmacen . '</button>';
                 }
             @endphp
