@@ -103,7 +103,7 @@
                     <div class="row d-block">
                         <h5 class="mb-0 text-light">Unik Technology
                         </h5>
-                        <small class="text-secondary">v1.3</small>
+                        <small class="text-secondary">v1.5</small>
                     </div>
                 </div>
                 <h5 class="d-none d-sm-flex offcanvas-title text-light">Men&uacute;</h5>
@@ -172,6 +172,8 @@
                 </ul>
             </div>
             <small style="color: rgba(255, 255, 255, 0.137)">By Leonardo MH</small>
+            <small style="color: rgba(255, 255, 255, 0.137)">By Luigui CO</small>
+            <small style="color: rgba(255, 255, 255, 0.137)">By Alonso DLCR</small>
         </div>
     </nav>
     <main class="content" style="position: relative">
