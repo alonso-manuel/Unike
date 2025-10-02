@@ -40,6 +40,16 @@ class Preveedor extends Model
     {
         return $this->hasMany(Inventario_Proveedor::class,'idProveedor','idProveedor');
     }
-    
-    
+    public function licencias()
+    {
+        return $this->hasMany(Licencia::class, 'idProveedor', 'idProveedor');
+    }
+    public function licenciasDefectuosas()
+    {
+        return $this->hasMany(LicenciaDefectuosa::class, 'idProveedor', 'idProveedor');
+    }
+    public function licenciasRecuperadas()
+    {
+        return $this->hasMany(licenciaRecuperada::class,'IdProveedor', 'IdProveedor');
+    }
 }

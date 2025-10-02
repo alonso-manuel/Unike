@@ -34,7 +34,7 @@ class Producto extends Model
                             'imagenProducto3',
                             'imagenProducto4',
                             'videoUrl1',   // Test Url 1     
-                            'videoUrl2',   // Test Url 2    
+                            'videoUrl2',   // Test Url 2
                             'estadoProductoWeb',
                             'stockMin',
                             'slugProducto'
@@ -53,7 +53,6 @@ class Producto extends Model
         'stockMin' => 'int',
         'precioDolar' => 'float',
         'gananciaExtra' => 'float'
-        
     ];
     
     public static function boot()
@@ -118,6 +117,10 @@ class Producto extends Model
     
         return $images;
     }
+       public function registros() {
+        return $this->hasMany(RegistroProducto::class, 'idProducto', 'idProducto');
+    }
+    
     
     public function estadoColor(){
         if ($this->estadoProductoWeb == 'DISPONIBLE') {

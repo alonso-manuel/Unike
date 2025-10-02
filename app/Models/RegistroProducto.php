@@ -40,6 +40,10 @@ class RegistroProducto extends Model
     {
         return $this->belongsTo(DetalleComprobante::class,'idDetalleComprobante','idDetalleComprobante');
     }
+        public function producto()
+{
+    return $this->belongsTo(Producto::class, 'idProducto', 'idProducto'); 
+}
     
     public function IngresoProducto()
     {
@@ -58,7 +62,10 @@ class RegistroProducto extends Model
     public function Almacen(){
         return $this->belongsTo(Almacen::class,'idAlmacen','idAlmacen');
     }
-
+    public function licenciasUsadas()
+    {
+        return $this->hasMany(LicenciaUsada::class, 'id_registro_producto');
+    }
     /**
      * Obtener las relaciones del modelo.
      */
