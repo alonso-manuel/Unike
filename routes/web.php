@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\HomeController;
@@ -17,6 +19,7 @@ use App\Http\Controllers\ConfiguracionController;
 use App\Http\Controllers\DocumentoController;
 use App\Http\Controllers\GarantiaController;
 use App\Http\Controllers\PdfController;
+use App\Http\Controllers\LicenciaController;
 
 //scripts
 use App\Http\Controllers\ScriptController;
@@ -37,7 +40,8 @@ Route::withoutMiddleware(['validate.session'])->group(function () {
 });
 
 Route::middleware(['validate.session'])->group(function () {
-    
+    Route::get('/licencias', [LicenciaController::class, 'index'])->name('licencias.index');
+
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/stockmin', [HomeController::class, 'stockMinDashboard'])->name('stockmindashboard');
     Route::get('/dashboard/inventario/{estado}',[HomeController::class,'dashboardInventario'])->name('dashboardinventario');
@@ -148,6 +152,55 @@ Route::middleware(['validate.session'])->group(function () {
     Route::get('/pdf/serialbyproduct/{idProducto}', [PdfController::class, 'seriesByProductPdf'])->name('seriesXProducto');
     Route::get('/reporteAlmacen', [PdfController::class, 'reportStockPdf'])->name('reportealmacen');
     Route::get('/pdf/garantia/{idGarantia}', [PdfController::class, 'garantiaPdf'])->name('garantiaPdf');
+    Route::post('/tipos-licencia', [LicenciaController::class, 'storeTipoLicencia'])->name('tiposLicencia.store');
+
 });
 
+// Ruta para verificar clave duplicada
+Route::post('/verificar-clave-duplicada', function (Request $request) {
+    $claveKey = $request->input('clave_key');
+    
+    // Verificar si la clave ya existe en la tabla licencias_usadas
+    $existe = DB::table('licencias_usadas')
+                ->where('clave_key', $claveKey)
+                ->exists();
+    
+    return response()->json([
+        'existe' => $existe,
+        'clave' => $claveKey
+    ]);
+})->name('verificar.clave.duplicada');
+// ✅ Rutas para Licencias
+Route::prefix('licencias')->name('licencias.')->group(function () {
+    
+    // Mostrar listado
+    Route::get('/', [LicenciaController::class, 'index'])->name('index');
+    
+    // Formulario de registro
+    Route::get('/create', [LicenciaController::class, 'create'])->name('create');
+    
+    // Guardar licencia nueva
+    Route::post('/store', [LicenciaController::class, 'store'])->name('store');
+    
+    // Importar Excel
+    Route::post('/import', [LicenciaController::class, 'importExcel'])->name('import');
+    
+    // Formulario de cambio de estado
+    Route::get('/{serial}/estado/{nuevoEstado}', [LicenciaController::class, 'showFormularioEstado'])
+        ->name('showFormularioEstado');
+    
+    // Guardar cambio de estado
+    Route::post('/{serial}/cambiar-estado', [LicenciaController::class, 'cambiarEstado'])
+        ->name('cambiar_estado');
 
+    //Plantilla en ecxel
+    Route::get('/plantilla-excel', [LicenciaController::class, 'descargarPlantilla'])
+    ->name('plantilla_excel');
+
+    //Licencias Usadas
+     Route::get('/usadas', [LicenciaController::class, 'usadas'])->name('usadas');
+     //Licencias Usadas
+     Route::get('/defectuosas', [LicenciaController::class, 'defectuosas'])->name('defectuosas');
+     //Licencias Recuperadas
+     Route::get('/recuperadas', [LicenciaController::class, 'recuperadas'])->name('recuperadas');
+});
