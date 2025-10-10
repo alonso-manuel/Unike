@@ -34,17 +34,21 @@ class LicenciaController extends Controller
         $proveedores = Preveedor::all();
         $user = $this->headerService->getModelUser();
         $search = $request->input('search');
+        $tipo = $request->input('tipo'); // 🔹 nuevo filtro
 
-        
         $licencias = $this->licenciaService->getLicenciasNuevasQuery()
             ->when($search, function ($query) use ($search) {
                 $query->where('voucher_code', 'like', "%{$search}%");
             })
+            ->when($tipo, function ($query, $tipo) {
+                $query->where('id_tipo', $tipo);
+            })
             ->with('tipoLicencia')
             ->orderByDesc('id')
             ->paginate(10)
-            ->appends($request->all());
+            ->appends($request->all()); // 🔹 mantiene todos los filtros al paginar
 
+        // 🔹 Si es AJAX (paginación o recarga parcial)
         if ($request->query('page') || $request->query('container')) {
             $view = view('components.lista_licencias', [
                 'licencias' => $licencias,
@@ -54,14 +58,20 @@ class LicenciaController extends Controller
             return response()->json(['html' => $view]);
         }
 
+
+
+
+        // 🔹 Carga inicial de la vista completa
         return view('licencias.index', [
             'licencias' => $licencias,
             'user' => $user,
             'search' => $search,
             'proveedores' => $proveedores,
-            'tiposLicencias' => $tiposLicencias
+            'tiposLicencias' => $tiposLicencias,
+            'tipoSeleccionado' => $tipo // 👈 para mantener el valor en el select
         ]);
     }
+
     /**
      * Mostrar formulario de registro de licencia.
      */
@@ -168,17 +178,27 @@ class LicenciaController extends Controller
         return redirect()->route('licencias.index')->with('success', $mensaje);
     }
 
-    public function usadas()
+    public function usadas(Request $request)
     {
         $user = $this->headerService->getModelUser();
+        $search = $request->input('search'); // Captura el texto de búsqueda
 
-        $licenciasUsadas = \App\Models\LicenciaUsada::with('licencia.tipoLicencia')->orderByDesc('id')->paginate(15);
+        $licenciasUsadas = \App\Models\LicenciaUsada::with('licencia.tipoLicencia')
+            ->when($search, function ($query, $search) {
+                $query->where('serial_equipo', 'like', "%{$search}%")
+                    ->orWhere('clave_key', 'like', "%{$search}%");
+            })
+            ->orderByDesc('id')
+            ->paginate(15);
 
         return view('licencias.usadas', [
             'licenciasUsadas' => $licenciasUsadas,
-            'user' => $user
+            'user' => $user,
+            'search' => $search
         ]);
     }
+
+
 
 
     public function defectuosas()
