@@ -153,8 +153,23 @@ Route::middleware(['validate.session'])->group(function () {
     Route::get('/reporteAlmacen', [PdfController::class, 'reportStockPdf'])->name('reportealmacen');
     Route::get('/pdf/garantia/{idGarantia}', [PdfController::class, 'garantiaPdf'])->name('garantiaPdf');
     Route::post('/tipos-licencia', [LicenciaController::class, 'storeTipoLicencia'])->name('tiposLicencia.store');
-
+    Route::get('/licencias-usadas', [LicenciaController::class, 'index'])->name('licencias.usadas');
 });
+// Ruta para verificar clave duplicada
+
+Route::post('/verificar-serial-recuperada', function (Request $request) {
+    $serial = $request->input('serial_recuperada');
+
+    // Buscar en la tabla correcta
+    $existe = DB::table('licencias_recuperadas')
+                ->where('serial_recuperada', $serial)
+                ->exists();
+
+    return response()->json([
+        'existe' => $existe
+    ]);
+});
+
 
 // Ruta para verificar clave duplicada
 Route::post('/verificar-clave-duplicada', function (Request $request) {
