@@ -1,100 +1,127 @@
+
 @extends('layouts.app')
 @section('title', 'Licencias')
 @section('content')
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/index_licencias.css') }}">
 @endpush
-<div class="container" style="max-width: 1500px;">
-    <h1>Licencias Nuevas</h1>
-    {{-- Prototipo --}}
+<div class="container" style="max-width: 1500px;">  
+  <!-- Header Principal -->
+  <div class="licenses-header">
+      <h1><i class="bi bi-key-fill me-2"></i>Licencias Nuevas</h1>
+  </div>
 
-    {{-- Fin de prototipo--}}
-    {{-- 
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-    --}} 
-    <a class="btn btn-primary gap-2 mb-3" href="#collapse-buttons" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-buttons">
-      Opciones de licencias
-    </a>
-    <a class="btn btn-primary gap-2 mb-3" href="#collapse-buttons-ecxel" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-buttons-ecxel">
-      Opciones para ecxel
-    </a>
-    <a class="btn btn-primary gap-2 mb-3" href="#collapse-filtros" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-filtros">
-      Filtros
-    </a>
-    {{-- Collapse-Buttons-Licencias (Opciones de licencias(NUEVAS-USADAS-DEFECTUOSAS-RECUPERADAS)) --}}
-    <div class="collapse gap-2 mb-3 " id="collapse-buttons">
-      <div class="d-flex flex-wrap gap-2 mb-3">
-          <a href="{{ route('licencias.create') }}" class="btn btn-primary">
-              <i class="bi bi-plus-circle"></i> Agregar Licencia
-          </a>
-          <a href="{{ route('licencias.usadas') }}" class="btn btn-info">
-              <i class="bi bi-list"></i> Ver Licencias Usadas
-          </a>
-          <a href="{{ route('licencias.defectuosas') }}" class="btn btn-danger">
-              <i class="bi bi-list"></i> Ver Licencias Defectuosas
-          </a>
-          <a href="{{ route('licencias.recuperadas') }}" class="btn btn-warning">
-              <i class="bi bi-list"></i> Ver Licencias Recuperadas
-          </a>
-      </div> 
-    </div>
-    {{-- Fin de Collapse-Buttons-Licencias --}}
+  <!-- Botones de Opciones Principales -->
+  <div class="options-container">
+      <a class="option-toggle-btn" href="#collapse-buttons" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-buttons">
+          <i class="bi bi-gear-fill"></i>
+          Opciones de Licencias
+      </a>
+      <a class="option-toggle-btn" href="#collapse-buttons-ecxel" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-buttons-ecxel">
+          <i class="bi bi-file-earmark-excel-fill"></i>
+          Opciones para Excel
+      </a>
+      <a class="option-toggle-btn" href="#collapse-filtros" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-filtros">
+          <i class="bi bi-funnel-fill"></i>
+          Filtros
+      </a>
+  </div>
 
-    {{-- Collapse-Buttons-Ecxel (Ver Proveedores y Licencias) --}}
-    <div class="collapse" id="collapse-buttons-ecxel">
-      <div class="d-flex flex-wrap gap-2 mb-3">
-          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalProveedores">
-            <i class="bi bi-list"></i> Ver Proveedores (Ecxel)
-          </button>
-          <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalTiposLicencias">
-            <i class="bi bi-list"></i> Ver Tipos de Licencia (Ecxel)
-          </button>
+  <!-- Collapse: Opciones de Licencias -->
+  <div class="collapse" id="collapse-buttons">
+      <div class="collapse-section">
+          <div class="action-buttons-grid">
+              <a href="{{ route('licencias.create') }}" class="action-btn btn-primary-custom">
+                  <i class="bi bi-plus-circle-fill"></i>
+                  Agregar Licencia
+              </a>
+              <a href="{{ route('licencias.usadas') }}" class="action-btn btn-info-custom">
+                  <i class="bi bi-check-circle-fill"></i>
+                  Ver Licencias Usadas
+              </a>
+              <a href="{{ route('licencias.defectuosas') }}" class="action-btn btn-danger-custom">
+                  <i class="bi bi-exclamation-triangle-fill"></i>
+                  Ver Licencias Defectuosas
+              </a>
+              <a href="{{ route('licencias.recuperadas') }}" class="action-btn btn-warning-custom">
+                  <i class="bi bi-arrow-clockwise"></i>
+                  Ver Licencias Recuperadas
+              </a>
+          </div>
       </div>
-    </div>
-    {{-- Fin de Collapse-Buttons-Ecxel --}}
+  </div>
 
-    {{-- Pruebas para los filtros --}}
-    <div class="collapse" id="collapse-filtros">
-      <div class="d-flex flex-wrap gap-2 mb-3">
-        <button type="button" class="btn btn-sucess">
-          <i class="bi bi-filter"></i>
-        </button>
-        <button type="button" class="btn btn-sucess">
-          <i class="bi bi-filter"></i>
-        </button>
+  <!-- Collapse: Opciones para Excel -->
+  <div class="collapse" id="collapse-buttons-ecxel">
+      <div class="collapse-section">
+          <div class="action-buttons-grid">
+              <button type="button" class="action-btn btn-success-custom" data-bs-toggle="modal" data-bs-target="#modalProveedores">
+                  <i class="bi bi-building"></i>
+                  Ver Proveedores (Excel)
+              </button>
+              <button type="button" class="action-btn btn-success-custom" data-bs-toggle="modal" data-bs-target="#modalTiposLicencias">
+                  <i class="bi bi-tags-fill"></i>
+                  Ver Tipos de Licencia (Excel)
+              </button>
+          </div>
       </div>
-    </div>
-    {{-- Fin de Pruebas de filtros --}}
-    
-    <form action="{{ route('licencias.import') }}" method="POST" enctype="multipart/form-data" class="mb-3">
-        @csrf
-        <div class="input-group">
-            {{-- Input de archivo --}}
-            <input type="file" name="archivo" class="form-control" required>
-            
-            {{-- Botón de importar --}}
-            <button class="btn btn-success" type="submit">
-                Importar Excel
-            </button>
-            
-            {{-- Botón de descarga al final --}}
-            <a href="{{ route('licencias.plantilla_excel') }}" 
-            class="btn btn-secondary" 
-            title="Descargar Plantilla">
-                <i class="bi bi-download"></i>
-            </a>
-        </div>
-        
-        {{-- Error --}}
-        @error('archivo')
-            <div class="text-danger">{{ $message }}</div>
-        @enderror
-    </form>
+  </div>
+
+  <!-- Collapse: Filtros -->
+  <div class="collapse" id="collapse-filtros">
+      <div class="collapse-section">
+          <div class="filter-container">
+              <div class="d-flex align-items-center gap-3 flex-wrap">
+                  <label for="filtro-tipo" class="filter-label">
+                      <i class="bi bi-filter-circle-fill me-1"></i>
+                      Filtrar por tipo:
+                  </label>
+                  <select id="filtro-tipo" class="filter-select" onchange="filtrarPorTipo()">
+                      <option value="">-- Todos los tipos --</option>
+                      @foreach ($tiposLicencias as $tipo)
+                          <option value="{{ $tipo->id }}" 
+                              {{ (request('tipo') == $tipo->id || $tipoSeleccionado == $tipo->id) ? 'selected' : '' }}>
+                              {{ $tipo->nombre }}
+                          </option>
+                      @endforeach
+                  </select>
+              </div>
+          </div>
+      </div>
+  </div>
+
+  <!-- Formulario de Importación Excel -->
+  <div class="import-form-container">
+      <div class="import-form-title">
+          <i class="bi bi-cloud-upload-fill"></i>
+          Importar Licencias desde Excel
+      </div>
+      <form action="{{ route('licencias.import') }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <div class="file-input-group">
+              <input type="file" name="archivo" class="file-input-custom" required accept=".xlsx,.xls">
+              
+              <button class="import-btn" type="submit">
+                  <i class="bi bi-upload me-1"></i>
+                  Importar Excel
+              </button>
+              
+              <a href="{{ route('licencias.plantilla_excel') }}" 
+                class="download-template-btn" 
+                title="Descargar Plantilla">
+                  <i class="bi bi-download"></i>
+                  Descargar Plantilla
+              </a>
+          </div>
+          
+          @error('archivo')
+              <div class="error-message">
+                  <i class="bi bi-exclamation-circle-fill"></i>
+                  {{ $message }}
+              </div>
+          @enderror
+      </form>
+  </div>
 
     <div id="container-list-licencias" class="w-100">
         <x-lista_licencias :licencias="$licencias" :container="'container-list-licencias'" />
@@ -314,7 +341,366 @@
         </form>
     </div>
 </div>
+<style>
+/* ============================================
+   VARIABLES DE COLOR
+   ============================================ */
+:root {
+    --primary-color: #043e69;
+    --primary-light: #0a5a94;
+    --primary-dark: #022d4d;
+    --secondary-color: #17a2b8;
+    --success-color: #28a745;
+    --danger-color: #dc3545;
+    --warning-color: #ffc107;
+    --light-bg: #f8f9fa;
+    --white: #ffffff;
+    --text-dark: #2c3e50;
+    --text-muted: #6c757d;
+    --border-color: #dee2e6;
+    --shadow-sm: 0 2px 4px rgba(4, 62, 105, 0.08);
+    --shadow-md: 0 4px 12px rgba(4, 62, 105, 0.12);
+    --shadow-lg: 0 8px 24px rgba(4, 62, 105, 0.16);
+}
 
+/* ============================================
+   HEADER PRINCIPAL
+   ============================================ */
+.licenses-header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-light) 100%);
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    margin-top: 2rem;
+    box-shadow: var(--shadow-lg);
+    color: var(--white);
+}
+
+.licenses-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: -0.5px;
+}
+
+/* ============================================
+   BOTONES DE OPCIONES PRINCIPALES
+   ============================================ */
+.options-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.option-toggle-btn {
+    background: var(--white);
+    color: var(--primary-color);
+    border: 2px solid var(--primary-color);
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+}
+
+.option-toggle-btn:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.option-toggle-btn i {
+    font-size: 1.1rem;
+}
+
+/* ============================================
+   SECCIONES COLAPSABLES
+   ============================================ */
+.collapse-section {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ============================================
+   BOTONES DE ACCIÓN
+   ============================================ */
+.action-buttons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.action-btn {
+    padding: 0.875rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    justify-content: center;
+}
+
+.action-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.action-btn i {
+    font-size: 1.1rem;
+}
+
+.btn-primary-custom {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+.btn-primary-custom:hover {
+    background: var(--primary-dark);
+    color: var(--white);
+}
+
+.btn-info-custom {
+    background: var(--secondary-color);
+    color: var(--white);
+}
+
+.btn-info-custom:hover {
+    background: #138496;
+    color: var(--white);
+}
+
+.btn-danger-custom {
+    background: var(--danger-color);
+    color: var(--white);
+}
+
+.btn-danger-custom:hover {
+    background: #c82333;
+    color: var(--white);
+}
+
+.btn-warning-custom {
+    background: var(--warning-color);
+    color: var(--text-dark);
+}
+
+.btn-warning-custom:hover {
+    background: #e0a800;
+    color: var(--text-dark);
+}
+
+.btn-success-custom {
+    background: var(--success-color);
+    color: var(--white);
+}
+
+.btn-success-custom:hover {
+    background: #218838;
+    color: var(--white);
+}
+
+/* ============================================
+   FILTROS
+   ============================================ */
+.filter-container {
+    background: var(--light-bg);
+    padding: 1.25rem;
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color);
+}
+
+.filter-label {
+    font-weight: 600;
+    color: var(--primary-color);
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.filter-select {
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    min-width: 200px;
+}
+
+.filter-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(4, 62, 105, 0.1);
+    outline: none;
+}
+
+/* ============================================
+   FORMULARIO DE IMPORTACIÓN
+   ============================================ */
+.import-form-container {
+    background: var(--white);
+    border: 2px dashed var(--primary-color);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.import-form-title {
+    color: var(--primary-color);
+    font-weight: 700;
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.import-form-title i {
+    font-size: 1.3rem;
+}
+
+.file-input-group {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.file-input-custom {
+    flex: 1;
+    min-width: 250px;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.625rem;
+    transition: all 0.3s ease;
+}
+
+.file-input-custom:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(4, 62, 105, 0.1);
+    outline: none;
+}
+
+.import-btn {
+    background: var(--success-color);
+    color: var(--white);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+}
+
+.import-btn:hover {
+    background: #218838;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.download-template-btn {
+    background: var(--text-muted);
+    color: var(--white);
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    box-shadow: var(--shadow-sm);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.download-template-btn:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: var(--white);
+}
+
+.error-message {
+    color: var(--danger-color);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .licenses-header {
+        padding: 1.5rem 1rem;
+    }
+    
+    .licenses-header h1 {
+        font-size: 1.5rem;
+    }
+    
+    .options-container {
+        flex-direction: column;
+    }
+    
+    .option-toggle-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .action-buttons-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .file-input-group {
+        flex-direction: column;
+    }
+    
+    .file-input-custom {
+        min-width: 100%;
+    }
+    
+    .filter-select {
+        min-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .collapse-section {
+        padding: 1rem;
+    }
+    
+    .import-form-container {
+        padding: 1rem;
+    }
+}
+</style>
 {{-- Estilos CSS Logísticos --}}
 <style>
 /* === VARIABLES === */
@@ -650,7 +1036,7 @@ document.addEventListener('DOMContentLoaded', function() {
                        name="orden" 
                        id="orden"
                        class="form-control border-start-0"
-                       placeholder="Ej: 401372"
+                       placeholder="Ej: 421852"
                        readonly>
               </div>
             </div>
@@ -1111,7 +1497,6 @@ Swal.fire({
 });
 @endif
 </script>
-
 {{-- Fin Modal Licencias Usadas --}}
 
 @endsection
