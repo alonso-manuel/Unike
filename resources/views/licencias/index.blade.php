@@ -6,26 +6,92 @@
 <link rel="stylesheet" href="{{ asset('css/index_licencias.css') }}">
 @endpush
 <div class="container" style="max-width: 1500px;">  
+
   <!-- Header Principal -->
   <div class="licenses-header">
+      <div class="titulo-header">
       <h1><i class="bi bi-key-fill me-2"></i>Licencias Nuevas</h1>
+      </div>
+      <div class="header-stats">
+        <span class="stat-item">
+          <i class="bi bi-collection"></i>
+          Total: <strong>{{ $licencias->total() }}</strong>
+        </span>
+        <span class="stat-separator">|</span>
+      </div>
+      
   </div>
 
   <!-- Botones de Opciones Principales -->
-  <div class="options-container">
-      <a class="option-toggle-btn" href="#collapse-buttons" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-buttons">
-          <i class="bi bi-gear-fill"></i>
-          Opciones de Licencias
-      </a>
-      <a class="option-toggle-btn" href="#collapse-buttons-ecxel" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-buttons-ecxel">
-          <i class="bi bi-file-earmark-excel-fill"></i>
-          Opciones para Excel
-      </a>
-      <a class="option-toggle-btn" href="#collapse-filtros" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-filtros">
-          <i class="bi bi-funnel-fill"></i>
-          Filtros
-      </a>
+  <div class="options-container-general">
+    <div class="options-container">
+        <a class="option-toggle-btn" href="#collapse-buttons" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-buttons">
+            <i class="bi bi-gear-fill"></i>
+            Opciones de Licencias
+        </a>
+        <a class="option-toggle-btn" href="#collapse-buttons-ecxel" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-buttons-ecxel">
+            <i class="bi bi-file-earmark-excel-fill"></i>
+            Opciones para Excel
+        </a>
+        <a class="option-toggle-btn" href="#collapse-filtros" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="collapse-filtros">
+            <i class="bi bi-funnel-fill"></i>
+            Filtros
+        </a>
+    </div>
+
+    <div class="options-container">
+        <button class="btn option-toggle-btn" data-bs-toggle="modal" data-bs-target="#modalTotales">
+            <i class="bi bi-graph-up"></i> Ver Totales
+        </button>
+    </div>
   </div>
+
+  <!-- Pruebas de Stock-->    
+    <!-- 🧮 Modal Totales -->
+    <div class="modal fade" id="modalTotales" tabindex="-1" aria-labelledby="modalTotalesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="modalTotalesLabel">
+            <i class="bi bi-graph-up"></i> Totales por tipo de licencia
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+            @if($totalesPorTipo->count())
+            <div class="table-responsive">
+                <table class="table table-striped align-middle text-center">
+                <thead>
+                    <tr>
+                    <th>Tipo de licencia</th>
+                    <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($totalesPorTipo as $tipo)
+                    <tr>
+                        <td>{{ $tipo->tipoLicencia->nombre ?? 'Sin nombre' }}</td>
+                        <td><strong>{{ $tipo->total }}</strong></td>
+                    </tr>
+                    @endforeach
+                </tbody>
+                </table>
+            </div>
+            @else
+            <div class="alert alert-warning text-center mb-0">
+                No hay licencias registradas aún.
+            </div>
+            @endif
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cerrar
+            </button>
+        </div>
+        </div>
+    </div>
+    </div>
+  <!-- Fin Pruebas de Stock-->
 
   <!-- Collapse: Opciones de Licencias -->
   <div class="collapse" id="collapse-buttons">
@@ -374,6 +440,8 @@
     margin-top: 2rem;
     box-shadow: var(--shadow-lg);
     color: var(--white);
+    display: flex; 
+    justify-content: space-between;
 }
 
 .licenses-header h1 {
@@ -382,7 +450,17 @@
     margin: 0;
     letter-spacing: -0.5px;
 }
-
+.header-stats {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.85rem;
+    opacity: 0.95;
+}
+.options-container-general{
+    display: flex;
+    justify-content: space-between;
+}
 /* ============================================
    BOTONES DE OPCIONES PRINCIPALES
    ============================================ */
@@ -397,7 +475,7 @@
     background: var(--white);
     color: var(--primary-color);
     border: 2px solid var(--primary-color);
-    padding: 0.75rem 1.5rem;
+    padding: 0.60rem 1.5rem;
     border-radius: 8px;
     font-weight: 600;
     font-size: 0.95rem;

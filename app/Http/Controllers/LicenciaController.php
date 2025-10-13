@@ -6,9 +6,11 @@ use Illuminate\Http\Request;
 use App\Services\LicenciaServiceInterface;
 use App\Services\HeaderServiceInterface;
 use App\Exports\PlantillaLicenciaExport;
+use App\Models\Licencia;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Preveedor;
 use App\Models\TipoLicencia;
+use Illuminate\Support\Facades\DB;
 
 
 class LicenciaController extends Controller
@@ -34,7 +36,7 @@ class LicenciaController extends Controller
         $proveedores = Preveedor::all();
         $user = $this->headerService->getModelUser();
         $search = $request->input('search');
-        $tipo = $request->input('tipo'); // 🔹 nuevo filtro
+        $tipo = $request->input('tipo'); // nuevo filtro
 
         $licencias = $this->licenciaService->getLicenciasNuevasQuery()
             ->when($search, function ($query) use ($search) {
@@ -46,9 +48,14 @@ class LicenciaController extends Controller
             ->with('tipoLicencia')
             ->orderByDesc('id')
             ->paginate(10)
-            ->appends($request->all()); // 🔹 mantiene todos los filtros al paginar
-
-        // 🔹 Si es AJAX (paginación o recarga parcial)
+            ->appends($request->all()); // mantiene todos los filtros al paginar
+        //Totales por tipo de licencia
+        
+        $totalesPorTipo = Licencia::select('id_tipo', DB::raw('COUNT(*) as total'))
+            ->groupBy('id_tipo')
+            ->with('tipoLicencia')
+            ->get();
+        // Si es AJAX (paginación o recarga parcial)
         if ($request->query('page') || $request->query('container')) {
             $view = view('components.lista_licencias', [
                 'licencias' => $licencias,
@@ -57,18 +64,15 @@ class LicenciaController extends Controller
 
             return response()->json(['html' => $view]);
         }
-
-
-
-
-        // 🔹 Carga inicial de la vista completa
+        // Carga inicial de la vista completa
         return view('licencias.index', [
             'licencias' => $licencias,
             'user' => $user,
             'search' => $search,
             'proveedores' => $proveedores,
             'tiposLicencias' => $tiposLicencias,
-            'tipoSeleccionado' => $tipo // 👈 para mantener el valor en el select
+            'tipoSeleccionado' => $tipo,
+            'totalesPorTipo' => $totalesPorTipo 
         ]);
     }
 
@@ -181,7 +185,7 @@ class LicenciaController extends Controller
     public function usadas(Request $request)
     {
         $user = $this->headerService->getModelUser();
-        $search = $request->input('search'); // Captura el texto de búsqueda
+        $search = $request->input('search');
 
         $licenciasUsadas = \App\Models\LicenciaUsada::with('licencia.tipoLicencia')
             ->when($search, function ($query, $search) {
