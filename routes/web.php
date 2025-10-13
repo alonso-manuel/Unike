@@ -40,8 +40,8 @@ Route::withoutMiddleware(['validate.session'])->group(function () {
 });
 
 Route::middleware(['validate.session'])->group(function () {
+    
     Route::get('/licencias', [LicenciaController::class, 'index'])->name('licencias.index');
-
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/stockmin', [HomeController::class, 'stockMinDashboard'])->name('stockmindashboard');
     Route::get('/dashboard/inventario/{estado}',[HomeController::class,'dashboardInventario'])->name('dashboardinventario');
@@ -80,7 +80,7 @@ Route::middleware(['validate.session'])->group(function () {
     Route::post('/traslado/updateregistroalmacen', [TrasladoController::class, 'updateRegistroAlmacen'])->name('updateregistroalmacen');
     
     Route::get('/documento/searchdocument', [DocumentoController::class, 'searchDocument'])->name('searchdocument');
-    Route::get('/documento/validateseries', [DocumentoController::class, 'validateSeries'])->name('validateseries');
+    Route::get('/documento/validateseries', [DocumentoController::class, 'validateSeries'])->name('validate.series');
     Route::get('/documento/{id}/{bool}', [DocumentoController::class, 'index'])->name('documento');
     Route::get('/documentos/{date}', [DocumentoController::class, 'list'])->name('documentos');
     Route::post('/documento/deletecomprobante', [DocumentoController::class, 'deleteComprobante'])->name('deletecomprobante');
@@ -147,13 +147,11 @@ Route::middleware(['validate.session'])->group(function () {
     Route::get('/configuracion/inventario', [ConfiguracionController::class, 'inventario'])->name('configinventario');
     Route::post('/configuracion/createalamcen', [ConfiguracionController::class, 'createAlmacen'])->name('createalmacen');
     Route::post('/configuracion/createproveedor', [ConfiguracionController::class, 'createProveedor'])->name('createproveedor');
-
+    
     Route::get('/generateSerialPdf/{idDocumento}', [PdfController::class, 'generateSerialPdf'])->name('generarSeriesPdf');
-    Route::get('/pdf/serialbyproduct/{idProducto}', [PdfController::class, 'seriesByProductPdf'])->name('seriesXProducto');
-    Route::get('/reporteAlmacen', [PdfController::class, 'reportStockPdf'])->name('reportealmacen');
+    Route::get('/pdf/serialbyproduct/{idProducto}/{idAlmacen?}', [PdfController::class, 'seriesByProductPdf'])->name('seriesXProducto');    Route::get('/reporte/stock/{idAlmacen}', [PdfController::class, 'reportStockPdf'])->name('reportealmacen');
     Route::get('/pdf/garantia/{idGarantia}', [PdfController::class, 'garantiaPdf'])->name('garantiaPdf');
     Route::post('/tipos-licencia', [LicenciaController::class, 'storeTipoLicencia'])->name('tiposLicencia.store');
-    Route::get('/licencias-usadas', [LicenciaController::class, 'index'])->name('licencias.usadas');
 });
 // Ruta para verificar clave duplicada
 
@@ -169,8 +167,6 @@ Route::post('/verificar-serial-recuperada', function (Request $request) {
         'existe' => $existe
     ]);
 });
-
-
 // Ruta para verificar clave duplicada
 Route::post('/verificar-clave-duplicada', function (Request $request) {
     $claveKey = $request->input('clave_key');
@@ -185,7 +181,6 @@ Route::post('/verificar-clave-duplicada', function (Request $request) {
         'clave' => $claveKey
     ]);
 })->name('verificar.clave.duplicada');
-// ✅ Rutas para Licencias
 Route::prefix('licencias')->name('licencias.')->group(function () {
     
     // Mostrar listado
