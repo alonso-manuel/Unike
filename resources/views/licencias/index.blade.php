@@ -43,8 +43,81 @@
         <button class="btn option-toggle-btn" data-bs-toggle="modal" data-bs-target="#modalTotales">
             <i class="bi bi-graph-up"></i> Ver Totales
         </button>
+        <button class="btn option-toggle-btn" data-bs-toggle="modal" data-bs-target="#modalInformation" title="Information">
+            <i class="bi bi-info-square"></i>
+        </button>
     </div>
   </div>
+  <!-- Modal de Información -->
+    <div class="modal fade" id="modalInformation" tabindex="-1" aria-labelledby="modalInformationLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content shadow-lg border-0 rounded-3">
+        
+        <!-- Header -->
+        <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title d-flex align-items-center gap-2" id="modalInformationLabel">
+            <i class="bi bi-info-circle-fill fs-4"></i> 
+            Información importante sobre Pre-Claves
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+
+        <!-- Body -->
+        <div class="modal-body">
+            <section>
+            <h5 class="fw-bold mb-3">
+                <i class="bi bi-receipt text-primary me-2"></i> ¿Qué es la Pre-Clave o Voucher?
+            </h5>
+            <p class="text-muted">
+                La <strong>Pre-Clave</strong> o <strong>Voucher</strong> es un código temporal que debe 
+                ser <span class="text-primary fw-semibold">canjeado</span> para obtener la clave de activación 
+                real de un producto. 
+            </p>
+            <p>
+                El formulario para canjear la clave le solicitara el numero de orden el cual puede visualizar en la tabla,
+                le pedira el codigo que tambien se encuentra en la tabla (Pre-Clave), el correo siempre sera el siguiente: <span class="text-primary fw-semibold">unik_store_peru@hotmail.com</span>
+            </p>
+
+            <div class="alert alert-info d-flex align-items-center gap-2" role="alert">
+                <i class="bi bi-link-45deg fs-4"></i>
+                <div>
+                Puedes canjear tu código en: 
+                <a href="https://code4redeem.com/" target="_blank" class="fw-bold text-decoration-underline">https://code4redeem.com/</a>
+                </div>
+            </div>
+            </section>
+
+            <hr class="my-4">
+
+            <section>
+            <h5 class="fw-bold mb-3">
+                <i class="bi bi-building text-primary me-2"></i> Proveedor: Wincdkey Ltd
+            </h5>
+            <p class="text-muted">
+                Este método de canje <strong>solo aplica</strong> cuando el proveedor es 
+                <strong>“Wincdkey Ltd”</strong>.
+            </p>
+
+            <ul class="list-unstyled ms-3">
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>
+                Si el código tiene <strong>18 caracteres</strong> ➝ Es una <span class="fw-bold">Pre-Clave</span>.
+                </li>
+                <li><i class="bi bi-check-circle-fill text-success me-2"></i>
+                Si la clave ya está disponible ➝ Se trata de la <span class="fw-bold">clave real</span>.
+                </li>
+            </ul>
+
+            <div class="alert alert-warning mt-3" role="alert">
+                Recuerda: Para otros proveedores, la clave real se carga directamente y no requiere canje.
+            </div>
+            </section>
+        </div>
+
+        </div>
+    </div>
+    </div>
+
+<!-- Fin Modal de informacion -->
 
   <!-- Pruebas de Stock-->    
     <!-- 🧮 Modal Totales -->
