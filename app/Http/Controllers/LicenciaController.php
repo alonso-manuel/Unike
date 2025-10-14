@@ -51,7 +51,7 @@ class LicenciaController extends Controller
             ->appends($request->all()); // mantiene todos los filtros al paginar
         //Totales por tipo de licencia
         
-        $totalesPorTipo = Licencia::select('id_tipo', DB::raw('COUNT(*) as total'))
+        $totalesPorTipo = \App\Models\Licencia::select('id_tipo', DB::raw('COUNT(*) as total'))
             ->where('estado', 'NUEVA')
             ->groupBy('id_tipo')
             ->with('tipoLicencia')
