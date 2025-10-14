@@ -52,6 +52,7 @@ class LicenciaController extends Controller
         //Totales por tipo de licencia
         
         $totalesPorTipo = Licencia::select('id_tipo', DB::raw('COUNT(*) as total'))
+            ->where('estado', 'NUEVA')
             ->groupBy('id_tipo')
             ->with('tipoLicencia')
             ->get();
