@@ -695,7 +695,8 @@
 .form-input:read-only {
     background: #f8f9fa;
     cursor: not-allowed;
-    color: #6c757d;
+    color: #000000;
+    font-size: 1rem;
 }
 
 .input-icon {
