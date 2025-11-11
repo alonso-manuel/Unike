@@ -151,10 +151,9 @@
 
                                         {{-- Botón Descarga --}}
                                         @if($usada->archivo)
-                                            <a href="{{ asset('storage/' . $usada->archivo) }}" 
-                                               class="btn-action btn-download" 
-                                               download="{{ basename($usada->archivo) }}"
-                                               title="Descargar archivo">
+                                            <a href="{{ route('licencia.descargar', $usada->id) }}" 
+                                            class="btn-action btn-download" 
+                                            title="Descargar archivo">
                                                 <i class="bi bi-download"></i>
                                             </a>
                                         @else

@@ -41,6 +41,8 @@ Route::withoutMiddleware(['validate.session'])->group(function () {
 
 Route::middleware(['validate.session'])->group(function () {
     
+    // Agrega esta línea con las demás rutas
+    Route::get('/descargar-licencia/{id}', [App\Http\Controllers\LicenciaController::class, 'descargarLicencia'])->name('licencia.descargar');
     Route::get('/licencias', [LicenciaController::class, 'index'])->name('licencias.index');
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/stockmin', [HomeController::class, 'stockMinDashboard'])->name('stockmindashboard');

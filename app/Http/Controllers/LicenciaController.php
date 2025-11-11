@@ -11,6 +11,8 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Preveedor;
 use App\Models\TipoLicencia;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Models\LicenciaUsada;
 
 
 class LicenciaController extends Controller
@@ -246,6 +248,36 @@ class LicenciaController extends Controller
         ]);
 
         return redirect()->back()->with('success', 'Tipo de licencia agregado correctamente');
+    }
+    public function descargarLicencia($id)
+    {
+        try {
+            
+            $licencia = LicenciaUsada::findOrFail($id);
+            
+            if ($licencia->archivo) {
+                $rutaCompleta = storage_path('app/public/' . $licencia->archivo);
+                
+                // Verificar que el archivo existe físicamente
+                if (file_exists($rutaCompleta)) {
+                    // Obtener nombre original para la descarga
+                    $nombreDescarga = basename($licencia->archivo);
+                    
+                    return response()->download($rutaCompleta, $nombreDescarga);
+                } else {
+                    // Debug: ver qué ruta está buscando
+                    Log::error("Archivo no encontrado: " . $rutaCompleta);
+                }
+            }
+            
+            return back()->with('error', 'El archivo no se encuentra disponible en el servidor');
+            
+        } catch (\Illuminate\Database\Eloquent\ModelNotFoundException $e) {
+            return back()->with('error', 'Licencia no encontrada');
+        } catch (\Exception $e) {
+            Log::error("Error descargando licencia: " . $e->getMessage());
+            return back()->with('error', 'Error al descargar el archivo');
+        }
     }
 
 }
