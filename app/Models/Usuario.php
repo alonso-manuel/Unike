@@ -58,4 +58,10 @@ class Usuario extends Model
     {
         return $this->hasMany(Accesos::class,'idUser','idUser');
     }
+    public function detalleDevolucion(){
+        return $this->hasMany(detalleDevolucion::class, 'idUser', 'idUser');
+    }
+    public function reclamoDevoluciones(){
+      return $this->hasMany(reclamoDevoluciones::class, 'id_reclamo', 'id_reclamo');
+    }
 }

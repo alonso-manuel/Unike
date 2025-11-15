@@ -46,5 +46,11 @@ class Cliente extends Model
      {
         return $this->hasMany(Garantia::class,'idCliente','idCliente');
      }
+   public function detalleDevolucion(){
+      return $this->hasMany(detalleDevolucion::class, 'idUser', 'idUser');
+   }
+   public function reclamoDevoluciones(){
+      return $this->hasMany(reclamoDevoluciones::class, 'id_reclamo', 'id_reclamo');
+   }
     
 }

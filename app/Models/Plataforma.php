@@ -40,5 +40,10 @@ class Plataforma extends Model
     {
         return $this->hasMany(ComisionPlataforma::class,'idPlataforma','idPlataforma');
     }
-    
+    public function detalleDevolucion(){
+        return $this->hasMany(detalleDevolucion::class, 'idUser', 'idUser');
+    }
+    public function reclamoDevoluciones(){
+      return $this->hasMany(reclamoDevoluciones::class, 'id_reclamo', 'id_reclamo');
+    }
 }

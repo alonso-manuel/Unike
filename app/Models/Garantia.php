@@ -48,4 +48,8 @@ class Garantia extends Model
    {
       return $this->belongsTo(RegistroProducto::class, 'idRegistro', 'idRegistro');
    }
+   public function Devolucion(){
+      return $this->belongsTo(Devolucion::class, 'id_devolucion', 'id_devolucion');
+   }
+   
 }
