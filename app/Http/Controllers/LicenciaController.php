@@ -39,6 +39,7 @@ class LicenciaController extends Controller
         $user = $this->headerService->getModelUser();
         $search = $request->input('search');
         $tipo = $request->input('tipo'); // nuevo filtro
+        
 
         $licencias = $this->licenciaService->getLicenciasNuevasQuery()
             ->when($search, function ($query) use ($search) {
@@ -65,8 +66,10 @@ class LicenciaController extends Controller
                 'container' => $request->query('container', 'container-list-licencias')
             ])->render();
 
-            return response()->json(['html' => $view]);
+            return response()->json(['html' => $view]);      
         }
+
+        
         // Carga inicial de la vista completa
         return view('licencias.index', [
             'licencias' => $licencias,
@@ -204,9 +207,6 @@ class LicenciaController extends Controller
             'search' => $search
         ]);
     }
-
-
-
 
     public function defectuosas()
     {

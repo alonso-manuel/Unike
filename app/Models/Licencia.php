@@ -11,6 +11,7 @@ class Licencia extends Model {
     protected $casts = [ 
         'id' => 'int',
         'id_tipo' => 'int',
+        'id_categoria' => 'int'
     ];
     /**
      * Relación con TipoLicencia
@@ -63,6 +64,10 @@ class Licencia extends Model {
     public function proveedor()
     {
         return $this->belongsTo(Preveedor::class, 'idProveedor', 'idProveedor');
+    }
+    public function categoriaLicencia()
+    {
+        return $this->hasMany(CategoriaLicencia::class, 'id_categoria');
     }
 
 }
