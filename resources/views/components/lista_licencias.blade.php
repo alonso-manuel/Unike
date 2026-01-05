@@ -1,4 +1,3 @@
-{{-- resources/views/licencias/partials/listado.blade.php --}}
 <div class="lista_licencias">
     @if(!$licencias->isEmpty())
     <div class="table-container">
@@ -448,29 +447,21 @@
 </style>
 
 <script>
-/**
- * Copia la Pre-Clave al portapapeles
- * @param {string} preClave - El código de la pre-clave a copiar
- */
 function copiarPreClave(preClave) {
-    // Crear un elemento temporal para copiar
     const tempInput = document.createElement('input');
     tempInput.value = preClave;
     document.body.appendChild(tempInput);
     tempInput.select();
     
     try {
-        // Intentar copiar usando el API moderno
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(preClave).then(() => {
                 mostrarNotificacionCopiado(preClave);
             }).catch(() => {
-                // Fallback al método antiguo
                 document.execCommand('copy');
                 mostrarNotificacionCopiado(preClave);
             });
         } else {
-            // Método antiguo para navegadores sin soporte
             document.execCommand('copy');
             mostrarNotificacionCopiado(preClave);
         }
@@ -482,18 +473,12 @@ function copiarPreClave(preClave) {
     }
 }
 
-/**
- * Muestra una notificación temporal cuando se copia una Pre-Clave
- * @param {string} preClave - El código copiado
- */
 function mostrarNotificacionCopiado(preClave) {
-    // Remover notificación existente si hay
     const existingNotification = document.querySelector('.copy-notification');
     if (existingNotification) {
         existingNotification.remove();
     }
     
-    // Crear nueva notificación
     const notification = document.createElement('div');
     notification.className = 'copy-notification';
     notification.innerHTML = `
@@ -505,7 +490,6 @@ function mostrarNotificacionCopiado(preClave) {
     
     document.body.appendChild(notification);
     
-    // Remover después de 3 segundos
     setTimeout(() => {
         notification.remove();
     }, 3000);

@@ -39,7 +39,6 @@ class LicenciaController extends Controller
         $user = $this->headerService->getModelUser();
         $search = $request->input('search');
         $tipo = $request->input('tipo'); // nuevo filtro
-        
 
         $licencias = $this->licenciaService->getLicenciasNuevasQuery()
             ->when($search, function ($query) use ($search) {
@@ -48,18 +47,17 @@ class LicenciaController extends Controller
             ->when($tipo, function ($query, $tipo) {
                 $query->where('id_tipo', $tipo);
             })
-            ->with('tipoLicencia')
+            ->with('tipoLicencia') 
             ->orderByDesc('id')
             ->paginate(10)
-            ->appends($request->all()); // mantiene todos los filtros al paginar
-        //Totales por tipo de licencia
-        
+            ->appends($request->all());
+          
         $totalesPorTipo = \App\Models\Licencia::select('id_tipo', DB::raw('COUNT(*) as total'))
             ->where('estado', 'NUEVA')
             ->groupBy('id_tipo')
             ->with('tipoLicencia')
             ->get();
-        // Si es AJAX (paginación o recarga parcial)
+        
         if ($request->query('page') || $request->query('container')) {
             $view = view('components.lista_licencias', [
                 'licencias' => $licencias,
@@ -68,9 +66,7 @@ class LicenciaController extends Controller
 
             return response()->json(['html' => $view]);      
         }
-
         
-        // Carga inicial de la vista completa
         return view('licencias.index', [
             'licencias' => $licencias,
             'user' => $user,
@@ -82,21 +78,14 @@ class LicenciaController extends Controller
         ]);
     }
 
-    /**
-     * Mostrar formulario de registro de licencia.
-     */
     public function create()
     {
         $user = $this->headerService->getModelUser();
-        $tiposLicencia = \App\Models\TipoLicencia::all(); // Trae todos los tipos
-        $proveedores = Preveedor::all(); // Trae todos los proveedores
+        $tiposLicencia = \App\Models\TipoLicencia::all(); 
+        $proveedores = Preveedor::all(); 
         return view('licencias.create', compact('user', 'tiposLicencia', 'proveedores'));
     }
 
-
-    /**
-     * Registrar una nueva licencia.
-     */
     public function store(Request $request)
     {
         
@@ -117,9 +106,6 @@ class LicenciaController extends Controller
         return redirect()->route('licencias.index')->with('success', 'Licencia registrada correctamente.');
     }
 
-    /**
-     * Importar licencias desde un archivo Excel.
-     */
     public function importExcel(Request $request)
     {
         $request->validate([
@@ -148,9 +134,6 @@ class LicenciaController extends Controller
         }
     }
 
-    /**
-     * Mostrar formulario de cambio de estado con datos actuales.
-     */
     public function showFormularioEstado($serial, $nuevoEstado)
     {
         $user = $this->headerService->getModelUser();
@@ -159,9 +142,6 @@ class LicenciaController extends Controller
         return view("licencias.estados.formulario_{$nuevoEstado}", compact('licencia', 'user'));
     }
 
-    /**
-     * Procesar cambio de estado de la licencia.
-     */
     public function cambiarEstado(Request $request, $serial)
     {
         //dd($request->all()); 
@@ -177,7 +157,6 @@ class LicenciaController extends Controller
 
         $this->licenciaService->cambiarEstadoConFormulario($serial, $nuevoEstado, $datosForm);
 
-        // Mensaje dinámico
         $mensaje = match($nuevoEstado) {
             'USADA' => 'Licencia marcada como usada correctamente.',
             'DEFECTUOSA' => 'Licencia marcada como defectuosa correctamente.',

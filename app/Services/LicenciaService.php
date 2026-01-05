@@ -8,6 +8,7 @@ use App\Models\LicenciaDefectuosa;
 use App\Models\LicenciaRecuperada;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\LicenciaImport;
+use App\Repositories\CategoriaLicenciaRepositoryInterface;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -15,10 +16,13 @@ use Illuminate\Support\Facades\Log;
 class LicenciaService implements LicenciaServiceInterface
 {
     protected $repo;
+    protected $categoriaRepo;
 
-    public function __construct(LicenciaRepositoryInterface $repo)
+    public function __construct(LicenciaRepositoryInterface $repo,
+    CategoriaLicenciaRepositoryInterface $categoriaRepo)
     {
         $this->repo = $repo;
+        $this->categoriaRepo = $categoriaRepo;
     }
 
     /**
@@ -31,7 +35,6 @@ class LicenciaService implements LicenciaServiceInterface
     {
         Excel::import(new LicenciaImport, $archivo);
     }
-
     /**
      * Obtener licencias en estado NUEVA.
      */
@@ -59,7 +62,6 @@ class LicenciaService implements LicenciaServiceInterface
     {
         return $this->repo->crear($data);
     }
-
     /**
      * Importar licencias desde un array de datos.
      */
@@ -67,13 +69,17 @@ class LicenciaService implements LicenciaServiceInterface
     {
         return $this->repo->storeFromExcel($data);
     }
-
     /**
      * Cambiar el estado de una licencia y crear el registro correspondiente
      * en la tabla de destino según el nuevo estado.
      */
+    // PRUEBA PARA IMPLEMENTAR A LICENCIAS UNA CATEGORIA
+    //Verificar el Uso de la licencia
+
+
+    //FIN DE PRUBAS NO SUBIR A PRODUCCION HASTA PROBARLO Y QUITARLE LOS COMENTARIOS.
     public function cambiarEstadoConFormulario(string $serial, string $nuevoEstado, array $datosForm)
-    {          
+    {
         // Opcional: hacer todo en transacción
         return DB::transaction(function () use ($serial, $nuevoEstado, $datosForm) {
 
@@ -88,7 +94,7 @@ class LicenciaService implements LicenciaServiceInterface
             switch ($nuevoEstado) {
             case 'USADA':
                 $archivo = null;
-                
+
                 if (!empty($datosForm['archivo']) && $datosForm['archivo'] instanceof \Illuminate\Http\UploadedFile) {
                     // Nombre base sin extensión
                     $nombreOriginal = pathinfo($datosForm['archivo']->getClientOriginalName(), PATHINFO_FILENAME);
@@ -124,7 +130,7 @@ class LicenciaService implements LicenciaServiceInterface
                         'clave_key'   => $serial,
                         'id_licencia' => $licencia->id
                     ], $datosForm));
-                    
+
                     // Eliminar solo la recuperada seleccionada
                     if (!empty($datosForm['idRecuperada'])) {
                         LicenciaRecuperada::where('id', $datosForm['idRecuperada'])->delete();
@@ -144,7 +150,7 @@ class LicenciaService implements LicenciaServiceInterface
 
                 default:
                     throw new \InvalidArgumentException("Estado no soportado: $nuevoEstado");
-            }   
+            }
 
             return $licencia;
         });
