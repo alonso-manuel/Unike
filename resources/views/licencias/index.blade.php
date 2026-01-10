@@ -263,7 +263,7 @@
   </div>
 
     <div id="container-list-licencias" class="w-100">
-        <x-lista_licencias :licencias="$licencias" :container="'container-list-licencias'" />
+        <x-licencias.lista_licencias :licencias="$licencias" :container="'container-list-licencias'" />
     </div>
     @if(session('success'))
     <script>
