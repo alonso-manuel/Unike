@@ -18,8 +18,8 @@
                     <td class="text-start">
                         <div class="preclave-container">
                             <span class="preclave-text">{{ $licencia->voucher_code }}</span>
-                            <button 
-                                class="copy-btn" 
+                            <button
+                                class="copy-btn"
                                 onclick="copiarPreClave('{{ $licencia->voucher_code }}')"
                                 title="Copiar Pre-Clave"
                             >
@@ -45,14 +45,18 @@
                     </td>
                     <td>
                         <div class="action-buttons">
-                            <button 
-                                onclick="abrirModalUsarLicencia('{{ route('licencias.cambiar_estado', $licencia->voucher_code) }}', '{{ $licencia->orden_compra }}')" 
+                            <button
+                                onclick="abrirModalUsarLicencia(
+                                '{{ route('licencias.cambiar_estado',
+                                $licencia->voucher_code) }}',
+                                '{{ $licencia->orden_compra }}')"
+
                                 class="btn-action btn-usar"
                                 title="Usar licencia"
                             >
                                 Usar
                             </button>
-                            <button 
+                            <button
                                 onclick="abrirModalLicenciaDefectuosa('{{ route('licencias.cambiar_estado', $licencia->voucher_code) }}', '{{ $licencia->orden_compra }}', '{{ optional($licencia->proveedor)->idProveedor ?? '' }}', '{{ optional($licencia->proveedor)->razSocialProveedor ?? '' }}')"
                                 class="btn-action btn-defectuosa"
                                 title="Marcar como defectuosa"
@@ -66,11 +70,11 @@
             </tbody>
         </table>
     </div>
-    
+
     <div class="pagination-wrapper">
         <x-paginacion :justify="'end'" :coleccion="$licencias" :container="$container"/>
     </div>
-    
+
     @else
     <div class="empty-state">
         <x-aviso_no_encontrado :mensaje="'No se encontraron licencias.'" />
@@ -381,7 +385,7 @@
     .licenses-table {
         font-size: 0.813rem;
     }
-    
+
     .licenses-table th,
     .licenses-table td {
         padding: 0.75rem 0.5rem;
@@ -392,11 +396,11 @@
     .table-container {
         overflow-x: auto;
     }
-    
+
     .licenses-table {
         min-width: 900px;
     }
-    
+
     .action-buttons {
         flex-direction: column;
     }
@@ -406,17 +410,17 @@
     .licenses-table {
         font-size: 0.75rem;
     }
-    
+
     .licenses-table th,
     .licenses-table td {
         padding: 0.625rem 0.375rem;
     }
-    
+
     .btn-action {
         padding: 0.375rem 0.75rem;
         font-size: 0.75rem;
     }
-    
+
     .copy-notification {
         bottom: 1rem;
         right: 1rem;
@@ -452,7 +456,7 @@ function copiarPreClave(preClave) {
     tempInput.value = preClave;
     document.body.appendChild(tempInput);
     tempInput.select();
-    
+
     try {
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(preClave).then(() => {
@@ -478,7 +482,7 @@ function mostrarNotificacionCopiado(preClave) {
     if (existingNotification) {
         existingNotification.remove();
     }
-    
+
     const notification = document.createElement('div');
     notification.className = 'copy-notification';
     notification.innerHTML = `
@@ -487,9 +491,9 @@ function mostrarNotificacionCopiado(preClave) {
         </svg>
         <span><strong>Pre-Clave copiada:</strong> ${preClave}</span>
     `;
-    
+
     document.body.appendChild(notification);
-    
+
     setTimeout(() => {
         notification.remove();
     }, 3000);
@@ -513,10 +517,10 @@ function mostrarNotificacionCopiado(preClave) {
       `;
 
       fetch(url)
-          .then(res => res.json()) 
+          .then(res => res.json())
           .then(data => {
               container.innerHTML = data.html;
           })
           .catch(err => console.error('Error al cargar filtro:', err));
   }
-</script>   
+</script>

@@ -20,7 +20,7 @@
         <div class="form-body">
             <form action="{{ route('licencias.store') }}" method="POST" id="licenseForm">
                 @csrf
-                
+
                 <!-- Código de Licencia -->
                 <div class="form-group">
                     <label for="voucher_code" class="form-label">
@@ -32,8 +32,8 @@
                         <div class="input-icon">
                             <i class="bi bi-key-fill"></i>
                         </div>
-                        <input type="text" 
-                               name="voucher_code" 
+                        <input type="text"
+                               name="voucher_code"
                                id="voucher_code"
                                value="{{ old('voucher_code') }}"
                                class="form-input @error('voucher_code') is-invalid @enderror"
@@ -55,8 +55,8 @@
                         <div class="input-icon">
                             <i class="bi bi-file-text"></i>
                         </div>
-                        <input type="text" 
-                               name="orden_compra" 
+                        <input type="text"
+                               name="orden_compra"
                                id="orden_compra"
                                value="{{ old('orden_compra') }}"
                                class="form-input @error('orden_compra') is-invalid @enderror"
@@ -78,7 +78,7 @@
                         <div class="select-icon">
                             <i class="bi bi-collection"></i>
                         </div>
-                        <select name="id_tipo" 
+                        <select name="id_tipo"
                                 id="id_tipo"
                                 class="form-select @error('id_tipo') is-invalid @enderror">
                             <option value="">-- Seleccione el tipo de licencia --</option>
@@ -574,43 +574,43 @@
         padding: 1rem;
         min-height: 100vh;
     }
-    
+
     .register-panel {
         max-width: 100%;
         border-radius: 15px;
     }
-    
+
     .form-header {
         padding: 1.5rem;
         flex-direction: column;
         text-align: center;
         gap: 1rem;
     }
-    
+
     .header-icon {
         width: 60px;
         height: 60px;
         font-size: 1.8rem;
     }
-    
+
     .form-title {
         font-size: 1.3rem;
     }
-    
+
     .form-body {
         padding: 1.5rem;
     }
-    
+
     .form-actions {
         flex-direction: column;
         gap: 1rem;
     }
-    
+
     .btn-action {
         width: 100%;
         min-width: auto;
     }
-    
+
     .info-panel {
         flex-direction: column;
         text-align: center;
@@ -622,22 +622,22 @@
     .form-header {
         padding: 1rem;
     }
-    
+
     .form-body {
         padding: 1rem;
     }
-    
+
     .form-input,
     .form-select {
         padding: 0.875rem 0.875rem 0.875rem 2.5rem;
     }
-    
+
     .input-icon,
     .select-icon {
         left: 0.75rem;
         font-size: 1rem;
     }
-    
+
     .select-arrow {
         right: 0.75rem;
     }
@@ -675,25 +675,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // Efecto de loading en el botón de submit
     const form = document.getElementById('licenseForm');
     const submitBtn = form.querySelector('button[type="submit"]');
-    
+
     form.addEventListener('submit', function() {
         submitBtn.classList.add('loading');
         submitBtn.disabled = true;
-        
+
         // Restaurar el botón después de 3 segundos como fallback
         setTimeout(() => {
             submitBtn.classList.remove('loading');
             submitBtn.disabled = false;
         }, 3000);
     });
-    
+
     // Efecto de focus mejorado para inputs
     const inputs = document.querySelectorAll('.form-input, .form-select');
     inputs.forEach(input => {
         input.addEventListener('focus', function() {
             this.parentElement.classList.add('focused');
         });
-        
+
         input.addEventListener('blur', function() {
             this.parentElement.classList.remove('focused');
         });

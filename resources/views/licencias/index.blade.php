@@ -5,7 +5,7 @@
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/index_licencias.css') }}">
 @endpush
-<div class="container" style="max-width: 1500px;">  
+<div class="container" style="max-width: 1500px;">
 
   <!-- Header Principal -->
   <div class="licenses-header">
@@ -19,7 +19,7 @@
         </span>
         <span class="stat-separator">|</span>
       </div>
-      
+
   </div>
 
   <!-- Botones de Opciones Principales -->
@@ -52,11 +52,11 @@
     <div class="modal fade" id="modalInformation" tabindex="-1" aria-labelledby="modalInformationLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content shadow-lg border-0 rounded-3">
-        
+
         <!-- Header -->
         <div class="modal-header bg-primary text-white">
             <h5 class="modal-title d-flex align-items-center gap-2" id="modalInformationLabel">
-            <i class="bi bi-info-circle-fill fs-4"></i> 
+            <i class="bi bi-info-circle-fill fs-4"></i>
             Información importante sobre Pre-Claves
             </h5>
             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -69,9 +69,9 @@
                 <i class="bi bi-receipt text-primary me-2"></i> ¿Qué es la Pre-Clave o Voucher?
             </h5>
             <p class="text-muted">
-                La <strong>Pre-Clave</strong> o <strong>Voucher</strong> es un código temporal que debe 
-                ser <span class="text-primary fw-semibold">canjeado</span> para obtener la clave de activación 
-                real de un producto. 
+                La <strong>Pre-Clave</strong> o <strong>Voucher</strong> es un código temporal que debe
+                ser <span class="text-primary fw-semibold">canjeado</span> para obtener la clave de activación
+                real de un producto.
             </p>
             <p>
                 El formulario para canjear la clave le solicitara el numero de orden el cual puede visualizar en la tabla,
@@ -81,7 +81,7 @@
             <div class="alert alert-info d-flex align-items-center gap-2" role="alert">
                 <i class="bi bi-link-45deg fs-4"></i>
                 <div>
-                Puedes canjear tu código en: 
+                Puedes canjear tu código en:
                 <a href="https://code4redeem.com/" target="_blank" class="fw-bold text-decoration-underline">https://code4redeem.com/</a>
                 </div>
             </div>
@@ -94,7 +94,7 @@
                 <i class="bi bi-building text-primary me-2"></i> Proveedor: Wincdkey Ltd
             </h5>
             <p class="text-muted">
-                Este método de canje <strong>solo aplica</strong> cuando el proveedor es 
+                Este método de canje <strong>solo aplica</strong> cuando el proveedor es
                 <strong>“Wincdkey Ltd”</strong>.
             </p>
 
@@ -119,7 +119,7 @@
 
 <!-- Fin Modal de informacion -->
 
-  <!-- Pruebas de Stock-->    
+  <!-- Pruebas de Stock-->
     <!-- 🧮 Modal Totales -->
     <div class="modal fade" id="modalTotales" tabindex="-1" aria-labelledby="modalTotalesLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -218,7 +218,7 @@
                   <select id="filtro-tipo" class="filter-select" onchange="filtrarPorTipo()">
                       <option value="">-- Todos los tipos --</option>
                       @foreach ($tiposLicencias as $tipo)
-                          <option value="{{ $tipo->id }}" 
+                          <option value="{{ $tipo->id }}"
                               {{ (request('tipo') == $tipo->id || $tipoSeleccionado == $tipo->id) ? 'selected' : '' }}>
                               {{ $tipo->nombre }}
                           </option>
@@ -239,20 +239,20 @@
           @csrf
           <div class="file-input-group">
               <input type="file" name="archivo" class="file-input-custom" required accept=".xlsx,.xls">
-              
+
               <button class="import-btn" type="submit">
                   <i class="bi bi-upload me-1"></i>
                   Importar Excel
               </button>
-              
-              <a href="{{ route('licencias.plantilla_excel') }}" 
-                class="download-template-btn" 
+
+              <a href="{{ route('licencias.plantilla_excel') }}"
+                class="download-template-btn"
                 title="Descargar Plantilla">
                   <i class="bi bi-download"></i>
                   Descargar Plantilla
               </a>
           </div>
-          
+
           @error('archivo')
               <div class="error-message">
                   <i class="bi bi-exclamation-circle-fill"></i>
@@ -414,9 +414,9 @@
                             Clave de Activación <span class="text-danger">*</span>
                         </label>
                         <div class="input-container">
-                            <input type="text" 
-                                   name="clave_key" 
-                                   class="form-control defective-input" 
+                            <input type="text"
+                                   name="clave_key"
+                                   class="form-control defective-input"
                                    placeholder="Ingrese la clave de activación"
                                    >
                         </div>
@@ -429,9 +429,9 @@
                             Orden de Compra
                         </label>
                         <div class="input-container">
-                            <input type="text" 
-                                   name="orden" 
-                                   class="form-control defective-input readonly-input" 
+                            <input type="text"
+                                   name="orden"
+                                   class="form-control defective-input readonly-input"
                                    placeholder="No asignada"
                                    readonly>
                         </div>
@@ -444,9 +444,9 @@
                             Número de Ticket
                         </label>
                         <div class="input-container">
-                            <input type="text" 
-                                   name="numero_ticket" 
-                                   class="form-control defective-input" 
+                            <input type="text"
+                                   name="numero_ticket"
+                                   class="form-control defective-input"
                                    placeholder="Ej: TK-2024-001">
                         </div>
                     </div>
@@ -458,9 +458,9 @@
                             Proveedor
                         </label>
                         <div class="input-container">
-                            <input type="text" 
-                                   name="razSocialProveedor" 
-                                   class="form-control defective-input readonly-input" 
+                            <input type="text"
+                                   name="razSocialProveedor"
+                                   class="form-control defective-input readonly-input"
                                    placeholder="Sin proveedor asignado"
                                    readonly>
                         </div>
@@ -513,7 +513,7 @@
     margin-top: 2rem;
     box-shadow: var(--shadow-lg);
     color: var(--white);
-    display: flex; 
+    display: flex;
     justify-content: space-between;
 }
 
@@ -811,32 +811,32 @@
     .licenses-header {
         padding: 1.5rem 1rem;
     }
-    
+
     .licenses-header h1 {
         font-size: 1.5rem;
     }
-    
+
     .options-container {
         flex-direction: column;
     }
-    
+
     .option-toggle-btn {
         width: 100%;
         justify-content: center;
     }
-    
+
     .action-buttons-grid {
         grid-template-columns: 1fr;
     }
-    
+
     .file-input-group {
         flex-direction: column;
     }
-    
+
     .file-input-custom {
         min-width: 100%;
     }
-    
+
     .filter-select {
         min-width: 100%;
     }
@@ -846,7 +846,7 @@
     .collapse-section {
         padding: 1rem;
     }
-    
+
     .import-form-container {
         padding: 1rem;
     }
@@ -968,16 +968,16 @@
         text-align: center;
         gap: 1rem;
     }
-    
+
     .defective-body {
         padding: 1.5rem;
     }
-    
+
     .defective-footer {
         flex-direction: column;
         gap: 1rem;
     }
-    
+
     .defective-footer .btn {
         width: 100%;
     }
@@ -1008,7 +1008,7 @@ function abrirModalLicenciaDefectuosa(actionUrl, ordenCompra, idProveedor, razon
     // Mostrar modal
     const modal = new bootstrap.Modal(document.getElementById('modalLicenciaDefectuosa'));
     modal.show();
-    
+
     // Focus en primer campo
     setTimeout(() => {
         form.querySelector('input[name="clave_key"]').focus();
@@ -1018,13 +1018,13 @@ function abrirModalLicenciaDefectuosa(actionUrl, ordenCompra, idProveedor, razon
 // Validaciones con SweetAlert2
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formLicenciaDefectuosa');
-    
+
     form.addEventListener('submit', function(e) {
         e.preventDefault();
-        
+
         const claveKey = form.querySelector('input[name="clave_key"]').value.trim();
         const numeroTicket = form.querySelector('input[name="numero_ticket"]').value.trim();
-        
+
         // Validar clave requerida
         if (!claveKey) {
             Swal.fire({
@@ -1037,7 +1037,7 @@ document.addEventListener('DOMContentLoaded', function() {
             form.querySelector('input[name="clave_key"]').focus();
             return;
         }
-        
+
         // Validar longitud mínima
         if (claveKey.length < 8) {
             Swal.fire({
@@ -1050,7 +1050,7 @@ document.addEventListener('DOMContentLoaded', function() {
             form.querySelector('input[name="clave_key"]').focus();
             return;
         }
-        
+
         // Advertencia si no hay ticket
         if (!numeroTicket) {
             Swal.fire({
@@ -1069,14 +1069,14 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             return;
         }
-        
+
         // Si todo está bien, confirmar
         confirmarAccion();
     });
-    
+
     function confirmarAccion() {
         const claveKey = form.querySelector('input[name="clave_key"]').value.trim();
-        
+
         Swal.fire({
             icon: 'warning',
             title: 'Confirmar Acción',
@@ -1097,7 +1097,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         Swal.showLoading();
                     }
                 });
-                
+
                 // Enviar formulario
                 form.submit();
             }
@@ -1113,7 +1113,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <form id="formUsarLicencia" method="POST" enctype="multipart/form-data" class="mx-auto">
       @csrf
       <input type="hidden" name="nuevo_estado" value="USADA">
-      
+
       <div class="modal-content border-0 shadow-lg">
         <!-- Header con diseño mejorado -->
         <div class="modal-header bg-sistema-uno text-white border-0 position-relative overflow-hidden">
@@ -1127,12 +1127,12 @@ document.addEventListener('DOMContentLoaded', function() {
             </div>
           </div>
           <!-- Botón cerrar arreglado -->
-          <button type="button" 
-                  class="btn-close btn-close-white" 
+          <button type="button"
+                  class="btn-close btn-close-white"
                   onclick="cerrarModal()"
                   aria-label="Cerrar">
           </button>
-          
+
           <!-- Elemento decorativo de fondo -->
           <div class="position-absolute top-0 end-0 opacity-10">
             <i class="bi bi-shield-check" style="font-size: 6rem; transform: translate(1.5rem, -1.5rem);"></i>
@@ -1145,20 +1145,20 @@ document.addEventListener('DOMContentLoaded', function() {
             <div class="col-md-7">
               <label class="form-label fw-semibold text-dark">
                 <i class="bi bi-key text-primary me-2"></i>
-                Clave de Activación 
+                Clave de Activación
                 <span class="text-danger">*</span>
               </label>
               <div class="input-group input-group-modern">
                 <span class="input-group-text bg-light border-end-0">
                   <i class="bi bi-shield-lock text-primary"></i>
                 </span>
-                <input type="text" 
-                       name="clave_key" 
+                <input type="text"
+                       name="clave_key"
                        id="clave_key"
                        class="form-control border-start-0 font-monospace"
                        placeholder="Ingrese la clave de activación">
-                <button type="button" 
-                        class="btn btn-outline-info" 
+                <button type="button"
+                        class="btn btn-outline-info"
                         id="btnVerificarClave"
                         title="Verificar si la clave ya existe">
                   <i class="bi bi-search" id="iconVerificar"></i>
@@ -1183,8 +1183,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 <span class="input-group-text bg-light border-end-0">
                   <i class="bi bi-file-text text-success"></i>
                 </span>
-                <input type="text" 
-                       name="orden" 
+                <input type="text"
+                       name="orden"
                        id="orden"
                        class="form-control border-start-0"
                        placeholder="Ej: 421852"
@@ -1214,8 +1214,8 @@ document.addEventListener('DOMContentLoaded', function() {
                   <span class="input-group-text bg-light border-end-0">
                     <i class="bi bi-pc text-info"></i>
                   </span>
-                  <input type="text" 
-                         name="equipo" 
+                  <input type="text"
+                         name="equipo"
                          id="equipo"
                          class="form-control border-start-0"
                          placeholder="Nombre del equipo">
@@ -1230,8 +1230,8 @@ document.addEventListener('DOMContentLoaded', function() {
                   <span class="input-group-text bg-light border-end-0">
                     <i class="bi bi-collection text-info"></i>
                   </span>
-                  <input type="text" 
-                         name="tipo_equipo" 
+                  <input type="text"
+                         name="tipo_equipo"
                          id="tipo_equipo"
                          class="form-control border-start-0"
                          placeholder="Tipo de equipo">
@@ -1250,8 +1250,8 @@ document.addEventListener('DOMContentLoaded', function() {
                   <span class="input-group-text bg-light border-end-0">
                     <i class="bi bi-hash text-warning"></i>
                   </span>
-                  <input type="text" 
-                         name="serial_equipo" 
+                  <input type="text"
+                         name="serial_equipo"
                          id="serial_equipo"
                          class="form-control border-start-0 font-monospace"
                          placeholder="Serial único del equipo">
@@ -1269,14 +1269,14 @@ document.addEventListener('DOMContentLoaded', function() {
               </h6>
               <div class="section-line"></div>
             </div>
-            
+
             <div class="mb-3">
               <label class="form-label fw-semibold text-dark">
                 <i class="bi bi-chat-text me-1 text-secondary"></i>
                 Descripción
               </label>
               <div class="textarea-container">
-                <textarea name="descripcion" 
+                <textarea name="descripcion"
                           id="descripcion"
                           class="form-control modern-textarea"
                           rows="3"
@@ -1290,13 +1290,13 @@ document.addEventListener('DOMContentLoaded', function() {
               <i class="bi bi-file-earmark-arrow-up me-1 text-primary"></i>
               Archivo de licencia (opcional)
             </label>
-            <input type="file" 
-                  name="archivo" 
+            <input type="file"
+                  name="archivo"
                   id="archivo"
                   class="form-control"
                   accept=".rcf,.txt,.pdf">
             <div class="form-text">Solo archivos pequeños (ej. .rcf)</div>
-          </div>  
+          </div>
           <!-- Información importante -->
           <div class="alert alert-info-modern border-0 mt-4" role="alert">
             <div class="d-flex align-items-center">
@@ -1313,13 +1313,13 @@ document.addEventListener('DOMContentLoaded', function() {
         <!-- Footer mejorado -->
         <div class="modal-footer bg-light-subtle border-0 p-4">
           <div class="d-flex justify-content-between w-100">
-            <button type="button" 
-                    class="btn btn-outline-secondary btn-modern px-4" 
+            <button type="button"
+                    class="btn btn-outline-secondary btn-modern px-4"
                     data-bs-dismiss="modal">
               <i class="bi bi-x-lg me-2"></i>
               Cancelar
             </button>
-            <button type="submit" 
+            <button type="submit"
                     class="btn btn-success btn-modern px-4"
                     id="btnGuardar">
               <span class="spinner-border spinner-border-sm me-2 d-none" id="loadingSpinner"></span>
@@ -1343,14 +1343,14 @@ function abrirModalUsarLicencia(actionUrl, ordenCompra) {
     const form = document.getElementById('formUsarLicencia');
     form.reset();
     form.action = actionUrl;
-    
-    //Campos visibles 
+
+    //Campos visibles
     form.querySelector('input[name="orden"]').value = ordenCompra ?? '';
 
     // Limpiar estados de validación
     limpiarValidacion();
     claveValidada = false;
-    
+
     const modal = new bootstrap.Modal(document.getElementById('modalUsarLicencia'));
     modal.show();
 }
@@ -1361,7 +1361,7 @@ function limpiarValidacion() {
     const claveError = document.getElementById('clave-error');
     const claveSuccess = document.getElementById('clave-success');
     const inputGroup = claveInput.closest('.input-group-modern');
-    
+
     claveInput.classList.remove('is-invalid', 'is-valid');
     inputGroup.classList.remove('is-invalid', 'is-valid');
     claveError.style.display = 'none';
@@ -1379,7 +1379,7 @@ async function verificarClaveDuplicada(clave) {
             },
             body: JSON.stringify({ clave_key: clave })
         });
-        
+
         const data = await response.json();
         return data.existe;
     } catch (error) {
@@ -1392,7 +1392,7 @@ async function verificarClaveDuplicada(clave) {
 document.getElementById('btnVerificarClave').addEventListener('click', async function() {
     const claveInput = document.getElementById('clave_key');
     const clave = claveInput.value.trim();
-    
+
     if (!clave) {
         Swal.fire({
             icon: 'warning',
@@ -1403,7 +1403,7 @@ document.getElementById('btnVerificarClave').addEventListener('click', async fun
         claveInput.focus();
         return;
     }
-    
+
     await verificarClaveManual(clave);
 });
 
@@ -1417,19 +1417,19 @@ async function verificarClaveManual(clave) {
     const claveSuccess = document.getElementById('clave-success');
     const claveErrorText = document.getElementById('clave-error-text');
     const inputGroup = claveInput.closest('.input-group-modern');
-    
+
     // Mostrar loading
     verificandoClave = true;
     btnVerificar.disabled = true;
     iconVerificar.classList.add('d-none');
     spinnerVerificar.classList.remove('d-none');
-    
+
     // Limpiar estados previos
     limpiarValidacion();
-    
+
     try {
         const existe = await verificarClaveDuplicada(clave);
-        
+
         if (existe) {
             // La clave ya existe
             claveValidada = false;
@@ -1437,12 +1437,12 @@ async function verificarClaveManual(clave) {
             inputGroup.classList.add('is-invalid', 'shake');
             claveErrorText.textContent = 'Esta clave ya está registrada en el sistema';
             claveError.style.display = 'block';
-            
+
             // Remover animación
             setTimeout(() => {
                 inputGroup.classList.remove('shake');
             }, 500);
-            
+
             Swal.fire({
                 icon: 'error',
                 title: 'Clave Duplicada',
@@ -1455,7 +1455,7 @@ async function verificarClaveManual(clave) {
             claveInput.classList.add('is-valid');
             inputGroup.classList.add('is-valid');
             claveSuccess.style.display = 'block';
-            
+
             Swal.fire({
                 icon: 'success',
                 title: 'Clave Disponible',
@@ -1492,7 +1492,7 @@ document.getElementById('clave_key').addEventListener('input', function() {
 // Validación del formulario
 document.getElementById('formUsarLicencia').addEventListener('submit', async function(e) {
     e.preventDefault(); // Siempre prevenir el envío inicial
-    
+
     const claveInput = document.getElementById('clave_key');
     const claveValue = claveInput.value.trim();
     const claveError = document.getElementById('clave-error');
@@ -1502,7 +1502,7 @@ document.getElementById('formUsarLicencia').addEventListener('submit', async fun
     const loadingSpinner = document.getElementById('loadingSpinner');
     const saveIcon = document.getElementById('saveIcon');
     const btnText = document.getElementById('btnText');
-    
+
     // Validar que la clave no esté vacía
     if (claveValue === '') {
         limpiarValidacion();
@@ -1510,11 +1510,11 @@ document.getElementById('formUsarLicencia').addEventListener('submit', async fun
         inputGroup.classList.add('is-invalid', 'shake');
         claveErrorText.textContent = 'La clave de activación es obligatoria';
         claveError.style.display = 'block';
-        
+
         setTimeout(() => {
             inputGroup.classList.remove('shake');
         }, 500);
-        
+
         Swal.fire({
             icon: 'error',
             title: 'Campo Requerido',
@@ -1523,10 +1523,10 @@ document.getElementById('formUsarLicencia').addEventListener('submit', async fun
         }).then(() => {
             claveInput.focus();
         });
-        
+
         return false;
     }
-    
+
     // Si la clave no ha sido validada, verificarla automáticamente
     if (!claveValidada && !verificandoClave) {
         try {
@@ -1535,9 +1535,9 @@ document.getElementById('formUsarLicencia').addEventListener('submit', async fun
             loadingSpinner.classList.remove('d-none');
             saveIcon.classList.add('d-none');
             btnText.textContent = 'Verificando clave...';
-            
+
             const existe = await verificarClaveDuplicada(claveValue);
-            
+
             if (existe) {
                 // La clave ya existe
                 limpiarValidacion();
@@ -1545,11 +1545,11 @@ document.getElementById('formUsarLicencia').addEventListener('submit', async fun
                 inputGroup.classList.add('is-invalid', 'shake');
                 claveErrorText.textContent = 'Esta clave ya está registrada en el sistema';
                 claveError.style.display = 'block';
-                
+
                 setTimeout(() => {
                     inputGroup.classList.remove('shake');
                 }, 500);
-                
+
                 Swal.fire({
                     icon: 'error',
                     title: 'Clave Duplicada',
@@ -1558,7 +1558,7 @@ document.getElementById('formUsarLicencia').addEventListener('submit', async fun
                 }).then(() => {
                     claveInput.focus();
                 });
-                
+
                 return false;
             } else {
                 // La clave está disponible, continuar con el envío
@@ -1580,7 +1580,7 @@ document.getElementById('formUsarLicencia').addEventListener('submit', async fun
             btnText.textContent = 'Guardar Licencia';
         }
     }
-    
+
     // Si llegamos aquí, la clave es válida, mostrar confirmación
     Swal.fire({
         title: '¿Confirmar registro?',
@@ -1598,7 +1598,7 @@ document.getElementById('formUsarLicencia').addEventListener('submit', async fun
             loadingSpinner.classList.remove('d-none');
             saveIcon.classList.add('d-none');
             btnText.textContent = 'Guardando...';
-            
+
             // Enviar formulario
             this.submit();
         }
@@ -1612,14 +1612,14 @@ document.getElementById('modalUsarLicencia').addEventListener('hidden.bs.modal',
     const loadingSpinner = document.getElementById('loadingSpinner');
     const saveIcon = document.getElementById('saveIcon');
     const btnText = document.getElementById('btnText');
-    
+
     // Reset formulario
     form.reset();
-    
+
     // Limpiar validación
     limpiarValidacion();
     claveValidada = false;
-    
+
     // Restaurar botón
     btnGuardar.disabled = false;
     loadingSpinner.classList.add('d-none');

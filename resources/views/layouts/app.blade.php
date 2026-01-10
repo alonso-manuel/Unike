@@ -19,6 +19,7 @@
     <script src="{{ asset('js/quill.js') }}"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <script src="{{ route('js.header-scripts') }}"></script>
+
 </head>
 
 <body style="position: relative">

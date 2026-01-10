@@ -1,0 +1,237 @@
+
+.search-container {
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.search-form {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.search-input-group {
+    flex: 1;
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #6c757d;
+    font-size: 1rem;
+}
+
+.search-input {
+    width: 100%;
+    padding: 0.75rem 1rem 0.75rem 2.75rem;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--used-primary);
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+}
+
+.btn-search,
+.btn-clear {
+    padding: 0.75rem 1.25rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    white-space: nowrap;
+}
+
+.btn-search {
+    background: var(--used-primary);
+    color: white;
+}
+
+.btn-search:hover {
+    background: var(--used-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+}
+
+.btn-clear {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-clear:hover {
+    background: #5a6268;
+    color: white;
+}
+/* === CONTENIDO DE CELDAS === */
+.key-code {
+    font-family: 'Courier New', monospace;
+    font-weight: 600;
+    color: var(--used-dark);
+    font-size: 0.8rem;
+}
+
+.voucher-text {
+    color: #0066cc;
+    font-weight: 500;
+}
+
+.equipment-text {
+    color: var(--used-dark);
+}
+
+.type-badge {
+    background: #fff3cd;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #856404;
+    display: inline-block;
+}
+
+.serial-text {
+    font-family: 'Courier New', monospace;
+    font-size: 0.75rem;
+    color: #495057;
+}
+
+.text-muted {
+    color: #6c757d;
+    font-style: italic;
+}
+
+/* === BOTONES DE ACCIÓN === */
+.action-btns {
+    display: flex;
+    gap: 0.4rem;
+}
+
+.btn-action {
+    border: none;
+    width: 32px;
+    height: 32px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    font-size: 0.9rem;
+}
+
+.btn-info {
+    background: #17a2b8;
+    color: white;
+}
+
+.btn-info:hover {
+    background: #138496;
+}
+
+.btn-download {
+    background: var(--used-primary);
+    color: white;
+}
+
+.btn-download:hover {
+    background: var(--used-secondary);
+}
+
+.btn-disabled {
+    background: #e9ecef;
+    color: #adb5bd;
+    cursor: not-allowed;
+}
+
+/* === PAGINACIÓN SEPARADA === */
+.pagination-container {
+    background: white;
+    padding: 1rem 1.5rem;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    display: flex;
+    justify-content: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* === SCROLLBAR PERSONALIZADO === */
+.table-container::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.table-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.table-container::-webkit-scrollbar-thumb {
+    background: var(--used-primary);
+    border-radius: 4px;
+}
+
+.table-container::-webkit-scrollbar-thumb:hover {
+    background: var(--used-secondary);
+}
+
+/* === MODAL === */
+.modal-content {
+    border-radius: 8px;
+}
+
+.modal-header {
+    background: var(--used-primary);
+    color: white;
+    border-radius: 8px 8px 0 0;
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+.detail-section {
+    margin-bottom: 1rem;
+}
+
+.detail-section label {
+    font-weight: 600;
+    color: var(--used-dark);
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+    display: block;
+}
+
+.detail-section p {
+    margin: 0;
+    color: #495057;
+    font-family: 'Courier New', monospace;
+}
+
+.description-box {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 6px;
+    padding: 0.75rem;
+    min-height: 80px;
+    max-height: 200px;
+    overflow-y: auto;
+    color: #495057;
+    line-height: 1.6;
+    white-space: pre-wrap;
+}
