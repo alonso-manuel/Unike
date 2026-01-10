@@ -8,7 +8,7 @@
                     <th>Orden Compra</th>
                     <th>Tipo</th>
                     <th>Proveedor</th>
-                    <th>Categoria</th>
+                    <th>Estado</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -41,7 +41,7 @@
                         </div>
                     </td>
                     <td>
-                        <span class="badge badge-success">{{ optional($licencia->categoriaLicencia)->tipo_categoria ?? 'Sale'}}</span>
+                        <span class="badge badge-success">{{ $licencia->estado }}</span>
                     </td>
                     <td>
                         <div class="action-buttons">
