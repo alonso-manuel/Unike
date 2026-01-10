@@ -1,0 +1,320 @@
+/* === VARIABLES === */
+:root {
+    --recuperada-primary: #3498db;
+    --recuperada-secondary: #2980b9;
+    --recuperada-success: #27ae60;
+    --recuperada-danger: #e74c3c;
+    --dark: #2c3e50;
+    --light: #ecf0f1;
+}
+
+/* === MODAL RECUPERADA === */
+.recuperada-modal {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(52, 152, 219, 0.15);
+}
+
+.recuperada-header {
+    background: linear-gradient(135deg, var(--recuperada-primary) 0%, var(--recuperada-secondary) 100%);
+    border: none;
+    padding: 1.5rem;
+    color: white;
+}
+
+.recuperada-body {
+    padding: 2rem;
+    background: #fafafa;
+}
+
+.recuperada-footer {
+    background: var(--light);
+    border-top: 2px solid #dee2e6;
+    padding: 1rem 2rem;
+}
+
+/* === HEADER === */
+.header-icon {
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* === INFO BANNER === */
+.info-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    background: #e8f4fd;
+    border: 1px solid #bbdefb;
+    border-left: 4px solid var(--recuperada-primary);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    color: #0d47a1;
+}
+
+.info-banner i {
+    color: var(--recuperada-primary);
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+/* === SECCIONES === */
+.info-section {
+    background: white;
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border: 1px solid #e9ecef;
+}
+
+.section-title {
+    color: var(--dark);
+    font-weight: 600;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #e9ecef;
+    display: flex;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+/* === INPUTS === */
+.input-container {
+    position: relative;
+    margin-bottom: 0;
+}
+
+.input-label {
+    display: block;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+}
+
+.input-label.required::after {
+    content: "*";
+    color: #e74c3c;
+    margin-left: 0.25rem;
+    font-weight: 700;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+    border: 2px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    color: var(--dark);
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--recuperada-primary);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.form-input:read-only {
+    background: #f8f9fa;
+    cursor: not-allowed;
+    color: #6c757d;
+}
+
+.serial-defectuosa {
+    background: #fdf2f2 !important;
+    border-color: #fadbd8 !important;
+    text-decoration: line-through;
+    color: #e74c3c !important;
+}
+
+.input-icon {
+    position: absolute;
+    right: 0.75rem;
+    top: 38px;
+    color: #6c757d;
+    font-size: 0.85rem;
+}
+
+.input-hint {
+    display: block;
+    color: #6c757d;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+    font-style: italic;
+}
+
+/* === VALIDACIÓN === */
+.input-container.valid .form-input {
+    border-color: var(--recuperada-success);
+    background: #f0f8f0;
+}
+
+.input-container.valid .input-icon {
+    color: var(--recuperada-success);
+}
+
+.input-container.invalid .form-input {
+    border-color: var(--recuperada-danger);
+    background: #fdf2f2;
+}
+
+.input-container.invalid .input-icon {
+    color: var(--recuperada-danger);
+}
+
+.validation-feedback {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    display: none;
+}
+
+.validation-feedback.show {
+    display: block;
+}
+
+.validation-feedback.success {
+    color: var(--recuperada-success);
+}
+
+.validation-feedback.error {
+    color: var(--recuperada-danger);
+}
+
+/* === ESTADO BADGE === */
+.estado-badge {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #e8f4fd 0%, #f0f8ff 100%);
+    border: 2px solid var(--recuperada-primary);
+    border-radius: 8px;
+    padding: 0.75rem;
+    color: var(--recuperada-primary);
+    font-weight: 700;
+    font-size: 0.85rem;
+    margin-top: 26px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* === VERIFICATION STATUS === */
+.verification-status {
+    background: #fff8e1;
+    border: 1px solid #ffe0b2;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    margin-top: 1rem;
+}
+
+.verification-spinner {
+    display: flex;
+    align-items: center;
+    color: #ff9800;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* === BOTONES === */
+.btn-modal {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.btn-cancel {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-cancel:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+.btn-recuperada {
+    background: linear-gradient(135deg, var(--recuperada-primary) 0%, var(--recuperada-secondary) 100%);
+    color: white;
+}
+
+.btn-recuperada:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(52, 152, 219, 0.3);
+}
+
+.btn-recuperada:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+/* === LOADING STATE === */
+.btn-modal.loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-modal.loading::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    margin-left: -8px;
+    margin-top: -8px;
+    border: 2px solid transparent;
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.recuperada-confirm-popup {
+    border-radius: 12px !important;
+}
+
+.recuperada-confirm-popup .swal2-html-container {
+    padding: 1rem !important;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+    .modal-lg {
+        margin: 0.5rem;
+    }
+
+    .recuperada-body {
+        padding: 1.5rem;
+    }
+
+    .info-section {
+        padding: 1rem;
+    }
+}

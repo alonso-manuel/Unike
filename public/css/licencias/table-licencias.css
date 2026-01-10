@@ -111,6 +111,10 @@
     background: var(--success-color);
     color: rgb(0, 0, 0);
 }
+.badge-defectuosa{
+    background: var(--succes-color-defectuosa);
+    color: rgb(255, 255, 255);
+}
 /*Acciones*/
 .action-buttons {
     display: flex;
@@ -143,6 +147,14 @@
 .btn-defectuosa:hover {
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(231, 76, 60, 0.3);
+}
+.btn-recover{
+    background: var(--success-color);
+    color: rgb(0, 0, 0);
+}
+.btn-recover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(231, 222, 60, 0.3);
 }
 /*Tabla-Licencias*/
 .table-wrapper {
