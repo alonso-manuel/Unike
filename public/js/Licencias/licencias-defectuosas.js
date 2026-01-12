@@ -8,14 +8,12 @@ function abrirModalLicenciaRecuperada(actionUrl, orden, serialDefectuosa, numero
 
     form.action = actionUrl;
 
-    // Llenar valores
     form.querySelector('input[name="orden"]').value = orden || '';
     form.querySelector('input[name="serial_defectuosa"]').value = serialDefectuosa || '';
     form.querySelector('input[name="numero_ticket"]').value = numeroTicket || '';
     form.querySelector('input[name="razonSocialProveedor"]').value = razonSocialProveedor || '';
     form.querySelector('input[name="idProveedor"]').value = idProveedor || '';
 
-    // Limpiar validación
     const container = form.querySelector('#serialRecuperadaInput').closest('.input-container');
     container.classList.remove('valid', 'invalid');
     const feedback = container.querySelector('.validation-feedback');
@@ -25,13 +23,11 @@ function abrirModalLicenciaRecuperada(actionUrl, orden, serialDefectuosa, numero
     const modal = new bootstrap.Modal(document.getElementById('modalLicenciaRecuperada'));
     modal.show();
 
-    // Focus en serial recuperada
     setTimeout(() => {
         document.getElementById('serialRecuperadaInput').focus();
     }, 500);
 }
 
-// === VALIDACIONES ===
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('formLicenciaRecuperada');
     const submitBtn = document.getElementById('btnSubmitRecuperada');
@@ -40,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     let debounceTimer;
 
-    // Validación en tiempo real con debounce
     serialInput.addEventListener('input', function() {
         clearTimeout(debounceTimer);
         const container = this.closest('.input-container');
@@ -57,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 800);
     });
 
-    // Verificar serial en servidor
     async function verificarSerial(serial) {
         const container = serialInput.closest('.input-container');
         const feedback = container.querySelector('.validation-feedback');
@@ -102,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Submit con validación
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
 
@@ -110,7 +103,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const serialDefectuosa = form.querySelector('input[name="serial_defectuosa"]').value.trim();
         const orden = form.querySelector('input[name="orden"]').value.trim();
 
-        // Validar campo vacío
         if (serial === '') {
             Swal.fire({
                 icon: 'error',
@@ -122,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Validar longitud mínima
         if (serial.length < 8) {
             Swal.fire({
                 icon: 'error',
@@ -134,7 +125,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Verificar duplicado
         try {
             submitBtn.classList.add('loading');
             submitBtn.disabled = true;
@@ -193,7 +183,6 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             if (result.isConfirmed) {
-                // Mostrar mensaje de procesamiento
                 Swal.fire({
                     icon: 'info',
                     title: 'Procesando...',

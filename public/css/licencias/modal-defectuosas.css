@@ -8,7 +8,6 @@
     --light: #ecf0f1;
 }
 
-/* === MODAL RECUPERADA === */
 .recuperada-modal {
     border: none;
     border-radius: 12px;
@@ -34,7 +33,6 @@
     padding: 1rem 2rem;
 }
 
-/* === HEADER === */
 .header-icon {
     background: rgba(255, 255, 255, 0.15);
     border-radius: 50%;
@@ -51,7 +49,6 @@
     to { transform: rotate(360deg); }
 }
 
-/* === INFO BANNER === */
 .info-banner {
     display: flex;
     align-items: flex-start;
@@ -71,7 +68,6 @@
     flex-shrink: 0;
 }
 
-/* === SECCIONES === */
 .info-section {
     background: white;
     border-radius: 10px;
@@ -91,7 +87,6 @@
     font-size: 0.95rem;
 }
 
-/* === INPUTS === */
 .input-container {
     position: relative;
     margin-bottom: 0;
@@ -197,7 +192,6 @@
     color: var(--recuperada-danger);
 }
 
-/* === ESTADO BADGE === */
 .estado-badge {
     display: flex;
     align-items: center;
@@ -214,7 +208,6 @@
     letter-spacing: 0.5px;
 }
 
-/* === VERIFICATION STATUS === */
 .verification-status {
     background: #fff8e1;
     border: 1px solid #ffe0b2;
@@ -231,7 +224,6 @@
     font-weight: 600;
 }
 
-/* === BOTONES === */
 .btn-modal {
     padding: 0.75rem 1.5rem;
     border: none;
@@ -270,7 +262,6 @@
     pointer-events: none;
 }
 
-/* === LOADING STATE === */
 .btn-modal.loading {
     position: relative;
     pointer-events: none;
@@ -304,7 +295,6 @@
     to { transform: rotate(360deg); }
 }
 
-/* === RESPONSIVE === */
 @media (max-width: 768px) {
     .modal-lg {
         margin: 0.5rem;

@@ -21,7 +21,6 @@
                 </div>
 
                 <div class="modal-body recuperada-body">
-                    {{-- Información --}}
                     <div class="info-banner">
                         <i class="bi bi-info-circle-fill me-2"></i>
                         <div>

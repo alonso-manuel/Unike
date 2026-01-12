@@ -4,7 +4,6 @@
 <link rel="stylesheet" href="{{ asset('css/licencias/table-licencias.css') }}">
 <link rel="stylesheet" href="{{ asset(path: 'css/licencias/licencias-usadas.css') }}">
 <div class="licencias-container">
-    {{-- Header Verde Separado --}}
     <div class="used-header">
         <div class="header-content">
             <div class="header-icon">
@@ -29,7 +28,6 @@
         </div>
     </div>
 
-    {{-- Búsqueda --}}
     <div class="search-container">
         <form action="{{ route('licencias.usadas') }}" method="GET" class="search-form">
             <div class="search-input-group">
@@ -54,7 +52,6 @@
     </div>
 
     @if($licenciasUsadas->isEmpty())
-        {{-- Estado Vacío --}}
         <div class="empty-state">
             <div class="empty-icon">
                 <i class="bi bi-inbox"></i>
@@ -75,7 +72,6 @@
             </p>
         </div>
     @else
-        {{-- Tabla Compacta Separada --}}
         <div class="table-wrapper">
             <div class="table-container">
                 <table class="table-used">
@@ -157,13 +153,11 @@
             </div>
         </div>
 
-        {{-- paginacion --}}
         <div class="pagination-container">
             {{ $licenciasUsadas->appends(['search' => request('search')])->links() }}
         </div>
     @endif
 </div>
-{{-- componente modal descripcion --}}
 <x-Licencias.Usadas.modal-descripcion/>
 <script src="{{ asset('js/Licencias/licencias-usadas.js') }}"></script>
 @endsection

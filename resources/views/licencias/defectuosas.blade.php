@@ -3,7 +3,6 @@
 @section('content')
 <link rel="stylesheet" href="{{ asset('css/licencias/table-licencias.css') }}">
 <div class="licencias-container">
-    <!-- Header Section -->
     <div class="used-header">
         <div class="header-content">
             <div class="header-icon">
@@ -37,7 +36,6 @@
             <p class="empty-state-text">Todas las licencias están funcionando correctamente</p>
         </div>
     @else
-        <!-- Table Container -->
         <div class="table-wrapper">
             <div class="table-container">
                 <table class="table-used">
@@ -98,16 +96,12 @@
                 </table>
             </div>
         </div>
-
-        <!-- Pagination -->
         <div class="pagination-container">
             {{ $licenciasDefectuosas->links() }}
         </div>
     @endif
 </div>
-{{-- Modal Licencia Recuperada --}}
 <x-licencias.defectuosa.modal-recuperada/>
-{{-- Scripts --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="{{ asset('js/Licencias/licencias-defectuosas.js') }}"></script>
 @endsection

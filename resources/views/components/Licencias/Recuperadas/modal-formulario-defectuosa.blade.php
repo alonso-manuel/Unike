@@ -8,7 +8,6 @@
             <input type="hidden" name="serial_recuperada" id="inputSerialRecuperadaDefectuosa">
 
             <div class="modal-content defectuosa-modal">
-                {{-- Header --}}
                 <div class="modal-header defectuosa-header">
                     <div class="d-flex align-items-center">
                         <div class="header-icon me-3">
@@ -22,9 +21,7 @@
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                 </div>
 
-                {{-- Body --}}
                 <div class="modal-body defectuosa-body">
-                    {{-- Advertencia --}}
                     <div class="alert-warning-box">
                         <i class="bi bi-exclamation-circle-fill me-2"></i>
                         <div>
@@ -32,7 +29,6 @@
                         </div>
                     </div>
 
-                    {{-- Información de Licencia --}}
                     <div class="info-section">
                         <h6 class="section-title">
                             <i class="bi bi-key-fill me-2"></i>
@@ -66,7 +62,6 @@
                         </div>
                     </div>
 
-                    {{-- Información del Proveedor --}}
                     <div class="info-section">
                         <h6 class="section-title">
                             <i class="bi bi-building me-2"></i>
@@ -84,7 +79,6 @@
                         </div>
                     </div>
 
-                    {{-- Información del Incidente --}}
                     <div class="info-section">
                         <h6 class="section-title">
                             <i class="bi bi-ticket-detailed me-2"></i>
@@ -104,7 +98,6 @@
                     </div>
                 </div>
 
-                {{-- Footer --}}
                 <div class="modal-footer defectuosa-footer">
                     <button type="button" class="btn-modal btn-cancel" data-bs-dismiss="modal">
                         <i class="bi bi-x-lg me-2"></i>
