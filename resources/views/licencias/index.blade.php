@@ -142,7 +142,7 @@
     @if(session('success'))
     <script>
     Swal.fire({
-        title: '¡Éxito!',
+        title: 'Cesar cabro',
         text: '{{ session('success') }}',
         icon: 'success',
         confirmButtonText: 'Aceptar'
@@ -318,6 +318,51 @@
         </div>
 </div>
 
+    <!-- 🧮 Modal Totales -->
+<div class="modal fade" id="modalTotales" tabindex="-1" aria-labelledby="modalTotalesLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+            <h5 class="modal-title" id="modalTotalesLabel">
+            <i class="bi bi-graph-up"></i> Totales por tipo de licencia
+            </h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        </div>
+        <div class="modal-body">
+            @if($totalesPorTipo->count())
+            <div class="table-responsive">
+                <table class="table table-striped align-middle text-center">
+                <thead>
+                    <tr>
+                    <th>Tipo de licencia</th>
+                    <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($totalesPorTipo as $tipo)
+                    <tr>
+                        <td>{{ $tipo->tipoLicencia->nombre ?? 'Sin nombre' }}</td>
+                        <td><strong>{{ $tipo->total }}</strong></td>
+                    </tr>
+                    @endforeach
+                </tbody>
+                </table>
+            </div>
+            @else
+            <div class="alert alert-warning text-center mb-0">
+                No hay licencias registradas aún.
+            </div>
+            @endif
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cerrar
+            </button>
+        </div>
+        </div>
+    </div>
+</div>
+
 <script src="{{ asset('js/Licencias/index-licencias.js') }}"> </script>
 <x-licencias.nueva.modal-usar/>
 <x-licencias.nueva.modal-defectuosa/>
@@ -326,7 +371,7 @@
     @if(session('success'))
     Swal.fire({
         icon: 'success',
-        title: '¡Éxito!',
+        title: '¡xd!',
         text: '{{ session('success') }}',
         confirmButtonColor: '#28a745',
         timer: 3000,
