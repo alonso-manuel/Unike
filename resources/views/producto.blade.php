@@ -253,7 +253,7 @@
     </div>
     <div class="row">
         <div class="col-3 d-flex flex-column gap-2">
-            @foreach ($producto->Inventario as $inv)
+        @foreach ($producto->Inventario as $inv)
             @php
                 $stockAlmacen = $inv->stock;
                 if ($stockAlmacen > 0) {
@@ -264,6 +264,20 @@
                 }
             @endphp
         @endforeach
+
+        </div>
+        <div class="col-3 d-flex flex-column gap-2">
+            @foreach ($producto->Inventario as $inv)
+                @if ($inv->stock > 0)
+                    <button
+                        class="btn btn-info text-nowrap"
+                        onclick="openSeriesPdf({{ $producto->idProducto }}, {{ $inv->idAlmacen }})"
+                    >
+                        <i class="bi bi-file-earmark-pdf"></i>
+                        Series - {{ $inv->almacen->descripcion }}
+                    </button>
+                @endif
+            @endforeach
         </div>
         <div class="col-6 text-center">
             <button type="submit" class="btn btn-success" id="btnSave" disabled>Guardar <i class="bi bi-floppy"></i></button>
@@ -275,7 +289,7 @@
     <br>
     <br>
     </div>
-    
+
     <script src="{{ route('js.update-product-scripts', [$tc]) }}"></script>
     <script>
         function reportSerials(idAlmacen = null) {
@@ -283,5 +297,14 @@
             const url = baseUrl.replace('ALMACEN_ID', idAlmacen || '');
             window.open(url, '_blank');
         }
+    </script>
+
+    <script>
+    function openSeriesPdf(idProducto, idAlmacen) {
+        window.open(
+            `/pdf/producto-series/${idProducto}/${idAlmacen}`,
+            '_blank'
+        );
+    }
     </script>
     @endsection

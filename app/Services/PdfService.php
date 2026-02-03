@@ -49,25 +49,25 @@ class PdfService implements PdfServiceInterface
         }
         return $series;
     }
-    
+
     public function getReportsAlmacen()           {
         return $this->productoRepository->getProductsWithStock()->sortBy('codigoProducto');
     }
- 
+
 
     public function getAlmacenes(){
         return $this->almacenRepository->all()->sortBy('idAlmacen');
     }
-    
+
     public function getSerialsByProduct($idProducto, $idAlmacen = null) {
         return $this->registroRepository->getSerialsByProduct($idProducto, $idAlmacen);
     }
 
-    
+
     public function getOneProduct($idProducto){
         return $this->productoRepository->getOne('idProducto',$idProducto);
     }
-    
+
     public function getOneGarantia($idGarantia){
         return $this->garantiaRepository->getOne($idGarantia);
     }
@@ -89,5 +89,30 @@ class PdfService implements PdfServiceInterface
 
         return $query;
     }
+
+    public function getSerialsByProductWithBarcode($idProducto, $idAlmacen = null)
+    {
+        $registros = $this->registroRepository
+            ->getSerialsByProduct($idProducto, $idAlmacen);
+
+        $series = [];
+
+        foreach ($registros as $reg) {
+            $barcode = $this->generadorSeries->getBarcode(
+                $reg->numeroSerie,
+                BarcodeGeneratorPNG::TYPE_CODE_128,
+                1,
+                50
+            );
+
+            $series[] = [
+                'serie'   => $reg->numeroSerie,
+                'barcode' => base64_encode($barcode)
+            ];
+        }
+
+        return $series;
+    }
+
 
 }

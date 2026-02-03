@@ -22,14 +22,14 @@
         th {
             background-color: #f2f2f2;
         }
-        
+
     </style>
 </head>
 <body>
     <h2>{{ $title }}</h2>
     <h3>{{ $producto->nombreProducto }}</h3>
     <h3 style="color: #555555">{{ $producto->modelo }}</h3>
-    
+
     <table>
         <tbody>
             @foreach ($registros->chunk(4) as $chunk) <!-- Divide los registros en grupos de 4 -->

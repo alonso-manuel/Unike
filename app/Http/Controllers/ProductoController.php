@@ -24,51 +24,60 @@ class ProductoController extends Controller
         $this->calculadoraService = $calculadoraService;
         $this->productoService = $productoService;
     }
-    
+
     public function index($idCategory,$idGrupo,Request $request){
         //variables de la cabecera
         $userModel = $this->headerService->getModelUser();
-        
+
         //variables del controlador
         foreach($userModel->Accesos as $acceso){
             if($acceso->idVista == 2){
-                $productos = $this->productoService->getAllProductsByColumn('idGrupo',decrypt($idGrupo),15,$request->query('filtro'))->appends($request->all());;
+                // Obtener datos comunes
+                $productos = $this->productoService->getAllProductsByColumn('idGrupo',decrypt($idGrupo),15,$request->query('filtro'))->appends($request->all());
+                $almacenes = $this->productoService->getAllAlmacen();
 
+                // Si es petición AJAX (paginación o filtro)
                 if($request->query('page') || $request->query('filtro')){
-                    $view = view('components.lista_producto', ['productos' => $productos,
-                                                                'container' => $request->query('container'),
-                                                                'tc' => $this->calculadoraService->getTasaCambio()])->render();
+                    $view = view('components.lista_producto', [
+                        'productos' => $productos,
+                        'container' => $request->query('container'),
+                        'almacenes' => $almacenes, // <-- Se pasa en AJAX
+                        'tc' => $this->calculadoraService->getTasaCambio()
+                    ])->render();
                     return response()->json(['html' => $view]);
                 }
 
-                //aqui ira ajax
+                // Carga inicial completa de la página
                 $grupo = $this->productoService->getOneLabelGrupo(decrypt($idGrupo));
                 $grupos = $this->productoService->getAllLabelGrupoXCategory(decrypt($idCategory));
                 $categoria = $this->productoService->getOneLabelCategory(decrypt($idCategory));
                 $categorias = $this->productoService->getAllLabelCategory();
-                
-                $filtros = ['marcas' => $this->productoService->filtroMarcas('idGrupo',decrypt($idGrupo)),
-                            'estados' => $this->productoService->filtroEstados('idGrupo',decrypt($idGrupo))];
-                
-                return view('productos',['user' => $userModel,
-                                        'grupos' => $grupos,
-                                        'categorias' => $categorias,
-                                        'grupo' => $grupo,
-                                        'productos' => $productos,
-                                        'categoria' => $categoria,
-                                        'tc' => $this->calculadoraService->getTasaCambio(),
-                                        'filtros' => $filtros
-                                        ]);
+
+                $filtros = [
+                    'marcas' => $this->productoService->filtroMarcas('idGrupo',decrypt($idGrupo)),
+                    'estados' => $this->productoService->filtroEstados('idGrupo',decrypt($idGrupo))
+                ];
+
+                return view('productos',[
+                    'user' => $userModel,
+                    'grupos' => $grupos,
+                    'categorias' => $categorias,
+                    'grupo' => $grupo,
+                    'productos' => $productos,
+                    'categoria' => $categoria,
+                    'almacenes' => $almacenes,
+                    'tc' => $this->calculadoraService->getTasaCambio(),
+                    'filtros' => $filtros
+                ]);
             }
         }
         $this->headerService->sendFlashAlerts('Acceso denegado','No tienes permiso para ingresar a esta pestaña','warning','btn-danger');
         return redirect()->route('dashboard',['user' => $userModel]);
     }
-    
     public function update($idProducto){
         //variables de la cabecera
         $userModel = $this->headerService->getModelUser();
-        
+
         //variables del controlador
         foreach($userModel->Accesos as $acceso){
             if($acceso->idVista == 2){
@@ -76,7 +85,7 @@ class ProductoController extends Controller
                 $marcas = $this->productoService->getAllLabelMarca();
                 $proveedor = $this->productoService->getAllLabelProveedor();
                 $grupos = $this->productoService->getAllLabelGrupo();
-                
+
                 return view('producto',['user' => $userModel,
                                         'producto' => $producto,
                                         'marcas' => $marcas,
@@ -90,11 +99,11 @@ class ProductoController extends Controller
         $this->headerService->sendFlashAlerts('Acceso denegado','No tienes permiso para ingresar a esta pestaña','warning','btn-danger');
         return redirect()->route('dashboard',['user' => $userModel]);
     }
-    
+
     public function create(){
         //variables de la cabecera
         $userModel = $this->headerService->getModelUser();
-        
+
         //variables del controlador
 
         foreach($userModel->Accesos as $acceso){
@@ -104,9 +113,9 @@ class ProductoController extends Controller
                 $grupos = $this->productoService->getAllLabelGrupo();
                 $proveedor = $this->productoService->getAllLabelProveedor();
                 $almacenes = $this->productoService->getAllAlmacen();
-                
-                $latestProductCodes = $this->productoService->getLastCodesProducts();       
-                
+
+                $latestProductCodes = $this->productoService->getLastCodesProducts();
+
                 return view('createproducto',['user' => $userModel,
                                                 'marcas' => $marcas,
                                                 'grupos' => $grupos,
@@ -114,28 +123,28 @@ class ProductoController extends Controller
                                                 'almacenes' => $almacenes,
                                                 'codigos' => $latestProductCodes,
                                                 'tc' => $this->calculadoraService->getTasaCambio(),]);
-                
+
             }
         }
         $this->headerService->sendFlashAlerts('Acceso denegado','No tienes permiso para ingresar a esta pestaña','warning','btn-danger');
         return redirect()->route('dashboard',['user' => $userModel]);
     }
-    
+
     public function details($idProducto){
         //variables de la cabecera
         $userModel = $this->headerService->getModelUser();
-        
+
         //variables del controlador
         foreach($userModel->Accesos as $acceso){
             if($acceso->idVista == 2){
                 $producto = $this->productoService->getOneProductByColumn('idProducto',$idProducto);
                 $grupo = $this->productoService->getOneLabelGrupo($producto->idGrupo);
-                $carGrupos = collect($producto->GrupoProducto->Caracteristicas_Grupo); 
+                $carGrupos = collect($producto->GrupoProducto->Caracteristicas_Grupo);
                 $carProductos = collect($producto->Caracteristicas_Producto);
-                $options = $carGrupos->filter(function ($carGrupo) use ($carProductos) { 
-                    return !$carProductos->contains(function ($carProducto) use ($carGrupo) { 
-                        return $carGrupo->idCaracteristica == $carProducto->idCaracteristica; 
-                        }); 
+                $options = $carGrupos->filter(function ($carGrupo) use ($carProductos) {
+                    return !$carProductos->contains(function ($carProducto) use ($carGrupo) {
+                        return $carGrupo->idCaracteristica == $carProducto->idCaracteristica;
+                        });
                     });
                 return view('createdetails',['user' => $userModel,
                                             'producto'=>$producto,
@@ -147,15 +156,15 @@ class ProductoController extends Controller
         $this->headerService->sendFlashAlerts('Acceso denegado','No tienes permiso para ingresar a esta pestaña','warning','btn-danger');
         return redirect()->route('dashboard',['user' => $userModel]);
     }
-    
+
     public function searchModelProduct(Request $request){
         $query = $request->input('query');
-        
+
         $results = $this->productoService->searchAjaxProducts('modelo',$query);
-    
+
         return response()->json($results);
     }
-    
+
     public function searchProduct(Request $request){
         //variables de la cabecera
         $userModel = $this->headerService->getModelUser();
@@ -171,7 +180,7 @@ class ProductoController extends Controller
                                                                 'tc' => $this->calculadoraService->getTasaCambio()])->render();
                     return response()->json(['html' => $view]);
                 }
-                
+
                 return view('buscarproducto',['user' => $userModel,
                                                 'productos' => $productos,
                                                 'tc' => $this->calculadoraService->getTasaCambio()]);
@@ -180,14 +189,14 @@ class ProductoController extends Controller
         $this->headerService->sendFlashAlerts('Acceso denegado','No tienes permiso para ingresar a esta pestaña','warning','btn-danger');
         return redirect()->route('dashboard',['user' => $userModel]);
     }
-    
+
     public function createDetails(Request $request){
         $userModel = $this->headerService->getModelUser();
         foreach($userModel->Accesos as $acceso){
             if($acceso->idVista == 2){
                 $arrayProduct = array();
                 $arrayProveedor = array();
-                
+
                 $nombre = $request->input('name');
                 $upc = $request->input('upc');
                 $modelo = $request->input('modelo');
@@ -204,16 +213,16 @@ class ProductoController extends Controller
                 $stockminimo = $request->input('stockminimo');
                 $video1 = $request->input('video1');
                 $video2 = $request->input('video2');
-                
+
                  // Obtener ID de videos
                 $videoId1 = $this->productoService->getYoutubeVideoId($video1);
                 $videoId2 = $this->productoService->getYoutubeVideoId($video2);
-                
+
                 if(!empty($tipoprecio)){
                     if($tipoprecio == 'SOL'){
                         $precio = $request->input('precio') / $this->calculadoraService->getTasaCambio();
                         $ganancia = $request->input('ganancia')/ $this->calculadoraService->getTasaCambio();
-                        
+
                     }else{
                         $precio = $request->input('precio');
                         $ganancia = $request->input('ganancia');
@@ -222,7 +231,7 @@ class ProductoController extends Controller
                     $precio = null;
                     $ganancia = null;
                 }
-                
+
                 if(isset($nombre, $upc, $modelo, $partnumber)){
                     $validateNombre = $this->productoService->getOneProductByColumn('nombreProducto',$nombre);
                     $validateUpc = $this->productoService->getOneProductByColumn('UPC',$upc);
@@ -232,9 +241,9 @@ class ProductoController extends Controller
                     $this->headerService->sendFlashAlerts('Error en los datos','Revisa los campos enviados','error','btn-danger');
                         return back()->withInput();
                 }
-                
+
                 $switchupc = false;
-                
+
                 if($upc == 0){
                     $switchupc = true;
                 }else{
@@ -244,7 +253,7 @@ class ProductoController extends Controller
                         $switchupc = false;
                     }
                 }
-                
+
                 if($partnumber == 0){
                     $switchPartNumber = true;
                 }else{
@@ -254,7 +263,7 @@ class ProductoController extends Controller
                         $switchPartNumber = false;
                     }
                 }
-                
+
                 if(!empty($codigo)){
                     if(!empty($validateNombre)){
                         $this->headerService->sendFlashAlerts('Titulo existente','Ya se encuentra registrado','info','btn-warning');
@@ -275,19 +284,19 @@ class ProductoController extends Controller
                                 if ($request->hasFile('imgone')) {
                                     $img1 = $request->file('imgone');
                                 }
-                                
+
                                 if ($request->hasFile('imgtwo')) {
                                     $img2 = $request->file('imgtwo');
                                 }
-                                
+
                                 if ($request->hasFile('imgtree')) {
                                     $img3 = $request->file('imgtree');
                                 }
-                                
+
                                 if ($request->hasFile('imgfour')) {
                                     $img4 = $request->file('imgfour');
                                 }
-                                
+
                                 $arrayProduct['nombreProducto'] = $nombre;
                                 $arrayProduct['codigoProducto'] = $codigo;
                                 $arrayProduct['UPC'] = $upc;
@@ -301,26 +310,26 @@ class ProductoController extends Controller
                                 $arrayProduct['descripcionProducto'] = $descripcion;
                                 $arrayProduct['estadoProductoWeb'] = $estado;
                                 $arrayProduct['stockMin'] = $stockminimo;
-                                
+
                                 //Videos
                                 $arrayProduct['video1_url'] = $videoId1;
                                 $arrayProduct['video2_url'] = $videoId2;
-                                
+
                                 $arrayProveedor['stock'] = $stockproveedor;
                                 $arrayProveedor['idProveedor'] = $proveedor;
-                                
+
                                 $success = $this->productoService->insertProduct($arrayProduct,$arrayProveedor,$img1,$img2,$img3,$img4);
                                 $idProducto = $success;
-                                
+
                                 $this->productoService->validateState($idProducto);
-                                
+
                             }catch(Exception $e){
                                 $this->headerService->sendFlashAlerts('Error en la operacion','Hubo un error en la transaccion','error','btn-danger');
                                 return back()->withInput();
                             }
-                            
+
                             return redirect()->route('details',['idProducto' => $idProducto]);
-                            
+
                         }catch(Exception $e){
                             $this->headerService->sendFlashAlerts('Error en la operacion','Hubo un error en la transaccion','error','btn-danger');
                             return back()->withInput();
@@ -335,7 +344,7 @@ class ProductoController extends Controller
         $this->headerService->sendFlashAlerts('Acceso denegado','No tienes permiso para ingresar a esta pestaña','warning','btn-danger');
         return redirect()->route('dashboard',['user' => $userModel]);
     }
-    
+
     public function updateProduct($idProducto,Request $request){
         $userModel = $this->headerService->getModelUser();
         foreach($userModel->Accesos as $acceso){
@@ -374,35 +383,35 @@ class ProductoController extends Controller
                     }else{
                         $precio = null;
                     }
-                    
+
                     if (!is_null($ganancia)) {
                         $arrayProduct['gananciaExtra']= $ganancia;
                     }
-                    
+
                     if (!is_null($precio)) {
                         $arrayProduct['precioDolar'] = $precio;
                     }
-                    
+
                     if (!is_null($garantia)) {
                         $arrayProduct['garantia'] = $garantia;
                     }
-                    
+
                     if (!is_null($upc)) {
                         $arrayProduct['UPC'] = $upc;
                     }
-                    
+
                     if (!is_null($modelo)) {
                         $arrayProduct['modelo'] = $modelo;
                     }
-                    
+
                     if (!is_null($partnumber)) {
                         $arrayProduct['partNumber'] = $partnumber;
                     }
-                    
+
                     if (!is_null($descripcion)) {
                         $arrayProduct['descripcionProducto'] = $descripcion;
                     }
-                    
+
                     if (!is_null($estado)) {
                         $arrayProduct['estadoProductoWeb'] = $estado;
                     }
@@ -429,25 +438,25 @@ class ProductoController extends Controller
                     } else {
                         $arrayProduct['videoUrl2'] = null;
                     }
-                    
+
                     $this->productoService->updateProduct(decrypt($idProducto),$arrayProduct,$request->file('imgone'),$request->file('imgtwo'),$request->file('imgtree'),$request->file('imgfour'));
-                    
+
                     if (!is_null($stock)){
                         $this->productoService->updateInventory(decrypt($idProducto),$stock);
                     }
-                    
+
                     if (!is_null($proveedor) && !is_null($stockproveedor)) {
                         $arraySeguimiento = array();
                         $arraySeguimiento['idProveedor'] = $proveedor;
                         $arraySeguimiento['stock'] = $stockproveedor;
-                        
+
                         $this->productoService->updateSeguimiento(decrypt($idProducto),$arraySeguimiento);
                     }
-                    
+
                     $this->productoService->validateState(decrypt($idProducto));
-                
+
                     return redirect()->back();
-                    
+
                 }catch(Exception $e){
                     $this->headerService->sendFlashAlerts('Error en la operacion','Hubo un error en la transaccion','error','btn-danger');
                     return redirect()->back();
@@ -457,7 +466,7 @@ class ProductoController extends Controller
         $this->headerService->sendFlashAlerts('Acceso denegado','No tienes permiso para ingresar a esta pestaña','warning','btn-danger');
         return redirect()->route('dashboard',['user' => $userModel]);
     }
-    
+
     public function insertOrUpdateDetails(Request $request){
         $userModel = $this->headerService->getModelUser();
         foreach($userModel->Accesos as $acceso){
@@ -472,9 +481,9 @@ class ProductoController extends Controller
                 }catch(Exception $e){
                     $proba = false;
                 }
-                
+
                 if(!$proba){$this->headerService->sendFlashAlerts('Error en la operacion','Hubo un error en la transaccion','error','btn-danger');}
-                
+
                 return redirect()->back();
             }
         }
@@ -496,7 +505,7 @@ class ProductoController extends Controller
         $this->headerService->sendFlashAlerts('Acceso denegado','No tienes permiso para ingresar a esta pestaña','warning','btn-danger');
         return redirect()->route('dashboard',['user' => $userModel]);
     }
-    
+
     public function calculate(Request $request)
     {
         $precio = $request->input('price');
@@ -504,13 +513,13 @@ class ProductoController extends Controller
         $grupo = $request->input('idGrupo');
         $estado = $request->input('state');
         $ganancia = $request->input('ganancia');
-        
+
         $servicePrecio = new PreciosService;
         $precios = array();
         $precios[] = ['calculado' => $servicePrecio->getPrecioCalculado($precio,$grupo,$moneda,$estado)];
         $precios[] = ['total' => $servicePrecio->getPrecioTotal($precio,$grupo,$moneda,$estado,$ganancia)];
         $results = $precios;
-        
+
         return response()->json($results);
     }
 }

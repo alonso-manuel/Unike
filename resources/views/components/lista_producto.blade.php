@@ -75,6 +75,7 @@
                             <br>
                             <small>{{$pro->Inventario_Proveedor->stock}}</small>
                         </div>
+
                     </div>
                 </li>
                 @endforeach
@@ -82,7 +83,7 @@
         </div>
     </div>
     <br>
-    
+
     @else
     <div class="row align-items-center" style="height:50vh">
         <x-aviso_no_encontrado :mensaje="''" />

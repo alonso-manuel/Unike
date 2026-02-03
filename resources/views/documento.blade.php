@@ -259,7 +259,7 @@
                                 {{ $documento->TipoComprobante->descripcion }}</span></button>
                     </div>
                     <div class="col-6 text-center">
-                        <button type="button" 
+                        <button type="button"
                         onclick="confirmForm()"
                             class="btn btn-success" id="btnSubmit" disabled><i class="bi bi-floppy-fill"></i>
                             Registrar</button>
