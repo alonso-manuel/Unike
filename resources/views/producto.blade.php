@@ -175,11 +175,26 @@
             <label  class="form-label">Stock Minimo:</label>
             <input name="stockminimo" value="{{$producto->stockMin}}" type="number" class="form-control input-edit" disabled>
         </div>
-        @foreach($producto->Inventario as $inventario)
-        <div class="col-6 col-md-3 col-lg-2">
-            <label class="form-label">Stock {{$inventario->Almacen->descripcion}}:</label>
-            <input name="stock[{{$inventario->idAlmacen}}]" value="{{$inventario->stock}}" type="number" class="form-control {{$ingresoEdit}}"  disabled>
-        </div>
+        @foreach($almacenes as $almacen)
+            @php
+                $inventario = $producto->Inventario
+                    ->where('idAlmacen', $almacen->idAlmacen)
+                    ->first();
+            @endphp
+
+            <div class="col-6 col-md-3 col-lg-2">
+                <label class="form-label">
+                    Stock {{ $almacen->descripcion }}:
+                </label>
+
+                <input
+                    name="stock[{{ $almacen->idAlmacen }}]"
+                    value="{{ $inventario ? $inventario->stock : 0 }}"
+                    type="number"
+                    class="form-control {{ $ingresoEdit }}"
+                    disabled
+                >
+            </div>
         @endforeach
         <div class="col-6 col-md-4 col-lg-2">
             <label class="form-label">Stock {{$producto->Inventario_Proveedor->Preveedor->nombreProveedor}}:</label>

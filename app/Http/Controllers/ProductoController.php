@@ -41,7 +41,7 @@ class ProductoController extends Controller
                     $view = view('components.lista_producto', [
                         'productos' => $productos,
                         'container' => $request->query('container'),
-                        'almacenes' => $almacenes, // <-- Se pasa en AJAX
+                        'almacenes' => $almacenes,
                         'tc' => $this->calculadoraService->getTasaCambio()
                     ])->render();
                     return response()->json(['html' => $view]);
@@ -85,12 +85,14 @@ class ProductoController extends Controller
                 $marcas = $this->productoService->getAllLabelMarca();
                 $proveedor = $this->productoService->getAllLabelProveedor();
                 $grupos = $this->productoService->getAllLabelGrupo();
+                $almacenes = $this->productoService->getAllAlmacen();
 
                 return view('producto',['user' => $userModel,
                                         'producto' => $producto,
                                         'marcas' => $marcas,
                                         'proveedor' => $proveedor,
                                         'grupos' => $grupos,
+                                        'almacenes' => $almacenes,
                                         'tc' => $this->calculadoraService->getTasaCambio(),
                                         'igv' => $this->calculadoraService->getIgv()
                 ]);
@@ -173,10 +175,12 @@ class ProductoController extends Controller
                 //variables del controlador
                 $input = $request->input('search');
                 $productos = $this->productoService->searchProducts($input,25,$request->query('filtros'));
+                $almacenes = $this->productoService->getAllAlmacen();
 
                 if($request->query('page') || $request->query('filtro')){
                     $view = view('components.lista_producto', ['productos' => $productos,
                                                                 'container' => $request->query('container'),
+                                                                'almacenes' => $almacenes,
                                                                 'tc' => $this->calculadoraService->getTasaCambio()])->render();
                     return response()->json(['html' => $view]);
                 }

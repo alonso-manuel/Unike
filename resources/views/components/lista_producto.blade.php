@@ -60,12 +60,21 @@
                         </div>
                         <div class="d-none d-md-block col-md-4">
                             <div class="row text-center">
-                                @foreach($pro->Inventario as $inventario)
-                                <div class="col-6 {{$inventario->stock < $pro->stockMin ? 'text-danger' : ''}}">
-                                    <small>{{ $inventario->Almacen->descripcion }}</small>
-                                    <br>
-                                    <small>{{ $inventario->stock }}</small>
-                                </div>
+
+                                @foreach($almacenes as $almacen)
+                                    @php
+                                        $inventario = $pro->Inventario
+                                            ->where('idAlmacen', $almacen->idAlmacen)
+                                            ->first();
+
+                                        $stock = $inventario ? $inventario->stock : 0;
+                                    @endphp
+
+                                    <div class="col-6 {{ $stock < $pro->stockMin ? 'text-danger' : '' }}">
+                                        <small>{{ $almacen->descripcion }}</small>
+                                        <br>
+                                        <small>{{ $stock }}</small>
+                                    </div>
                                 @endforeach
 
                             </div>

@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Providers;
+
+use App\Models\Almacen;
 use Illuminate\Pagination\Paginator;
 
 use App\Repositories\AccesosRepository;
 use App\Repositories\AccesosRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
-
+use Illuminate\Support\Facades\View;
 use App\Services\HeaderServiceInterface;
 use App\Services\HeaderService;
 use App\Services\CalculadoraServiceInterface;
@@ -123,7 +125,7 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->app->bind(LicenciaRepositoryInterface::class,LicenciaRepository::class);
         // Aquí enlazas la interfaz con la clase concreta
-        $this->app->bind(LicenciaServiceInterface::class,LicenciaService::class);   
+        $this->app->bind(LicenciaServiceInterface::class,LicenciaService::class);
         $this->app->bind(HeaderServiceInterface::class, HeaderService::class);
         $this->app->bind(CalculadoraServiceInterface::class, CalculadoraService::class);
         $this->app->bind(UsuarioServiceInterface::class, UsuarioService::class);
@@ -136,7 +138,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(EgresoProductoServiceInterface::class,EgresoProductoService::class);
         $this->app->bind(ConfiguracionServiceInterface::class,ConfiguracionService::class);
         $this->app->bind(PdfServiceInterface::class,PdfService::class);
-        
+
         $this->app->bind(CalculadoraRepositoryInterface::class, CalculadoraRepository::class);
         $this->app->bind(UsuarioRepositoryInterface::class, UsuarioRepository::class);
         $this->app->bind(ProductoRepositoryInterface::class, ProductoRepository::class);
@@ -176,6 +178,7 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(ClienteServiceInterface::class,ClienteService::class);
         $this->app->bind(TipoDocumentoRepositoryInterface::class,TipoDocumentoRepository::class);
         $this->app->bind(ClienteRepositoryInterface::class,ClienteRepository::class);
+
     }
 
     /**
@@ -185,5 +188,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale('es');
         Paginator::useBootstrapFive();
+        View::share('almacenes', Almacen::all());
     }
+
 }
