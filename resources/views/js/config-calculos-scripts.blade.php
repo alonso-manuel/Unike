@@ -46,21 +46,7 @@ let isDisabledCalGeneral = false;
     }
 
     function calculateGeneralDisabled() {
-        let btnSaveCalculos = document.getElementById('btnSaveCalculos');
-        let divCalculosGenerales = document.getElementById('calculos-generales');
-        let btnEditCalcGeneral = divCalculosGenerales.querySelectorAll('.input-edit'); 
-    
-        isDisabledCalGeneral = !isDisabledCalGeneral;
-        
-        if(isDisabledCalGeneral){
-            btnSaveCalculos.style.display = 'none';
-        }else{
-            btnSaveCalculos.style.display = 'inline-flex';
-        }
-    
-        btnEditCalcGeneral.forEach(function(x) {
-            x.disabled = isDisabledCalGeneral;
-        });
+
     }
 
     function validateModalComision(){

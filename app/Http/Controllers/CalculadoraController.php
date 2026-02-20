@@ -16,18 +16,18 @@ class CalculadoraController extends Controller
     {
         $this->calculadoraService = $calculadoraService;
     }
-    
+
     public function index(Request $request){
         //variables de la cabecera
         $serviceHeader = new HeaderService;
         $userModel = $serviceHeader->getModelUser();
-        
+
         //variables del controlador
         $valores = $this->calculadoraService->get();
         $plataformas = $this->calculadoraService->getComisionByRelation('ComisionPlataforma');
         $categorias = $this->calculadoraService->getAllLabelCategory();
         $comisiones = $this ->calculadoraService ->allComision();
-        
+
         return view('calculadora',['user' => $userModel,
                                     'valores' => $valores,
                                     'categorias' => $categorias,
@@ -35,22 +35,22 @@ class CalculadoraController extends Controller
                                     'plataformas' => $plataformas
                                 ]);
     }
-    
+
     public function calculate(Request $request)
     {
         $query = $request->input('query');
         $type = $request->input('type');
         $grup = $request->input('grup');
-        
+
         $servicePrecio = new PreciosService;
         $precios = array();
         $precios = ['tsfact' => $servicePrecio->getPrecioSinFacturar($query,$grup,$type),
                     'tfact' => $servicePrecio->getPrecioFacturado($query,$grup,$type),
                     'ganancia' => ($servicePrecio->getPrecioSinFacturar($query,$grup,$type) - $servicePrecio->getIgv($query)),
                     'promedio' => $servicePrecio->getPromedio($query,$grup,$type)];
-    
+
         $results = $precios;
-    
+
         return response()->json($results);
     }
 }

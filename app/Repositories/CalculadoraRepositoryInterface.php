@@ -5,4 +5,6 @@ interface CalculadoraRepositoryInterface
 {
     public function get();
     public function update(array $data);
+    public function findById();
+    public function updateTasaFija(array $data);
 }

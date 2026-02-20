@@ -34,10 +34,15 @@
             <tr>
         @endif
             <td>
-                <div>
+                <div class="item">
                     <strong>{{ $serie['serie'] }}</strong>
                     <br>
-                    <img src="data:image/png;base64,{{ $serie['barcode'] }}" alt="Cosigo de barras" width="100%">
+                    <img
+                        src="{{ $serie['barcode'] }}"
+                        width="220"
+                        height="60"
+                        style="display:block;"
+                    >
                 </div>
             </td>
                 @if ($index % 4 == 3 || $index == count($series) - 1)

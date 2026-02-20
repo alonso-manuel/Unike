@@ -37,7 +37,8 @@ class Producto extends Model
                             'videoUrl2',   // Test Url 2
                             'estadoProductoWeb',
                             'stockMin',
-                            'slugProducto'
+                            'slugProducto',
+                            'usar_tc_fijo' // Valor true o false (1 o 0) para usar un determinado tipo de cambio
                             ];
 
     
@@ -52,7 +53,8 @@ class Producto extends Model
         'idGrupo' => 'int',
         'stockMin' => 'int',
         'precioDolar' => 'float',
-        'gananciaExtra' => 'float'
+        'gananciaExtra' => 'float',
+        'usar_tc_fijo' => 'boolean'
     ];
     
     public static function boot()

@@ -17,6 +17,7 @@ interface ConfiguracionServiceInterface
     public function updateCuentaBancaria($id,$titular,$cuenta);
     public function updateComisionEmpresa($id,$comision);
     public function updateCalculadora($igv,$fact);
+    public function updateCalculadoraTasaFija($igv,$fact,$tc);
     public function updateComisionValue($idGrupo,$idRango,$comision);
     public function getAllEspecificaciones();
     public function createCaracteristica($descripcion,$tipo,$sugerencias);
