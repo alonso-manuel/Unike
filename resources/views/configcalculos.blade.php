@@ -15,18 +15,18 @@
         <x-nav_config :pag="$pagina" />
     </div>
     <br>
-    <div class="row border shadow rounded-3 pt-2 pb-2" id="calculos-generales">
+    <div class="row border shadow rounded-3 pt-2 pb-2 calculos-container sunat-container">
         <form action="{{route('updatecalculos')}}" method="POST">
              @csrf
         <div class="col-md-12">
             <div class="row">
                 <div class="col-8 col-md-6">
-                    <h3>Calculos Generales</h3>
+                    <h3>Calculos Generales - Tasa de Cambio Sunat</h3>
                     <p class="text-secondary">Valores que se aplican a los precios de manera general.</p>
                 </div>
                 <div class="col-4 col-md-6 text-end">
-                    <button class="btn btn-success" type="submit" id="btnSaveCalculos"> <i class="bi bi-floppy"></i></button>
-                    <button class="btn btn-secondary" type="button" onclick="calculateGeneralDisabled()"> <i class="bi bi-pencil"></i></button>
+                    <button class="btn btn-success btn-save-calculos" type="submit"> <i class="bi bi-floppy"></i></button>
+                    <button class="btn btn-secondary btn-edit-calculos" type="button"> <i class="bi bi-pencil"></i></button>
                 </div>
             </div>
         </div>
@@ -51,6 +51,59 @@
                     <div class="input-group mb-3">
                       <span class="input-group-text" id="basic-addon1">$</span>
                       <input type="number" class="form-control" placeholder="T.C." step="0.01" aria-describedby="basic-addon1" value="{{$calculos->tasaCambio}}" disabled>
+                    </div>
+                </div>
+                @foreach($empresas as $empresa)
+                    <div class="col-6 col-md-3">
+                        <label>{{$empresa->nombreComercial}}:</label>
+                        <div class="input-group mb-3">
+                          <span class="input-group-text" id="basic-addon1">%</span>
+                          <input type="number" class="form-control input-edit" name="empresas[{{$empresa->idEmpresa}}]" placeholder="Comision" step="0.01" aria-describedby="basic-addon1" value="{{$empresa->comision}}" >
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+        </form>
+    </div>
+    <br>
+    <!-- Formulario para cambiar la tasa de cambio fija -->
+    <div class="row border shadow rounded-3 pt-2 pb-2 calculos-container fija-container">
+        <form action="{{route('updateCalculosTasaFija')}}" method="POST">
+             @csrf
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-8 col-md-6">
+                    <h3>Calculos Generales - Tasa de Cambio Fija</h3>
+                    <p class="text-secondary">Valores que se aplican a los precios de manera general.</p>
+                </div>
+                <div class="col-4 col-md-6 text-end">
+                    <button class="btn btn-success btn-save-calculos" type="submit"> <i class="bi bi-floppy"></i></button>
+                    <button class="btn btn-secondary btn-edit-calculos" type="button"> <i class="bi bi-pencil"></i></button>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-4 col-md-2">
+                    <label>IGV:</label>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1">%</span>
+                      <input type="number" class="form-control input-edit" name="igv" placeholder="IGV" step="0.01" aria-describedby="basic-addon1" value="{{$calculosfijo->igv}}" >
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <label>T. Facturaci&oacuten:</label>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1">%</span>
+                      <input type="number" class="form-control input-edit" name="facturacion" placeholder="Faturacion" step="0.01"  aria-describedby="basic-addon1" value="{{$calculosfijo->facturacion}}" >
+                    </div>
+                </div>
+                <div class="col-4 col-md-2">
+                    <label> T.C:</label>
+                    <div class="input-group mb-3">
+                      <span class="input-group-text" id="basic-addon1">$</span>
+                      <input type="number" class="form-control input-edit" name="tasaCambio" placeholder="T.C." step="0.01" aria-describedby="basic-addon1" value="{{$calculosfijo->tasaCambio}}" >
                     </div>
                 </div>
                 @foreach($empresas as $empresa)
@@ -143,7 +196,7 @@
             <p class="text-secondary">Valores que se aplican a los precios por plataforma digital.</p>
         </div>
         <div class="col-md-12">
-            
+
             <div class="accordion accordion-flush" id="accordionFlushPlataforma">
                 @php
                     $count = 0;
@@ -225,7 +278,7 @@
                             </div>
                             <div class="col-6 col-md-6">
                                 <input type="number" name="comision[{{$rango->idRango}}]" class="form-control" id="comisionModalList-{{$rango->idRango}}" step="0.01">
-                                
+
                             </div>
                         </div>
                     </li>
@@ -295,4 +348,37 @@
     </form>
 </div>
 <script src="{{ route('js.config-calculos.js') }}"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        const containers = document.querySelectorAll('.calculos-container');
+
+        containers.forEach(container => {
+
+            const btnEdit = container.querySelector('.btn-edit-calculos');
+            const btnSave = container.querySelector('.btn-save-calculos');
+            const inputs = container.querySelectorAll('.input-edit');
+
+            let isDisabled = true;
+
+            // Inicializar bloqueado
+            inputs.forEach(input => input.disabled = true);
+            btnSave.style.display = 'none';
+
+            btnEdit.addEventListener('click', function () {
+
+                isDisabled = !isDisabled;
+
+                inputs.forEach(input => {
+                    input.disabled = isDisabled;
+                });
+
+                btnSave.style.display = isDisabled ? 'none' : 'inline-flex';
+
+            });
+
+        });
+
+    });
+</script>
 @endsection

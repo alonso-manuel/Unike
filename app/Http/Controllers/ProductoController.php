@@ -222,6 +222,7 @@ class ProductoController extends Controller
                 $videoId1 = $this->productoService->getYoutubeVideoId($video1);
                 $videoId2 = $this->productoService->getYoutubeVideoId($video2);
 
+                
                 if(!empty($tipoprecio)){
                     if($tipoprecio == 'SOL'){
                         $precio = $request->input('precio') / $this->calculadoraService->getTasaCambio();
@@ -314,10 +315,14 @@ class ProductoController extends Controller
                                 $arrayProduct['descripcionProducto'] = $descripcion;
                                 $arrayProduct['estadoProductoWeb'] = $estado;
                                 $arrayProduct['stockMin'] = $stockminimo;
+                                //Usar tasa de canmbio
+                                $arrayProduct['usar_tc_fijo'] = $request->has('usar_tc_fijo');
 
                                 //Videos
                                 $arrayProduct['video1_url'] = $videoId1;
                                 $arrayProduct['video2_url'] = $videoId2;
+                                
+
 
                                 $arrayProveedor['stock'] = $stockproveedor;
                                 $arrayProveedor['idProveedor'] = $proveedor;
@@ -426,7 +431,13 @@ class ProductoController extends Controller
 
                     if (!is_null($stockminimo)) {
                         $arrayProduct['stockMin'] = $stockminimo;
-                    }// NUEVO: Procesar URLs de YouTube y guardar solo el ID
+                    }
+                    
+                    $arrayProduct['usar_tc_fijo'] = $request->has('usar_tc_fijo');
+
+                    
+
+                    // NUEVO: Procesar URLs de YouTube y guardar solo el ID
                     // Video 1
                     if (!empty($video1)) {
                         $videoId1 = $this->productoService->getYoutubeVideoId($video1);

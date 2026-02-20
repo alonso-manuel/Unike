@@ -148,8 +148,20 @@ class ConfiguracionService implements ConfiguracionServiceInterface
     public function updateCalculadora($igv,$fact){
         if($igv && $fact){
             $data = ['igv' => $igv,
-                    'facturacion' => $fact];
+                    'facturacion' => $fact,
+                    ];
             $this->calculadoraRepository->update($data);
+        }
+    }
+
+    public function updateCalculadoraTasaFija($igv, $fact, $tc){
+        if($igv && $fact && $tc){
+            $data = [
+                'igv' => $igv,
+                'facturacion' => $fact,
+                'tasaCambio' => $tc
+            ];
+            $this->calculadoraRepository->updateTasaFija($data);
         }
     }
 
@@ -172,7 +184,7 @@ class ConfiguracionService implements ConfiguracionServiceInterface
                 'idCaracteristica' => $idCaracteristica];
                 return $this->caracteristicasGrupoRepository->create($data);
             }
-            
+
         }
 
         return null;
@@ -200,7 +212,7 @@ class ConfiguracionService implements ConfiguracionServiceInterface
                             'sugerencia' => $sug,
                             'estado' => 1];
                             $this->sugerenciaRepository->create($arrayNewSugerencia);
-                        }   
+                        }
                     }
                 }
             }
@@ -235,7 +247,7 @@ class ConfiguracionService implements ConfiguracionServiceInterface
                     'sugerencia' => $create,
                     'estado' => 1];
                     $this->sugerenciaRepository->create($arrayNewSugerencia);
-                }   
+                }
             }
         }
     }

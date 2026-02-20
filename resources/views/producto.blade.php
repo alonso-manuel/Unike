@@ -128,7 +128,29 @@
                 <div class="col-md-8"></div>
             </div>
         </div>
+        <div class="mb-3 col-md-6 col-lg-6">
+            <label class="form-label">Tipo de Cambio:</label>
+            
+            <div class="form-check form-switch">
+                <input class="form-check-input input-edit"
+                    type="checkbox"
+                    name="usar_tc_fijo"
+                    id="usar_tc_fijo"
+                    value="1"
+                    {{ old('usar_tc_fijo', $producto->usar_tc_fijo) ? 'checked' : '' }}
+                    disabled>
+
+                <label class="form-check-label" for="usar_tc_fijo">
+                    Usar Tipo de Cambio Fijo
+                </label>
+            </div>
+
+            <small class="text-muted">
+                Activado: Usa TC fijo interno | Desactivado: Usa TC SUNAT
+            </small>
+        </div>
     </div>
+
     <div class="editButton row border shadow rounded-3 pt-3 pb-3 mb-3 mt-3">
         <div class="mb-2 col-6">
             <h3>Datos clave</h3>

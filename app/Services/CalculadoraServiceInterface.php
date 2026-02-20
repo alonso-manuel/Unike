@@ -4,6 +4,7 @@ namespace App\Services;
 interface CalculadoraServiceInterface
 {
     public function get();
+    public function getTasaFija();
     public function getTasaCambio();
     public function getIgv();
     public function getComisionByRelation($table);

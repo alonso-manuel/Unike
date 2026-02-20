@@ -18,6 +18,6 @@ function loadProducts() {
 }
 
 window.onload = function() {
-    loadProducts(); 
+    loadProducts();
     setInterval(loadProducts, 60000);
 }

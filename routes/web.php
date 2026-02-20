@@ -28,7 +28,7 @@ use App\Http\Controllers\TrasladoController;
 Route::withoutMiddleware(['validate.session'])->group(function () {
     Route::get('/', [LoginController::class, 'index'])->name('login');
     Route::post('/', [LoginController::class, 'validation'])->name('validation');
-    
+
     //scripts
     Route::get('/js/header-scripts.js', [ScriptController::class, 'headerScript'])->name('js.header-scripts');
     Route::get('/js/calculator-scripts.js', [ScriptController::class, 'calculatorScript'])->name('js.calculator-scripts');
@@ -40,14 +40,14 @@ Route::withoutMiddleware(['validate.session'])->group(function () {
 });
 
 Route::middleware(['validate.session'])->group(function () {
-    
+
     // Agrega esta línea con las demás rutas
     Route::get('/descargar-licencia/{id}', [App\Http\Controllers\LicenciaController::class, 'descargarLicencia'])->name('licencia.descargar');
     Route::get('/licencias', [LicenciaController::class, 'index'])->name('licencias.index');
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/stockmin', [HomeController::class, 'stockMinDashboard'])->name('stockmindashboard');
     Route::get('/dashboard/inventario/{estado}',[HomeController::class,'dashboardInventario'])->name('dashboardinventario');
-    
+
     Route::get('/calculadora', [CalculadoraController::class, 'index'])->name('calculadora');
     Route::get('/calculadora/calculate', [CalculadoraController::class, 'calculate'])->name('calculadora-calculate');
 
@@ -58,14 +58,14 @@ Route::middleware(['validate.session'])->group(function () {
     Route::post('/ingreso/updateregistro', [IngresoController::class, 'updateRegistro'])->name('updateregistro');
     Route::post('/ingreso/insertcomprobante', [IngresoController::class, 'insertComprobante'])->name('insertcomprobante');
     Route::post('/ingreso/insertingreso/{comprobante}', [IngresoController::class, 'insertIngreso'])->name('insertingreso');
-    
+
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios');
     Route::get('/usuario/nuevo', [UsuarioController::class, 'create'])->name('nuevousuario');
     Route::post('/usuario/createuser', [UsuarioController::class, 'createUser'])->name('createuser');
     Route::post('/usuario/updatepass', [UsuarioController::class, 'updatePass'])->name('updatepass');
     Route::post('/usuario/updatebandeja', [UsuarioController::class, 'updateBandeja'])->name('updatebandeja');
     Route::post('/usuario/updateuser', [UsuarioController::class, 'updateUser'])->name('updateuser');
-    
+
     Route::get('/productos/buscarproducto', [ProductoController::class, 'searchProduct'])->name('buscarproducto');
     Route::get('/productos/searchmodelproduct', [ProductoController::class, 'searchModelProduct'])->name('searchmodelproduct');
     Route::get('/producto/calculate', [ProductoController::class, 'calculate'])->name('calculateproducto');
@@ -80,13 +80,13 @@ Route::middleware(['validate.session'])->group(function () {
 
     Route::get('/traslado', [TrasladoController::class, 'index'])->name('traslados');
     Route::post('/traslado/updateregistroalmacen', [TrasladoController::class, 'updateRegistroAlmacen'])->name('updateregistroalmacen');
-    
+
     Route::get('/documento/searchdocument', [DocumentoController::class, 'searchDocument'])->name('searchdocument');
     Route::get('/documento/validateseries', [DocumentoController::class, 'validateSeries'])->name('validate.series');
     Route::get('/documento/{id}/{bool}', [DocumentoController::class, 'index'])->name('documento');
     Route::get('/documentos/{date}', [DocumentoController::class, 'list'])->name('documentos');
     Route::post('/documento/deletecomprobante', [DocumentoController::class, 'deleteComprobante'])->name('deletecomprobante');
-    
+
     Route::get('/egresos/searchregistro', [EgresoController::class, 'searchRegistro'])->name('searchregistro');
     Route::get('/egresos/searchegreso', [EgresoController::class, 'searchEgreso'])->name('searchegreso');
     Route::get('/egresos/getoneegreso', [EgresoController::class, 'getOneRegistro'])->name('getoneegreso');
@@ -99,15 +99,15 @@ Route::middleware(['validate.session'])->group(function () {
     Route::get('/garantia/creategarantia',[GarantiaController::class,'create'])->name('creategarantia');
     Route::get('/garantias/{date}',[GarantiaController::class,'index'])->name('garantias');
     Route::post('/garantia/insertgarantia',[GarantiaController::class,'insertGarantia'])->name('insertgarantia');
-    
+
     Route::get('/plataformas', [PlataformaController::class, 'index'])->name('plataformas');
     Route::post('/plataforma/updatecuenta', [PlataformaController::class, 'updateCuentas'])->name('updatecuenta');
     Route::post('/plataforma/createcuenta', [PlataformaController::class, 'createCuenta'])->name('createcuenta');
-    
+
     Route::get('/web', [PublicidadController::class, 'index'])->name('publicidad');
     Route::get('/web/empresa/{idEmpresa}', [PublicidadController::class, 'empresa'])->name('empresa-publicidad');
     Route::post('/web/updatepublicacion', [PublicidadController::class, 'updatePublicaion'])->name('updatepublicacion');
-    
+
     Route::get('/registro-publicaciones/{date}', [PublicacionController::class, 'index'])->name('publicaciones');
     Route::get('/crear-publicacion/{idPlataforma}', [PublicacionController::class, 'create'])->name('createpublicacion');
     Route::post('/insert-publicacion', [PublicacionController::class, 'insertPublicacion'])->name('insertpublicacion');
@@ -117,7 +117,7 @@ Route::middleware(['validate.session'])->group(function () {
     Route::get('/clientes',[ClienteController::class,'index'])->name('clientes');
     Route::get('/cliente/searchcliente',[ClienteController::class,'searchCliente'])->name('searchcliente');
     Route::post('/cliente/create',[ClienteController::class,'createCliente'])->name('createcliente');
-    
+
     //Configuracion-WEB
     Route::get('/configuracion/web', [ConfiguracionController::class, 'web'])->name('configweb');
     Route::post('/configuracion/updatecorreos', [ConfiguracionController::class, 'updateCorreos'])->name('updatecorreos');
@@ -126,9 +126,12 @@ Route::middleware(['validate.session'])->group(function () {
     //Configuracion-CALCULOS
     Route::get('/configuracion/calculos', [ConfiguracionController::class, 'calculos'])->name('configcalculos');
     Route::post('/configuracion/updatecalculos', [ConfiguracionController::class, 'updateCalculos'])->name('updatecalculos');
+    Route::post('/configuracion/updateCalculosTasaFija',[ConfiguracionController::class, 'updateCalculosTasaFija'])->name('updateCalculosTasaFija');
     Route::post('/configuracion/updatecomision', [ConfiguracionController::class, 'updateComision'])->name('updatecomision');
     Route::post('/configuracion/createcomisionplataforma', [ConfiguracionController::class, 'createComisionPlataforma'])->name('createcomisionplataforma');
     Route::post('/configuracion/deletecomisionplataforma', [ConfiguracionController::class, 'deleteComisionPlataforma'])->name('deletecomisionplataforma');
+    Route::post('/configuracion/tipo-cambio', [ConfiguracionController::class, 'cambiarTipoCambio'])->name('configuracion.tipoCambio');
+
 
     //Configuracion-PRODUCTOS
     Route::get('/configuracion/productos', [ConfiguracionController::class, 'productos'])->name('configproductos');
@@ -149,11 +152,23 @@ Route::middleware(['validate.session'])->group(function () {
     Route::get('/configuracion/inventario', [ConfiguracionController::class, 'inventario'])->name('configinventario');
     Route::post('/configuracion/createalamcen', [ConfiguracionController::class, 'createAlmacen'])->name('createalmacen');
     Route::post('/configuracion/createproveedor', [ConfiguracionController::class, 'createProveedor'])->name('createproveedor');
-    
+
     Route::get('/generateSerialPdf/{idDocumento}', [PdfController::class, 'generateSerialPdf'])->name('generarSeriesPdf');
-    Route::get('/pdf/serialbyproduct/{idProducto}/{idAlmacen?}', [PdfController::class, 'seriesByProductPdf'])->name('seriesXProducto');    Route::get('/reporte/stock/{idAlmacen}', [PdfController::class, 'reportStockPdf'])->name('reportealmacen');
+    Route::get('/pdf/serialbyproduct/{idProducto}/{idAlmacen?}', [PdfController::class, 'seriesByProductPdf'])->name('seriesXProducto');
+    Route::get('/pdf/producto-series/{idProducto}/{idAlmacen}',[PdfController::class, 'productoSeriesPdf'])->name('pdf.producto.series');
+    Route::get('/reporte/stock/{idAlmacen}', [PdfController::class, 'reportStockPdf'])->name('reportealmacen');
     Route::get('/pdf/garantia/{idGarantia}', [PdfController::class, 'garantiaPdf'])->name('garantiaPdf');
     Route::post('/tipos-licencia', [LicenciaController::class, 'storeTipoLicencia'])->name('tiposLicencia.store');
+
+    Route::get(
+        '/licencias/importar',
+        [LicenciaController::class, 'vistaImportar']
+    )->name('licencias.importar.vista');
+    Route::post(
+        '/licencias/importar-excel',
+        [LicenciaController::class, 'importarExcel']
+    )->name('licencias.importar.excel');
+
 });
 // Ruta para verificar clave duplicada
 
@@ -172,35 +187,32 @@ Route::post('/verificar-serial-recuperada', function (Request $request) {
 // Ruta para verificar clave duplicada
 Route::post('/verificar-clave-duplicada', function (Request $request) {
     $claveKey = $request->input('clave_key');
-    
+
     // Verificar si la clave ya existe en la tabla licencias_usadas
     $existe = DB::table('licencias_usadas')
                 ->where('clave_key', $claveKey)
                 ->exists();
-    
+
     return response()->json([
         'existe' => $existe,
         'clave' => $claveKey
     ]);
 })->name('verificar.clave.duplicada');
 Route::prefix('licencias')->name('licencias.')->group(function () {
-    
+
     // Mostrar listado
     Route::get('/', [LicenciaController::class, 'index'])->name('index');
-    
+
     // Formulario de registro
     Route::get('/create', [LicenciaController::class, 'create'])->name('create');
-    
+
     // Guardar licencia nueva
     Route::post('/store', [LicenciaController::class, 'store'])->name('store');
-    
-    // Importar Excel
-    Route::post('/import', [LicenciaController::class, 'importExcel'])->name('import');
-    
+
     // Formulario de cambio de estado
     Route::get('/{serial}/estado/{nuevoEstado}', [LicenciaController::class, 'showFormularioEstado'])
         ->name('showFormularioEstado');
-    
+
     // Guardar cambio de estado
     Route::post('/{serial}/cambiar-estado', [LicenciaController::class, 'cambiarEstado'])
         ->name('cambiar_estado');
