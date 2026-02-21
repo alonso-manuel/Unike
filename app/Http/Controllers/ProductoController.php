@@ -433,9 +433,11 @@ class ProductoController extends Controller
                         $arrayProduct['stockMin'] = $stockminimo;
                     }
                     
-                    $arrayProduct['usar_tc_fijo'] = $request->has('usar_tc_fijo');
-
-                    
+                    if ($request->has('usar_tc_fijo')) {
+                        $arrayProduct['usar_tc_fijo'] = 1;
+                    } elseif ($request->exists('usar_tc_fijo')) {
+                        $arrayProduct['usar_tc_fijo'] = 0;
+                    }   
 
                     // NUEVO: Procesar URLs de YouTube y guardar solo el ID
                     // Video 1
