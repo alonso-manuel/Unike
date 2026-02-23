@@ -145,7 +145,7 @@
         
         
     });
-    
+    document.getElementById('usar_tc_fijo').addEventListener('change', disableSave);
     function disableSave() {
         const btnSave = document.getElementById('btnSave');
         const btnEdit = document.querySelectorAll('.input-edit');

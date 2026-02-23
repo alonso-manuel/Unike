@@ -132,6 +132,7 @@
             <label class="form-label">Tipo de Cambio:</label>
             
             <div class="form-check form-switch">
+                <input type="hidden" name="usar_tc_fijo" value="0">
                 <input class="form-check-input input-edit"
                     type="checkbox"
                     name="usar_tc_fijo"
