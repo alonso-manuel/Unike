@@ -2,20 +2,16 @@
 
 namespace App\Imports;
 
-use App\Models\Licencia;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Concerns\ToCollection;
 
-class LicenciaImport implements ToModel, WithHeadingRow
+class LicenciaImport implements ToCollection, WithHeadingRow
 {
-    public function model(array $row)
+    public Collection $rows;
+
+    public function collection(Collection $rows)
     {
-        return new Licencia([            
-            'voucher_code' => $row['voucher_code'],
-            'orden_compra' => $row['orden_compra'],
-            'id_tipo'      => $row['id_tipo'],
-            'idProveedor'  => $row['id_proveedor'],
-            'estado'       => 'NUEVA'
-        ]);
+        $this->rows = $rows;
     }
 }

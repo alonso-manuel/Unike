@@ -7,10 +7,12 @@ document.addEventListener('DOMContentLoaded', function () {
         const proveedor = (button.getAttribute('data-proveedor') || 'Sin proveedor').trim();
         const clave = (button.getAttribute('data-clave') || '---').trim();
         const equipo = (button.getAttribute('data-equipo') || 'No especificado').trim();
+        const categoria = (button.getAttribute('data-categoria') || 'Sin categoría').trim();
 
         document.getElementById('claveInfo').textContent = clave;
         document.getElementById('equipoInfo').textContent = equipo;
         document.getElementById('proveedorInfo').textContent = proveedor;
+        document.getElementById('categoriaInfo').textContent = categoria;
 
         const contenidoFormateado = descripcion
             ? descripcion.replace(/\n/g, '<br>').replace(/ {2,}/g, '&nbsp;&nbsp;')

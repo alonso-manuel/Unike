@@ -42,7 +42,7 @@ Route::withoutMiddleware(['validate.session'])->group(function () {
 Route::middleware(['validate.session'])->group(function () {
 
     // Agrega esta línea con las demás rutas
-    Route::get('/descargar-licencia/{id}', [App\Http\Controllers\LicenciaController::class, 'descargarLicencia'])->name('licencia.descargar');
+    Route::get('/descargar-licencia/{id}', [LicenciaController::class, 'descargarLicencia'])->name('licencia.descargar');
     Route::get('/licencias', [LicenciaController::class, 'index'])->name('licencias.index');
     Route::get('/dashboard', [HomeController::class, 'index'])->name('dashboard');
     Route::get('/dashboard/stockmin', [HomeController::class, 'stockMinDashboard'])->name('stockmindashboard');
@@ -159,6 +159,10 @@ Route::middleware(['validate.session'])->group(function () {
     Route::get('/reporte/stock/{idAlmacen}', [PdfController::class, 'reportStockPdf'])->name('reportealmacen');
     Route::get('/pdf/garantia/{idGarantia}', [PdfController::class, 'garantiaPdf'])->name('garantiaPdf');
     Route::post('/tipos-licencia', [LicenciaController::class, 'storeTipoLicencia'])->name('tiposLicencia.store');
+    Route::post(
+    '/licencias/confirmar-importacion',
+        [LicenciaController::class, 'confirmarImportacion']
+    )->name('licencias.confirmar.importacion');
 
     Route::get(
         '/licencias/importar',

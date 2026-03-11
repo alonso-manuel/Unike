@@ -45,4 +45,8 @@ class LicenciaRepository implements LicenciaRepositoryInterface
     {
         return Licencia::where('serial_number', $serial)->first();
     }
+    public function findByCode(string $voucher)
+    {
+        return Licencia::where('voucher_code', $voucher)->first();
+    }
 }

@@ -67,7 +67,7 @@
         </form>
     </div>
     <br>
-    <!-- Formulario para cambiar la tasa de cambio fija -->
+    <!-- Formulario para cambiar la tasa de cambio fija\ -->
     <div class="row border shadow rounded-3 pt-2 pb-2 calculos-container fija-container">
         <form action="{{route('updateCalculosTasaFija')}}" method="POST">
              @csrf

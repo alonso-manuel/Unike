@@ -3,12 +3,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 class Licencia extends Model {
-    
+
     protected $table = 'licencias';
     protected $primaryKey = 'id';
     protected $guarded = ['id'];
     public $timestamps = false;
-    protected $casts = [ 
+    protected $casts = [
         'id' => 'int',
         'id_tipo' => 'int',
         'id_categoria' => 'int'
@@ -49,6 +49,23 @@ class Licencia extends Model {
     public function categoriaLicencia()
     {
         return $this->belongsTo(CategoriaLicencia::class, 'id_categoria', 'id_categoria');
+    }
+    public function esMultifuncional(){
+        return optional($this->categoriaLicencia)->tipo_categoria === 'Multiusuario';
+    }
+    public function tieneUsosDisponibles(): bool
+    {   
+        return $this->cantidad_usos > 0;
+    }
+
+    public function descontarUso(int $cantidad = 1): void
+    {
+        if ($this->cantidad_usos < $cantidad) {
+            throw new \Exception('No hay suficientes usos disponibles');
+        }
+
+        $this->cantidad_usos -= $cantidad;
+        $this->save();
     }
 
 }
