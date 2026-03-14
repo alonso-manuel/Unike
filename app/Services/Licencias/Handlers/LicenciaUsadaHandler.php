@@ -38,5 +38,8 @@ class LicenciaUsadaHandler implements CambioEstadoHandlerInterface
         if (!empty($datosForm['idRecuperada'])) {
             LicenciaRecuperada::where('id', $datosForm['idRecuperada'])->delete();
         }
+
+        $licencia->estado = 'USADA';
+        $licencia->save();
     }
 }

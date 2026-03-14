@@ -18,5 +18,8 @@ class LicenciaDefectuosaHandler implements CambioEstadoHandlerInterface
         if (!empty($datosForm['idRecuperada'])) {
             LicenciaRecuperada::where('id', $datosForm['idRecuperada'])->delete();
         }
+        
+        $licencia->estado = 'DEFECTUOSA';
+        $licencia->save();
     }
 }
