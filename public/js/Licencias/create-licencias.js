@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function toggleUsosField() {
         const selectedOption = categoriaSelect.options[categoriaSelect.selectedIndex];
         const tipoCategoria = selectedOption.getAttribute('data-tipo') || '';
-        const esMultifuncional = tipoCategoria.toLowerCase().includes('multifuncional');
+        const esMultifuncional = tipoCategoria.toLowerCase().includes('multiusuario');
 
         if (esMultifuncional) {
             // Mostrar con animación
@@ -143,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Primero seleccione "Multifuncional" como categoría');
             return;
         }
-
+        
         usosInput.value = cantidad;
         validarUsos(usosInput);
         usosInput.focus();

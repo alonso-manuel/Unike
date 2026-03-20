@@ -12,7 +12,7 @@ interface LicenciaServiceInterface
      * @param mixed $archivo
      * @return void
      */
-    public function importarDesdeExcel($archivo);
+    public function importarDesdeExcel($archivo, array $datosFijos);
 
     /**
      * Obtener licencias en estado NUEVA.

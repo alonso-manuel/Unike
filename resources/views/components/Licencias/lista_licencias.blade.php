@@ -9,7 +9,7 @@
                     <th>Orden Compra</th>
                     <th>Tipo</th>
                     <th>Proveedor</th>
-                    <th>Estado</th>
+                    <th>Categoria</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -42,18 +42,21 @@
                         </div>
                     </td>
                     <td>
-                        <span class="badge badge-success">{{ $licencia->estado }}</span>
+                        <span class="proveedor-nombre">{{ $licencia->categoriaLicencia?->tipo_categoria ?? 'Sin Categoria' }}</span>
+                        @if ($licencia->esMultifuncional())
+                            <br>
+                            <small>
+                                Usos: {{$licencia->cantidad_usos}}
+                            </small>
+                        @endif
                     </td>
                     <td>
                         <div class="action-buttons">
                             <button
-                                onclick="abrirModalUsarLicencia(
-                                '{{ route('licencias.cambiar_estado',
-                                $licencia->voucher_code) }}',
-                                '{{ $licencia->orden_compra }}')"
-
-                                class="btn-action btn-usar"
-                                title="Usar licencia"
+                                class="btn-action btn-usar btn-usar-licencia"
+                                data-url="{{ route('licencias.cambiar_estado', $licencia->voucher_code) }}"
+                                data-orden="{{ $licencia->orden_compra }}"
+                                data-multifuncional="{{ $licencia->esMultifuncional() ? 1 : 0 }}"
                             >
                                 Usar
                             </button>

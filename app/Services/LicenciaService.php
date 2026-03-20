@@ -3,37 +3,33 @@
 namespace App\Services;
 
 use App\Repositories\LicenciaRepositoryInterface;
-use App\Models\LicenciaUsada;
-use App\Models\LicenciaDefectuosa;
-use App\Models\LicenciaRecuperada;
+
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\LicenciaImport;
-use App\Repositories\CategoriaLicenciaRepositoryInterface;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+use App\Services\Licencias\Handlers\UsarLicenciaCompletaHandler;
+use App\Services\Licencias\Handlers\UsarLicenciaParcialHandler;
+
 
 
 class LicenciaService implements LicenciaServiceInterface
 {
     protected $repo;
-    protected $categoriaRepo;
 
-    public function __construct(LicenciaRepositoryInterface $repo,
-    CategoriaLicenciaRepositoryInterface $categoriaRepo)
+    public function __construct(LicenciaRepositoryInterface $repo)
     {
         $this->repo = $repo;
-        $this->categoriaRepo = $categoriaRepo;
     }
 
     /**
-     * Importar licencias desde un archivo Excel usando Maatwebsite Excel.
+     * Importar licencias desde un 4 Excel usando Maatwebsite Excel.
      *
      * @param mixed $archivo
      * @return void
      */
-    public function importarDesdeExcel($archivo)
+    public function importarDesdeExcel($archivo, array $datosFijos)
     {
-        Excel::import(new LicenciaImport, $archivo);
+        Excel::import(new LicenciaImport($datosFijos), $archivo);
     }
     /**
      * Obtener licencias en estado NUEVA.
@@ -76,85 +72,54 @@ class LicenciaService implements LicenciaServiceInterface
     // PRUEBA PARA IMPLEMENTAR A LICENCIAS UNA CATEGORIA
     //Verificar el Uso de la licencia
 
+    //FIN DE PRUBAS NO SUBIR A PRODUCCION HASTA PROBARLO
+    public function cambiarEstadoConFormulario(
+        string $voucherCode,
+        string $nuevoEstado,
+        array $datosForm
+    ) {
+        return DB::transaction(function () use ($voucherCode, $nuevoEstado, $datosForm) {
 
-    //FIN DE PRUBAS NO SUBIR A PRODUCCION HASTA PROBARLO Y QUITARLE LOS COMENTARIOS.
-    public function cambiarEstadoConFormulario(string $serial, string $nuevoEstado, array $datosForm)
-    {
-        // Opcional: hacer todo en transacción
-        return DB::transaction(function () use ($serial, $nuevoEstado, $datosForm) {
+            $licencia = $this->repo->findByCode($voucherCode);
 
-            // Cambiar el estado en la tabla principal
-            $licencia = $this->repo->cambiarEstado($serial, $nuevoEstado, $datosForm);
+            if ($nuevoEstado === 'USADA') {
 
-            if (!$licencia) {
-                throw new \Exception("La licencia con serial $serial no existe.");
-            }
+                if ($licencia->esMultifuncional()) {
 
-            // Insertar en la tabla correspondiente según el nuevo estado
-            switch ($nuevoEstado) {
-            case 'USADA':
-                $archivo = null;
+                    $modo = $datosForm['modo_uso'] ?? 'PARCIAL';
 
-                if (!empty($datosForm['archivo']) && $datosForm['archivo'] instanceof \Illuminate\Http\UploadedFile) {
-                    // Nombre base sin extensión
-                    $nombreOriginal = pathinfo($datosForm['archivo']->getClientOriginalName(), PATHINFO_FILENAME);
-
-                    // Extensión del archivo (ejemplo: rcf, bin, etc.)
-                    $extension = $datosForm['archivo']->getClientOriginalExtension();
-
-                    // Nombre único -> conserva nombre original + sufijo único
-                    $nombreUnico = $nombreOriginal . '_' . uniqid() . '.' . $extension;
-
-                    // Guardar en storage/app/public/licencias_usadas
-                    $path = $datosForm['archivo']->storeAs('licencias_usadas', $nombreUnico, 'public');
-
-                    // Se guarda en BD algo como: "licencias_usadas/EPSON_WF-C5890_64f9b8d7c9a3f.rcf"
-                    $archivo = $path;
-                }
-                unset($datosForm['archivo']); // Eliminamos el archivo temporal
-
-                LicenciaUsada::create([
-                    'clave_key'   => $serial,
-                    'id_licencia' => $licencia->id,
-                    'archivo'     => $archivo,
-                    ...$datosForm,
-                ]);
-
-                // Eliminar solo la recuperada seleccionada
-                if (!empty($datosForm['idRecuperada'])) {
-                    LicenciaRecuperada::where('id', $datosForm['idRecuperada'])->delete();
-                }
-                break;
-                case 'DEFECTUOSA':
-                    LicenciaDefectuosa::create(array_merge([
-                        'clave_key'   => $serial,
-                        'id_licencia' => $licencia->id
-                    ], $datosForm));
-
-                    // Eliminar solo la recuperada seleccionada
-                    if (!empty($datosForm['idRecuperada'])) {
-                        LicenciaRecuperada::where('id', $datosForm['idRecuperada'])->delete();
+                    if ($modo === 'COMPLETO') {
+                        app(UsarLicenciaCompletaHandler::class)
+                            ->handle($licencia, $datosForm);
+                    } else {
+                        app(UsarLicenciaParcialHandler::class)
+                            ->handle($licencia, $datosForm);
                     }
-                    break;
-                case 'RECUPERADA':
-                    // Insertar en recuperadas
-                    LicenciaRecuperada::create(array_merge([
-                        'serial_recuperada' => $serial,
-                        'id_licencia' => $licencia->id
-                    ], $datosForm));
 
-                    // Actualizar la tabla defectuosas cambiando el estado
-                    LicenciaDefectuosa::where('clave_key', $datosForm['serial_defectuosa'])
-                        ->update(['estado' => 'RECUPERADA']);
-                    break;
+                    return $licencia;
+                }
 
-                default:
-                    throw new \InvalidArgumentException("Estado no soportado: $nuevoEstado");
+                // UNIFUNCIONAL
+                app(\App\Services\Licencias\Handlers\LicenciaUsadaHandler::class)
+                    ->handle($licencia, $datosForm);
+
+                return $licencia;
             }
+
+            // Otros estados
+            $handler = match ($nuevoEstado) {
+                'DEFECTUOSA' => app(\App\Services\Licencias\Handlers\LicenciaDefectuosaHandler::class),
+                'RECUPERADA' => app(\App\Services\Licencias\Handlers\LicenciaRecuperadaHandler::class),
+                default => throw new \InvalidArgumentException("Estado no soportado"),
+            };
+
+            $handler->handle($licencia, $datosForm);
 
             return $licencia;
         });
     }
+
+
 
     public function buscarLicenciaPorCodigo(string $voucherCode)
     {

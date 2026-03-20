@@ -3,7 +3,7 @@
 @section('title', 'Licencias')
 @section('content')
 <link rel="stylesheet" href="{{ asset(path:'css/licencias/index-licencias.css') }}">
-<div class="container" style="max-width: 1500px;">
+<div class="container" style="max-width: 85%;">
 
     <div class="licenses-header">
         <div class="titulo-header">
@@ -49,6 +49,10 @@
                 <a href="{{ route('licencias.create') }}" class="action-btn btn-primary-custom">
                     <i class="bi bi-plus-circle-fill"></i>
                     Agregar Licencia
+                </a>
+                <a href="{{ route('licencias.importar.vista') }}" class="action-btn btn-primary-custom">
+                    <i class="bi bi-box2-fill"></i>
+                    Importar licencias
                 </a>
                 <a href="{{ route('licencias.usadas') }}" class="action-btn btn-info-custom">
                     <i class="bi bi-check-circle-fill"></i>
@@ -102,39 +106,6 @@
             </div>
         </div>
     </div>
-
-    <div class="import-form-container">
-        <div class="import-form-title">
-            <i class="bi bi-cloud-upload-fill"></i>
-            Importar Licencias desde Excel
-        </div>
-        <form action="{{ route('licencias.import') }}" method="POST" enctype="multipart/form-data">
-            @csrf
-            <div class="file-input-group">
-                <input type="file" name="archivo" class="file-input-custom" required accept=".xlsx,.xls">
-
-                <button class="import-btn" type="submit">
-                    <i class="bi bi-upload me-1"></i>
-                    Importar Excel
-                </button>
-
-                <a href="{{ route('licencias.plantilla_excel') }}"
-                    class="download-template-btn"
-                    title="Descargar Plantilla">
-                    <i class="bi bi-download"></i>
-                    Descargar Plantilla
-                </a>
-            </div>
-
-            @error('archivo')
-                <div class="error-message">
-                    <i class="bi bi-exclamation-circle-fill"></i>
-                    {{ $message }}
-                </div>
-            @enderror
-        </form>
-    </div>
-
     <div id="container-list-licencias" class="w-100">
         <x-licencias.lista_licencias :licencias="$licencias" :container="'container-list-licencias'" />
     </div>
@@ -318,7 +289,6 @@
         </div>
 </div>
 
-    <!-- 🧮 Modal Totales -->
 <div class="modal fade" id="modalTotales" tabindex="-1" aria-labelledby="modalTotalesLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
@@ -363,15 +333,252 @@
     </div>
 </div>
 
-<script src="{{ asset('js/Licencias/index-licencias.js') }}"> </script>
-<x-licencias.nueva.modal-usar/>
+<div class="modal fade" id="modalDecisionUso" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title">
+                    <i class="bi bi-layers-fill me-2"></i>
+                    Tipo de uso
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body text-center">
+                <p class="mb-3">
+                    Esta licencia es <strong>Multiusuario</strong>.<br>
+                    ¿Cómo deseas usarla?
+                </p>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-primary" onclick="confirmarUso('PARCIAL')">
+                        Uso parcial
+                    </button>
+
+                    <button class="btn btn-outline-success" onclick="confirmarUso('COMPLETO')">
+                        Uso completo
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalUsarLicencia" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <form id="formUsarLicencia" method="POST" enctype="multipart/form-data" class="mx-auto">
+        @csrf
+        <input type="hidden" name="nuevo_estado" value="USADA">
+
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-sistema-uno text-white border-0 position-relative overflow-hidden">
+                <div class="d-flex align-items-center">
+                    <div class="header-icon-container me-3">
+                    <i class="bi bi-key-fill fs-3"></i>
+                    </div>
+                    <div>
+                    <h5 class="modal-title mb-0 fw-bold">Usar Licencia</h5>
+                    <small class="opacity-75">Registrar nueva licencia en el sistema</small>
+                    </div>
+                </div>
+                <button type="button"
+                        class="btn-close btn-close-white"
+                        onclick="cerrarModal()"
+                        aria-label="Cerrar">
+                </button>
+                <div class="position-absolute top-0 end-0 opacity-10">
+                    <i class="bi bi-shield-check" style="font-size: 6rem; transform: translate(1.5rem, -1.5rem);"></i>
+                </div>
+            </div>
+
+            <div class="modal-body p-4">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-7">
+                        <label class="form-label fw-semibold text-dark">
+                            <i class="bi bi-key text-primary me-2"></i>
+                            Clave de Activación
+                            <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group input-group-modern">
+                            <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-shield-lock text-primary"></i>
+                            </span>
+                            <input type="text"
+                                name="clave_key"
+                                id="clave_key"
+                                class="form-control border-start-0 font-monospace"
+                                placeholder="Ingrese la clave de activación">
+                            
+                        </div>
+                        
+                    </div>
+                    <div class="col-md-5">
+                        <label class="form-label fw-semibold text-dark">
+                            <i class="bi bi-receipt text-success me-2"></i>
+                            Orden de Compra
+                        </label>
+                        <div class="input-group input-group-modern">
+                            <span class="input-group-text bg-light border-end-0">
+                            <i class="bi bi-file-text text-success"></i>
+                            </span>
+                            <input type="text"
+                                name="orden"
+                                id="orden"
+                                class="form-control border-start-0"
+                                placeholder="Ej: 421852"
+                                readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="row g-3 mb-4 d-none" id="contenedorTipoUso">
+                    <div class="col-md-6">
+                        <label class="form-label fw-semibold text-dark">
+                            <i class="bi bi-diagram-3 text-warning me-2"></i>
+                            Tipo de Uso
+                            <span class="text-danger">*</span>
+                        </label>
+                        <input type="hidden" name="modo_uso" id="modo_uso_hidden">
+                    </div>
+                </div>
+                <div class="equipment-section">
+                    <div class="section-header mb-3">
+                        <h6 class="section-title mb-0">
+                            <i class="bi bi-pc-display text-info me-2"></i>
+                            Información del Equipo
+                        </h6>
+                        <div class="section-line"></div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">
+                            <i class="bi bi-laptop me-1 text-info"></i>
+                            Equipo
+                            </label>
+                            <div class="input-group input-group-modern">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-pc text-info"></i>
+                            </span>
+                            <input type="text"
+                                    name="equipo"
+                                    id="equipo"
+                                    class="form-control border-start-0"
+                                    placeholder="Nombre del equipo">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label fw-semibold text-dark">
+                            <i class="bi bi-tags me-1 text-info"></i>
+                            Tipo de Equipo
+                            </label>
+                            <div class="input-group input-group-modern">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-collection text-info"></i>
+                            </span>
+                            <input type="text"
+                                    name="tipo_equipo"
+                                    id="tipo_equipo"
+                                    class="form-control border-start-0"
+                                    placeholder="Tipo de equipo">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-12">
+                            <label class="form-label fw-semibold text-dark">
+                            <i class="bi bi-upc-scan me-1 text-warning"></i>
+                            Serial del Equipo
+                            </label>
+                            <div class="input-group input-group-modern">
+                            <span class="input-group-text bg-light border-end-0">
+                                <i class="bi bi-hash text-warning"></i>
+                            </span>
+                            <input type="text"
+                                    name="serial_equipo"
+                                    id="serial_equipo"
+                                    class="form-control border-start-0 font-monospace"
+                                    placeholder="Serial único del equipo">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="description-section">
+                    <div class="section-header mb-3">
+                        <h6 class="section-title mb-0">
+                            <i class="bi bi-card-text text-secondary me-2"></i>
+                            Información Adicional
+                        </h6>
+                        <div class="section-line"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark">
+                            <i class="bi bi-chat-text me-1 text-secondary"></i>
+                            Descripción
+                        </label>
+                        <div class="textarea-container">
+                            <textarea name="descripcion"
+                                    id="descripcion"
+                                    class="form-control modern-textarea"
+                                    rows="3"
+                                    placeholder="Información adicional sobre el equipo, ubicación, usuario asignado, etc."></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold text-dark">
+                    <i class="bi bi-file-earmark-arrow-up me-1 text-primary"></i>
+                    Archivo de licencia (opcional)
+                    </label>
+                    <input type="file"
+                        name="archivo"
+                        id="archivo"
+                        class="form-control"
+                        accept=".rcf,.txt,.pdf">
+                    <div class="form-text">Solo archivos pequeños (ej. .rcf)</div>
+                </div>
+                <div class="alert alert-info-modern border-0 mt-4" role="alert">
+                    <div class="d-flex align-items-center">
+                        <div class="alert-icon me-3">
+                            <i class="bi bi-info-circle-fill"></i>
+                        </div>
+                        <div class="alert-content">
+                            <strong>Información:</strong> Esta licencia será marcada como "USADA" y quedará registrada permanentemente en el sistema.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer bg-light-subtle border-0 p-4">
+            <div class="d-flex justify-content-between w-100">
+                <button type="button"
+                        class="btn btn-outline-secondary btn-modern px-4"
+                        data-bs-dismiss="modal">
+                <i class="bi bi-x-lg me-2"></i>
+                Cancelar
+                </button>
+                <button type="submit"
+                        class="btn btn-success btn-modern px-4"
+                        id="btnGuardar">
+                <span class="spinner-border spinner-border-sm me-2 d-none" id="loadingSpinner"></span>
+                <i class="bi bi-save me-2" id="saveIcon"></i>
+                <span id="btnText">Guardar Licencia</span>
+                </button>
+            </div>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>
+
 <x-licencias.nueva.modal-defectuosa/>
 
 <script>
     @if(session('success'))
     Swal.fire({
         icon: 'success',
-        title: '¡xd!',
+        title: '¡Exito!',
         text: '{{ session('success') }}',
         confirmButtonColor: '#28a745',
         timer: 3000,
@@ -388,5 +595,290 @@
     });
     @endif
 </script>
+<script>
+    function abrirModalLicenciaDefectuosa(actionUrl, ordenCompra, idProveedor, razonSocialProveedor) {
+        const form = document.getElementById('formLicenciaDefectuosa');
+        form.reset();
+        form.action = actionUrl;
 
+        form.querySelector('input[name="orden"]').value = ordenCompra ?? '';
+        form.querySelector('input[name="razSocialProveedor"]').value = razonSocialProveedor ?? '';
+
+        let hiddenIdField = form.querySelector('input[name="idProveedor"]');
+        if (!hiddenIdField) {
+            hiddenIdField = document.createElement('input');
+            hiddenIdField.type = 'hidden';
+            hiddenIdField.name = 'idProveedor';
+            form.appendChild(hiddenIdField);
+        }
+        hiddenIdField.value = idProveedor ?? '';
+
+        const modal = new bootstrap.Modal(document.getElementById('modalLicenciaDefectuosa'));
+        modal.show();
+
+        setTimeout(() => {
+            form.querySelector('input[name="clave_key"]').focus();
+        }, 300);
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('formLicenciaDefectuosa');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const claveKey = form.querySelector('input[name="clave_key"]').value.trim();
+            const numeroTicket = form.querySelector('input[name="numero_ticket"]').value.trim();
+
+            if (!claveKey) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Campo Requerido',
+                    text: 'La Clave de Activación es obligatoria',
+                    confirmButtonText: 'Entendido',
+                    confirmButtonColor: '#e74c3c'
+                });
+                form.querySelector('input[name="clave_key"]').focus();
+                return;
+            }
+
+            if (claveKey.length < 8) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Clave Inválida',
+                    text: 'La clave debe tener al menos 8 caracteres',
+                    confirmButtonText: 'Corregir',
+                    confirmButtonColor: '#e74c3c'
+                });
+                form.querySelector('input[name="clave_key"]').focus();
+                return;
+            }
+            if (!numeroTicket) {
+                Swal.fire({
+                    icon: 'question',
+                    title: '¿Continuar sin Ticket?',
+                    text: 'No se ha ingresado un número de ticket. ¿Desea continuar?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, continuar',
+                    cancelButtonText: 'Cancelar',
+                    confirmButtonColor: '#f39c12',
+                    cancelButtonColor: '#6c757d'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        confirmarAccion();
+                    }
+                });
+                return;
+            }
+            confirmarAccion();
+        });
+
+        function confirmarAccion() {
+            const claveKey = form.querySelector('input[name="clave_key"]').value.trim();
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Confirmar Acción',
+                html: `¿Está seguro de marcar la licencia <strong>${claveKey}</strong> como defectuosa?<br><br><small class="text-muted">Esta acción no se puede deshacer</small>`,
+                showCancelButton: true,
+                confirmButtonText: 'Sí, marcar como defectuosa',
+                cancelButtonText: 'Cancelar',
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: '#6c757d'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({
+                        title: 'Procesando...',
+                        text: 'Marcando licencia como defectuosa',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+
+                    form.submit();
+                }
+            });
+        }
+        });
+    // ===============================
+    // Variables globales
+    // ===============================
+    let licenciaPendiente = null;
+
+
+    // ===============================
+    // Abrir modal usar licencia
+    // ===============================
+    function abrirModalUsarLicencia(actionUrl, ordenCompra, modo = null) {
+
+        const form = document.getElementById('formUsarLicencia');
+        const hiddenModo = document.getElementById('modo_uso_hidden');
+
+        if (!form || !hiddenModo) {
+            console.error('No se encontró el formulario o el input hidden.');
+            return;
+        }
+
+        form.reset();
+        form.action = actionUrl;
+
+        const ordenInput = form.querySelector('input[name="orden"]');
+        if (ordenInput) {
+            ordenInput.value = ordenCompra ?? '';
+        }
+
+        // 👉 UNIFUNCIONAL
+        if (modo === null) {
+            hiddenModo.value = 'COMPLETO';
+        } 
+        // 👉 MULTIFUNCIONAL
+        else {
+            hiddenModo.value = modo;
+        }
+
+        const modalElement = document.getElementById('modalUsarLicencia');
+        if (modalElement) {
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        }
+    }
+
+
+    // ===============================
+    // Flujo decisión multifuncional
+    // ===============================
+    function usarLicenciaDecision(data) {
+
+        licenciaPendiente = data;
+
+        if (!data.multifuncional) {
+            abrirModalUsarLicencia(data.url, data.orden);
+            return;
+        }
+
+        const modal = new bootstrap.Modal(
+            document.getElementById('modalDecisionUso')
+        );
+
+        modal.show();
+    }
+
+
+    function confirmarUso(modo) {
+
+        bootstrap.Modal
+            .getInstance(document.getElementById('modalDecisionUso'))
+            .hide();
+
+        abrirModalUsarLicencia(
+            licenciaPendiente.url,
+            licenciaPendiente.orden,
+            modo
+        );
+    }
+
+
+    // ===============================
+    // Submit del formulario
+    // ===============================
+    document.getElementById('formUsarLicencia')
+    .addEventListener('submit', function(e) {
+
+        e.preventDefault();
+
+        const claveInput = document.getElementById('clave_key');
+        const hiddenModo = document.getElementById('modo_uso_hidden');
+        const claveValue = claveInput.value.trim();
+
+        const btnGuardar = document.getElementById('btnGuardar');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const saveIcon = document.getElementById('saveIcon');
+        const btnText = document.getElementById('btnText');
+
+        if (claveValue === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Campo requerido',
+                text: 'La Clave de Activación es obligatoria.',
+                confirmButtonColor: '#667eea'
+            }).then(() => claveInput.focus());
+            return;
+        }
+
+        if (!hiddenModo.value) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Tipo de uso requerido',
+                text: 'Debe seleccionar si el uso es parcial o completo.',
+                confirmButtonColor: '#667eea'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: '¿Confirmar registro?',
+            text: 'Se registrará esta licencia como usada',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, registrar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+
+                btnGuardar.disabled = true;
+                loadingSpinner.classList.remove('d-none');
+                saveIcon.classList.add('d-none');
+                btnText.textContent = 'Guardando...';
+
+                this.submit();
+            }
+        });
+    });
+
+
+    // ===============================
+    // Reset al cerrar modal
+    // ===============================
+    document.getElementById('modalUsarLicencia')
+    .addEventListener('hidden.bs.modal', function() {
+
+        const form = document.getElementById('formUsarLicencia');
+        const btnGuardar = document.getElementById('btnGuardar');
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const saveIcon = document.getElementById('saveIcon');
+        const btnText = document.getElementById('btnText');
+
+        form.reset();
+
+        document.getElementById('modo_uso_hidden').value = '';
+
+        btnGuardar.disabled = false;
+        loadingSpinner.classList.add('d-none');
+        saveIcon.classList.remove('d-none');
+        btnText.textContent = 'Guardar Licencia';
+    });
+
+
+    // ===============================
+    // Botones usar licencia
+    // ===============================
+    document.addEventListener('click', function (e) {
+
+        const btn = e.target.closest('.btn-usar-licencia');
+        if (!btn) return;
+
+        const data = {
+            url: btn.dataset.url,
+            orden: btn.dataset.orden,
+            multifuncional: btn.dataset.multifuncional == "1"
+        };
+
+        usarLicenciaDecision(data);
+    });
+
+    </script>
 @endsection

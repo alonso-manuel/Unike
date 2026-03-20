@@ -10,5 +10,6 @@ interface LicenciaRepositoryInterface
     public function storeFromExcel(array $rows);
     public function cambiarEstado(string $serial, string $nuevoEstado, array $datosAdicionales);
     public function findBySerial(string $serial);
+    public function findByCode(string $voucher);
     public function getNuevasQuery();
 }
