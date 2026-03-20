@@ -6,7 +6,7 @@ use App\Models\Licencia;
 use App\Models\LicenciaDefectuosa;
 use App\Models\LicenciaRecuperada;
 class LicenciaDefectuosaHandler implements CambioEstadoHandlerInterface
-{
+{ 
      public function handle(Licencia $licencia, array $datosForm): void
     {
         LicenciaDefectuosa::create([
@@ -18,7 +18,7 @@ class LicenciaDefectuosaHandler implements CambioEstadoHandlerInterface
         if (!empty($datosForm['idRecuperada'])) {
             LicenciaRecuperada::where('id', $datosForm['idRecuperada'])->delete();
         }
-        
+
         $licencia->estado = 'DEFECTUOSA';
         $licencia->save();
     }
