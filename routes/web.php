@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Route;
 |--------------------------------------------------------------------------
 */
 Route::withoutMiddleware(['validate.session'])->group(function () {
-    require __DIR__ . '/auth.php';
+    require __DIR__ . '/Auth/public.php';
 });
 
 /*
@@ -17,18 +17,21 @@ Route::withoutMiddleware(['validate.session'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['validate.session'])->group(function () {
-    require __DIR__ . '/dashboard.php';
-    require __DIR__ . '/usuarios.php';
-    require __DIR__ . '/productos.php';
-    require __DIR__ . '/ingresos.php';
-    require __DIR__ . '/egresos.php';
-    require __DIR__ . '/documentos.php';
-    require __DIR__ . '/clientes.php';
-    require __DIR__ . '/garantias.php';
-    require __DIR__ . '/traslados.php';
-    require __DIR__ . '/plataformas.php';
-    require __DIR__ . '/publicidad.php';
-    require __DIR__ . '/configuracion.php';
-    require __DIR__ . '/reportes.php';
-    require __DIR__ . '/licencias.php';
+    // Dashboard & Home
+    require __DIR__ . '/System/dashboard.php';
+    
+    // Módulos del Sistema
+    require __DIR__ . '/System/usuarios.php';
+    require __DIR__ . '/System/productos.php';
+    require __DIR__ . '/System/ingresos.php';
+    require __DIR__ . '/System/egresos.php';
+    require __DIR__ . '/System/documentos.php';
+    require __DIR__ . '/System/clientes.php';
+    require __DIR__ . '/System/garantias.php';
+    require __DIR__ . '/System/traslados.php';
+    require __DIR__ . '/System/plataformas.php';
+    require __DIR__ . '/System/publicidad.php';
+    require __DIR__ . '/System/configuracion.php';
+    require __DIR__ . '/System/reportes.php';
+    require __DIR__ . '/System/licencias.php';
 });
