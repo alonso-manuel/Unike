@@ -33,10 +33,13 @@ class ValidateSession
     {
         $idUserSesion = $this->sesionService->getUser();
         $tokenSesion = $this->sesionService->getSesion();
-        
+
         if($idUserSesion == -1 || empty($idUserSesion)){
             $this->headerService->sendFlashAlerts('Inicia sesion','Se acabo el tiempo de sesión','warning','btn-danger');
-            return redirect('');
+            if ($request->expectsJson()) {
+                return response()->json(['error' => 'Unauthenticated'], 401);
+            }
+            return redirect()->route('login');
         }else{
             $usuario = $this->usuarioService->getUserId($idUserSesion);
             $tokenBase = $usuario->tokenSesion;
@@ -45,10 +48,11 @@ class ValidateSession
                 return $next($request);
             }else{
                 $this->headerService->sendFlashAlerts('Inicia sesion','Sesión en otro dispositivo','warning','btn-danger');
-                return redirect('');
+                if ($request->expectsJson()) {
+                    return response()->json(['error' => 'Session active in another device'], 401);
+                }
+                return redirect()->route('login');
             }
-            
-            
         }
     }
 }

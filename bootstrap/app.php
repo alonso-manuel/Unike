@@ -17,5 +17,7 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
-        //
+        $exceptions->render(function (\Illuminate\Session\TokenMismatchException $e) {
+            return response()->view('errors.419', [], 419);
+        });
     })->create();
