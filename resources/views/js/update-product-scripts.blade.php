@@ -4,32 +4,34 @@
             let idGrupo = document.getElementById('grupo-product').value;
             let state = document.getElementById('estado-product').value;
             let ganancia = document.getElementById('precio-product-ganancia').value;
-        
-            if (price > -1) { 
+
+            if (price > -1) {
                 let xhr = new XMLHttpRequest();
                 xhr.open('GET', `/producto/calculate?price=${encodeURIComponent(price)}&type=${encodeURIComponent(type)}&idGrupo=${encodeURIComponent(idGrupo)}&state=${encodeURIComponent(state)}&ganancia=${encodeURIComponent(ganancia)}`, true);
-        
+
                 xhr.onreadystatechange = function() {
                     if (xhr.readyState === 4) {
                         if (xhr.status === 200) {
                             let data = JSON.parse(xhr.responseText);
                             let precioCalculado = document.getElementById('precio-product-calculado');
                             let divTotal = document.getElementById('div-total-price');
+
                             precioCalculado.value = data[0].calculado.toFixed(2);
+
                             divTotal.innerHTML = '';
-                            
+
                             data[1].total.forEach(function(x){
                                 let divPrecio = document.createElement('div');
                                 divPrecio.classList.add('col-lg-4','col-md-8');
-                                
+
                                 let labelEmpresa = document.createElement('label');
                                 labelEmpresa.classList.add('form-label');
                                 labelEmpresa.textContent = x.empresa;
-                                
+
                                 let labelPrecio = document.createElement('label');
                                 labelPrecio.classList.add('form-label');
                                 labelPrecio.textContent = 'Precio Total:';
-                                
+
                                 let inputPrecio = document.createElement('input');
                                 inputPrecio.type = 'number';
                                 inputPrecio.disabled = true;
@@ -37,56 +39,60 @@
                                 inputPrecio.classList.add('form-control');
                                 inputPrecio.classList.add('price-product');
                                 inputPrecio.value = x.precio.toFixed(2);
-                                
+
                                 divPrecio.appendChild(labelEmpresa);
                                 divPrecio.appendChild(labelPrecio);
                                 divPrecio.appendChild(inputPrecio);
                                 divTotal.appendChild(divPrecio);
                             });
-                            
+
+                            // Disparar evento personalizado cuando calcPrices termine
+                            document.dispatchEvent(new CustomEvent('calcPricesCompleted'));
+
                         } else {
                             console.error('Error en la solicitud:', xhr.statusText);
                         }
                     }
                 };
-        
+
                 xhr.send();
             } else {
                 document.getElementById('precio-product-igv').value = 0.00; // Limpiar si no hay entrada
             }
         }
-        
+
         function removeIgv(){
             let price = this.value;
             let dolarSinIgv = document.getElementById('precio-product');
-            
+
             if(price > 0){
-                
-                
+
+
                 dolarSinIgv.value = (price / 1.18).toFixed(2);
             }else{
                 dolarSinIgv.value = 0.00;
             }
         }
-        
+
         function calcIgv(){
             let price = this.value;
             let dolarSinIgv = document.getElementById('precio-product-igv');
-            
+
             if(price > 0){
-                
-                
+
+
                 dolarSinIgv.value = (price * 1.18).toFixed(2);
             }else{
                 dolarSinIgv.value = 0.00;
             }
         }
-        
-        
+
+
         function changeTC(){
             let selectPrice = document.getElementById('select-tipoprecio').value;
-            let priceProduct = document.querySelectorAll('.price-product');
-            
+            // Excluir explícitamente el precio total fijo
+            let priceProduct = document.querySelectorAll('.price-product:not(#precio-total-fijo)');
+
             priceProduct.forEach(function(x){
                 if(selectPrice == 'SOL'){
                     x.value = (x.value * {{$tc}}).toFixed(2);
@@ -94,21 +100,20 @@
                     x.value = (x.value / {{$tc}}).toFixed(2);
                 }
             });
-            
-            
         }
         
         document.addEventListener('DOMContentLoaded', calcPrices);
-        
+
         document.getElementById('precio-product-igv').addEventListener('input',removeIgv);
         document.getElementById('precio-product-igv').addEventListener('blur',calcPrices);
-        
+
         document.getElementById('precio-product').addEventListener('input',calcIgv);
         document.getElementById('precio-product').addEventListener('blur',calcPrices);
-        
+
         document.getElementById('precio-product-ganancia').addEventListener('blur',calcPrices);
-        
-        document.getElementById('select-tipoprecio').addEventListener('change',calcPrices);
+
+        document.getElementById('select-tipoprecio').addEventListener('change', changeTC);
+        document.getElementById('select-tipoprecio').addEventListener('change', calcPrices);
         document.getElementById('estado-product').addEventListener('change',calcPrices);
         
     /*Habilitar los campos al darle click a EDITAR*/

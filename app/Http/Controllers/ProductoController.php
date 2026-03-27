@@ -94,7 +94,8 @@ class ProductoController extends Controller
                                         'grupos' => $grupos,
                                         'almacenes' => $almacenes,
                                         'tc' => $this->calculadoraService->getTasaCambio(),
-                                        'igv' => $this->calculadoraService->getIgv()
+                                        'igv' => $this->calculadoraService->getIgv(),
+                                        'tasaFija' => $this->calculadoraService->getTasaFija()->tasaCambio
                 ]);
             }
         }
