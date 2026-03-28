@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Almacen;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Cache;
 
 use App\Repositories\AccesosRepository;
 use App\Repositories\AccesosRepositoryInterface;
@@ -188,7 +189,12 @@ class AppServiceProvider extends ServiceProvider
     {
         Carbon::setLocale('es');
         Paginator::useBootstrapFive();
-        View::share('almacenes', Almacen::all());
+        
+        $almacenes = Cache::remember('almacenes_all', 86400, function () {
+            return Almacen::all();
+        });
+        
+        View::share('almacenes', $almacenes);
     }
 
 }
