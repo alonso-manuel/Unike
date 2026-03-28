@@ -91,7 +91,7 @@
             <div class="row">
                 <div class="mb-3 col-md-6 col-lg-4">
                     <label for="select-tipoprecio" class="form-label">Moneda:</label>
-                    <select class="form-select" name="tipoprecio" id="select-tipoprecio">
+                    <select class="form-select input-edit" name="tipoprecio" id="select-tipoprecio" disabled>
                         <option value="DOLAR" selected>Dolares</option>
                         <option value="SOL">Soles</option>
                     </select>
