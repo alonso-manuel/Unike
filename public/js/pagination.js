@@ -6,7 +6,6 @@ function loadProducts(url) {
     if(loader){
         loader.style.display = 'block';
     }
-    
 
     fetch(fullUrl)
         .then(response => {
@@ -23,47 +22,24 @@ function loadProducts(url) {
         })
         .catch(error => console.error('Error al cargar los productos:', error));
 }
-function linkEvent(element) {
-    let url = element.getAttribute('data-link');
-    if (!url) return;
 
-    let container = document.getElementById('hidden-container').value;
-    let tipo = document.getElementById('filtro-tipo')?.value || '';
-    let search = document.querySelector('[name="search"]')?.value || '';
-
-    const params = new URLSearchParams();
-    if (tipo) params.append('tipo', tipo);
-    if (search) params.append('search', search);
-
-    const fullUrl = url + (url.includes('?') ? '&' : '?') + params.toString();
-
-    document.getElementById('hidden-loader-paginate').style.display = 'block';
-
-    fetch(fullUrl)
-        .then(res => res.text()) // ✅ texto, no JSON
-        .then(html => {
-            document.getElementById(container).innerHTML = html;
-        })
-        .finally(() => {
-            document.getElementById('hidden-loader-paginate').style.display = 'none';
-        });
-}
 function linkEvent(element) {
     const url = element.getAttribute('data-link');
     const container = document.getElementById('hidden-container').value;
-    const tipo = document.getElementById('filtro-tipo')?.value || '';
-    const search = document.querySelector('[name="search"]')?.value || '';
 
     if (!url) return;
 
-    const finalUrl = `${url}&container=${container}&tipo=${tipo}&search=${search}`;
+    // La URL ya viene con los parámetros de Laravel (search, filtro, etc.) gracias a appends()
+    // Solo agregamos el container
+    const separator = url.includes('?') ? '&' : '?';
+    const fullUrl = `${url}${separator}container=${container}`;
 
     const target = document.getElementById(container);
     const loader = document.getElementById('hidden-loader-paginate');
     if (loader) loader.style.display = 'block';
 
-    fetch(finalUrl)
-        .then(res => res.json()) // 👈 backend devuelve JSON con { html: ... }
+    fetch(fullUrl)
+        .then(res => res.json())
         .then(data => {
             target.innerHTML = data.html;
         })

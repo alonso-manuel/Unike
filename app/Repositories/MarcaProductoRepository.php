@@ -58,7 +58,12 @@ class MarcaProductoRepository implements MarcaProductoRepositoryInterface
     public function getLast(){
         return MarcaProducto::orderBy('idMarca', 'desc')->first();
     }
-    
+
+    public function whereIn($column, $values){
+        $this->validateColumns($column);
+        return MarcaProducto::whereIn($column, $values)->get();
+    }
+
     private function validateColumns($column){
         if (!in_array($column, $this->modelColumns)) {
             throw new \InvalidArgumentException("La columna '$column' no es válida.");
