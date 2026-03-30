@@ -1,7 +1,7 @@
 <?php
 namespace App\Services;
 
-interface DashboardServiceInterface 
+interface DashboardServiceInterface
 {
     public function getRegistrosXEstados();
     public function getAllInventory();
@@ -15,4 +15,5 @@ interface DashboardServiceInterface
     public function getAbiertosInventario();
     public function getDefectuososInventario();
     public function getGarantiaInventario();
+    public function getAllAlmacen();
 }

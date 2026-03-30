@@ -38,11 +38,17 @@ class ProductoController extends Controller
 
                 // Si es petición AJAX (paginación o filtro)
                 if($request->query('page') || $request->query('filtro')){
+                    $filtros = [
+                        'marcas' => $this->productoService->filtroMarcas('idGrupo',decrypt($idGrupo)),
+                        'estados' => $this->productoService->filtroEstados('idGrupo',decrypt($idGrupo))
+                    ];
+                    
                     $view = view('components.lista_producto', [
                         'productos' => $productos,
                         'container' => $request->query('container'),
                         'almacenes' => $almacenes,
-                        'tc' => $this->calculadoraService->getTasaCambio()
+                        'tc' => $this->calculadoraService->getTasaCambio(),
+                        'filtros' => $filtros
                     ])->render();
                     return response()->json(['html' => $view]);
                 }
@@ -175,20 +181,60 @@ class ProductoController extends Controller
             if($acceso->idVista == 2){
                 //variables del controlador
                 $input = $request->input('search');
-                $productos = $this->productoService->searchProducts($input,25,$request->query('filtros'));
-                $almacenes = $this->productoService->getAllAlmacen();
+                $filtrosAdicionales = $request->query('filtro');
+                
+                // Si viene de una petición AJAX con filtros, mantener búsqueda y filtros
+                if($request->query('page') || $filtrosAdicionales){
+                    $productos = $this->productoService->searchProducts($input, 25, $filtrosAdicionales);
+                    $almacenes = $this->productoService->getAllAlmacen();
+                    
+                    // Mantener parámetros en la paginación
+                    $appends = ['search' => $input];
+                    if($filtrosAdicionales) {
+                        $appends['filtro'] = $filtrosAdicionales;
+                    }
+                    $productos->appends($appends);
 
-                if($request->query('page') || $request->query('filtro')){
-                    $view = view('components.lista_producto', ['productos' => $productos,
-                                                                'container' => $request->query('container'),
-                                                                'almacenes' => $almacenes,
-                                                                'tc' => $this->calculadoraService->getTasaCambio()])->render();
+                    // Obtener marcas y estados de los productos filtrados
+                    $marcasIds = $productos->pluck('idMarca')->unique();
+                    $estados = $productos->pluck('estadoProductoWeb')->unique();
+
+                    $filtros = [
+                        'marcas' => $this->productoService->getMarcasByIds($marcasIds),
+                        'estados' => $this->productoService->getEstadosList($estados)
+                    ];
+
+                    $view = view('components.lista_producto', [
+                        'productos' => $productos,
+                        'container' => $request->query('container'),
+                        'almacenes' => $almacenes,
+                        'tc' => $this->calculadoraService->getTasaCambio(),
+                        'filtros' => $filtros
+                    ])->render();
                     return response()->json(['html' => $view]);
                 }
+                
+                // Carga inicial de búsqueda
+                $productos = $this->productoService->searchProducts($input, 25, null);
+                $almacenes = $this->productoService->getAllAlmacen();
+                
+                // Mantener parámetros en la paginación
+                $productos->appends(['search' => $input]);
+
+                // Obtener marcas y estados de los productos filtrados
+                $marcasIds = $productos->pluck('idMarca')->unique();
+                $estados = $productos->pluck('estadoProductoWeb')->unique();
+
+                $filtros = [
+                    'marcas' => $this->productoService->getMarcasByIds($marcasIds),
+                    'estados' => $this->productoService->getEstadosList($estados)
+                ];
 
                 return view('buscarproducto',['user' => $userModel,
                                                 'productos' => $productos,
-                                                'tc' => $this->calculadoraService->getTasaCambio()]);
+                                                'tc' => $this->calculadoraService->getTasaCambio(),
+                                                'almacenes' => $almacenes,
+                                                'filtros' => $filtros]);
             }
         }
         $this->headerService->sendFlashAlerts('Acceso denegado','No tienes permiso para ingresar a esta pestaña','warning','btn-danger');
