@@ -425,10 +425,11 @@ class ProductoController extends Controller
                 $video2 = $request->input('videoUrl2');
 
                 try{
-                    if(!is_null($titulo)){
+                    // Solo actualizar si el campo fue enviado (no está disabled)
+                    if($request->has('titulo')){
                         $arrayProduct['nombreProducto'] = $titulo;
                     }
-                    if(!empty($tipoprecio)){
+                    if($request->has('tipoprecio') && !empty($tipoprecio)){
                         if($tipoprecio == 'SOL'){
                             $precio = $request->input('precio') / $this->calculadoraService->getTasaCambio();
                             $ganancia = $request->input('ganancia')/ $this->calculadoraService->getTasaCambio();
@@ -440,43 +441,43 @@ class ProductoController extends Controller
                         $precio = null;
                     }
 
-                    if (!is_null($ganancia)) {
+                    if ($request->has('ganancia') && !is_null($ganancia)) {
                         $arrayProduct['gananciaExtra']= $ganancia;
                     }
 
-                    if (!is_null($precio)) {
+                    if ($request->has('precio') && !is_null($precio)) {
                         $arrayProduct['precioDolar'] = $precio;
                     }
 
-                    if (!is_null($garantia)) {
+                    if($request->has('garantia')){
                         $arrayProduct['garantia'] = $garantia;
                     }
 
-                    if (!is_null($upc)) {
+                    if($request->has('upc')){
                         $arrayProduct['UPC'] = $upc;
                     }
 
-                    if (!is_null($modelo)) {
+                    if($request->has('modelo')){
                         $arrayProduct['modelo'] = $modelo;
                     }
 
-                    if (!is_null($partnumber)) {
+                    if($request->has('partnumber')){
                         $arrayProduct['partNumber'] = $partnumber;
                     }
 
-                    if (!is_null($descripcion)) {
+                    if($request->has('descripcion')){
                         $arrayProduct['descripcionProducto'] = $descripcion;
                     }
 
-                    if (!is_null($estado)) {
+                    if($request->has('estado')){
                         $arrayProduct['estadoProductoWeb'] = $estado;
                     }
 
-                    if (!is_null($marca)) {
+                    if($request->has('marca')){
                         $arrayProduct['idMarca'] = $marca;
                     }
 
-                    if (!is_null($stockminimo)) {
+                    if($request->has('stockminimo')){
                         $arrayProduct['stockMin'] = $stockminimo;
                     }
                     
