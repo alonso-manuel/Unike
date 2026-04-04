@@ -13,8 +13,7 @@
     </div>
     <br>
     <div id="container-list-products-dashboard">
-        <x-lista_producto :productos="$productos" :tc="$tc" :container="'container-list-products-dashboard'" 
-                          :almacenes="$almacenes" />
+        <x-lista_producto :productos="$productos" :tc="$tc" :container="'container-list-products-dashboard'" />
     </div>
 </div>
 @endsection

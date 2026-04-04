@@ -75,30 +75,16 @@ class ProductoRepository implements ProductoRepositoryInterface
         return Producto::where($column, 'LIKE', '%' . $data . '%')->take($cont)->get();
     }
 
-    public function searchPaginateList($column,$cont,$data,$filtros=null)
+    public function searchPaginateList($column,$cont,$data)
     {
         $this->validateColumns($column);
-        $query = Producto::where($column, 'LIKE', '%' . $data . '%');
-        
-        if(isset($filtros)){
-            if(isset($filtros['marca'])){
-                $query->where('idMarca','=', $filtros['marca']);
-            }
-            if(isset($filtros['estado'])){
-                $query->where('estadoProductoWeb','=', $filtros['estado']);
-            }
-        }
-        
-        return $query->paginate($cont);
+        return Producto::where($column, 'LIKE', '%' . $data . '%')->paginate($cont);
     }
 
     public function getMarcasByColumn($column,$data){
         $this->validateColumns($column);
-        return Producto::where($column,'=',$data)
-                        ->distinct()
-                        ->join('MarcaProducto', 'Producto.idMarca', '=', 'MarcaProducto.idMarca')
-                        ->select('MarcaProducto.idMarca', 'MarcaProducto.nombreMarca')
-                        ->get();
+        return Producto::select('idMarca')->distinct()
+                        ->where($column,'=',$data)->get();
     }
 
     public function getEstadosByColumn($column,$data){
@@ -164,21 +150,9 @@ class ProductoRepository implements ProductoRepositoryInterface
     
     public function searchIntensiveProducts($query,$cant,$filtros){
         $consulta = Producto::query();
-        $consulta->where(function($q) use ($query) {
-            $q->where('codigoProducto', 'LIKE', '%'.$query.'%')
-              ->orWhere('partNumber', 'LIKE', '%'.$query.'%')
-              ->orWhere('modelo', 'LIKE', '%'.$query.'%');
-        });
-        
-        if(isset($filtros)){
-            if(isset($filtros['marca'])){
-                $consulta->where('idMarca','=', $filtros['marca']);
-            }
-            if(isset($filtros['estado'])){
-                $consulta->where('estadoProductoWeb','=', $filtros['estado']);
-            }
-        }
-        
+        $consulta->where('codigoProducto', 'LIKE', '%'.$query.'%')
+        ->orWhere('partNumber', 'LIKE', '%'.$query.'%')
+        ->orWhere('modelo', 'LIKE', '%'.$query.'%');
         return $consulta->paginate($cant);
     }
 

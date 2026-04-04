@@ -145,20 +145,20 @@ class ProductoService implements ProductoServiceInterface
     }
     
     public function searchProducts($input,$cont,$filtros){
-        $productos = $this->productoRepository->getPaginationNull();
+        $productos = $this->productoRepository->getPaginationNull();    
         $marca = $this->marcaRepository->searchOne('nombreMarca',$input);
-
+        
         if ($marca) {
             $productos = $this->productoRepository->paginateAllByColumn('idMarca',$marca->idMarca,$cont,$filtros);
         }
-
+        
         if($productos->isEmpty()){
             $productos = $this->productoRepository->searchIntensiveProducts($input,$cont,$filtros);
         }
         if($productos->isEmpty()){
-            $productos = $this->productoRepository->searchPaginateList('nombreProducto',$cont,$input,$filtros);
+            $productos = $this->productoRepository->searchPaginateList('nombreProducto',$cont,$input);
         }
-
+        
         return $productos;
     }
     
@@ -301,22 +301,6 @@ class ProductoService implements ProductoServiceInterface
 
     public function filtroEstados($column,$data){
         return $this->productoRepository->getEstadosByColumn($column,$data);
-    }
-
-    public function getMarcasByIds($ids){
-        if ($ids->isEmpty()) {
-            return collect();
-        }
-        return $this->marcaRepository->whereIn('idMarca', $ids->toArray());
-    }
-
-    public function getEstadosList($estados){
-        if ($estados->isEmpty()) {
-            return collect();
-        }
-        return $estados->map(function($estado) {
-            return (object)['estadoProductoWeb' => $estado];
-        });
     }
 
     private function insertInventory($idProducto){

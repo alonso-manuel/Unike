@@ -17,8 +17,7 @@
     </div>
     <br>
     <div id="container-buscar-producto">
-        <x-lista_producto :productos="$productos" :container="'container-buscar-producto'" :tc="$tc"
-                          :filtros="$filtros" :almacenes="$almacenes"/>
+        <x-lista_producto :productos="$productos" :container="'container-buscar-producto'" :tc="$tc"/>
     </div>
     @else
     <div class="row d-flex justify-content-between align-items-center" style="height: 80vh;">
