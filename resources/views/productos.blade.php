@@ -40,6 +40,7 @@
             </div>
         </div>
         <br>
+        
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-tabs d-none d-sm-none d-md-flex">
@@ -74,28 +75,7 @@
                 </ul>
             </div>
         </div>
-        <form action="{{ url()->current() }}" method="get" id="form-filtro-componente">
-            <div class="row mb-2 mt-3">
-                <div class="col-4 col-lg-2">
-                    <small>Marca</small>
-                    <select class="form-select form-select-sm filtro-componente" name="filtro[marca]">
-                        <option value="">Todos</option>
-                        @foreach ($filtros['marcas'] as $marca)
-                        <option value="{{$marca->idMarca}}">{{$marca->MarcaProducto->nombreMarca}}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-4 col-lg-2">
-                    <small>Estado</small>
-                    <select class="form-select form-select-sm filtro-componente" name="filtro[estado]">
-                        <option value="">Todos</option>
-                        @foreach ($filtros['estados'] as $estado)
-                        <option value="{{$estado->estadoProductoWeb}}">{{$estado->estadoProductoWeb}}</option>
-                        @endforeach
-                    </select>
-                </div>
-            </div>
-        </form>
+        <x-filtro_productos :marcas="$filtros['marcas']" :estados="$filtros['estados']" />
         <div id="container-list-products">
             <x-lista_producto :productos="$productos" :tc="$tc" :container="'container-list-products'" />
         </div>

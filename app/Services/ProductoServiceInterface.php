@@ -17,6 +17,7 @@ interface ProductoServiceInterface
     public function getOneLabelCategory($id);
     public function getAllLabelCategory();
     public function getAllLabelMarca();
+    public function getMarcasBySearch($input);
     public function getAllLabelProveedor();
     public function getAllAlmacen();
     public function updateInventory($idProducto,$array);

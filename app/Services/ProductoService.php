@@ -86,7 +86,13 @@ class ProductoService implements ProductoServiceInterface
                     'nombreMarca' => $mark->nombreMarca,
                     'idMarca' => $mark->idMarca
                 ];
-        }); 
+        });
+        return $marcas;
+    }
+
+    public function getMarcasBySearch($input){
+        // Obtener marcas filtradas por término de búsqueda
+        $marcas = $this->productoRepository->getMarcasBySearchTerm($input);
         return $marcas;
     }
     
@@ -145,20 +151,20 @@ class ProductoService implements ProductoServiceInterface
     }
     
     public function searchProducts($input,$cont,$filtros){
-        $productos = $this->productoRepository->getPaginationNull();    
+        $productos = $this->productoRepository->getPaginationNull();
         $marca = $this->marcaRepository->searchOne('nombreMarca',$input);
-        
+
         if ($marca) {
             $productos = $this->productoRepository->paginateAllByColumn('idMarca',$marca->idMarca,$cont,$filtros);
         }
-        
+
         if($productos->isEmpty()){
             $productos = $this->productoRepository->searchIntensiveProducts($input,$cont,$filtros);
         }
         if($productos->isEmpty()){
-            $productos = $this->productoRepository->searchPaginateList('nombreProducto',$cont,$input);
+            $productos = $this->productoRepository->searchPaginateList('nombreProducto',$cont,$input,$filtros);
         }
-        
+
         return $productos;
     }
     

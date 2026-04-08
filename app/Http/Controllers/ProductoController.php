@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Producto;
 use Illuminate\Http\Request;
 use App\Services\HeaderServiceInterface;
 use App\Services\CalculadoraServiceInterface;
@@ -175,20 +176,41 @@ class ProductoController extends Controller
             if($acceso->idVista == 2){
                 //variables del controlador
                 $input = $request->input('search');
-                $productos = $this->productoService->searchProducts($input,25,$request->query('filtros'));
+                $productos = $this->productoService->searchProducts($input, 25, $request->query('filtro'));
                 $almacenes = $this->productoService->getAllAlmacen();
+                
+                // Obtener marcas filtradas por búsqueda si hay término de búsqueda
+                if($input) {
+                    $marcasFiltradas = $this->productoService->getMarcasBySearch($input);
+                } else {
+                    $marcasFiltradas = $this->productoService->getAllLabelMarca();
+                }
 
                 if($request->query('page') || $request->query('filtro')){
+                    // Obtener marcas filtradas también para la paginación AJAX
+                    if($input) {
+                        $marcasFiltradas = $this->productoService->getMarcasBySearch($input);
+                    } else {
+                        $marcasFiltradas = $this->productoService->getAllLabelMarca();
+                    }
+                    
                     $view = view('components.lista_producto', ['productos' => $productos,
                                                                 'container' => $request->query('container'),
                                                                 'almacenes' => $almacenes,
+                                                                'marcas' => $marcasFiltradas,
                                                                 'tc' => $this->calculadoraService->getTasaCambio()])->render();
                     return response()->json(['html' => $view]);
                 }
+                $filtros = [
+                    'marcas' => $marcasFiltradas,
+                    'estados' => Producto::select('estadoProductoWeb')->whereNotNull('estadoProductoWeb')->distinct()->get()
+                ];
 
                 return view('buscarproducto',['user' => $userModel,
                                                 'productos' => $productos,
-                                                'tc' => $this->calculadoraService->getTasaCambio()]);
+                                                'tc' => $this->calculadoraService->getTasaCambio(),
+                                                'filtros' => $filtros,
+                                                'almacenes' => $almacenes]);
             }
         }
         $this->headerService->sendFlashAlerts('Acceso denegado','No tienes permiso para ingresar a esta pestaña','warning','btn-danger');

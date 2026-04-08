@@ -8,6 +8,6 @@ function filterSubmit() {
     loadProducts(fullUrl);
 }
 
-document.querySelectorAll('.filtro-componente').forEach(function(x){
-    x.addEventListener('change',filterSubmit);
+document.querySelectorAll('.filtro-componente').forEach(function (x) {
+    x.addEventListener('change', filterSubmit);
 });
