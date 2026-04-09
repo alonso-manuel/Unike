@@ -189,9 +189,13 @@ class ProductoRepository implements ProductoRepositoryInterface
     
     public function searchIntensiveProducts($query,$cant,$filtros){
         $consulta = Producto::query();
-        $consulta->where('codigoProducto', 'LIKE', '%'.$query.'%')
-        ->orWhere('partNumber', 'LIKE', '%'.$query.'%')
-        ->orWhere('modelo', 'LIKE', '%'.$query.'%');
+        
+        // Agrupar las condiciones de búsqueda para que los filtros apliquen a todo el grupo
+        $consulta->where(function($q) use ($query) {
+            $q->where('codigoProducto', 'LIKE', '%'.$query.'%')
+              ->orWhere('partNumber', 'LIKE', '%'.$query.'%')
+              ->orWhere('modelo', 'LIKE', '%'.$query.'%');
+        });
         
         if(isset($filtros)){
             if(isset($filtros['marca'])){
