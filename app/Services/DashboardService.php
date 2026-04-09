@@ -5,7 +5,6 @@ use App\Repositories\InventarioRepositoryInterface;
 use App\Repositories\ProductoRepositoryInterface;
 use App\Repositories\PublicacionRepositoryInterface;
 use App\Repositories\RegistroProductoRepositoryInterface;
-use App\Repositories\AlmacenRepositoryInterface;
 
 class DashboardService implements DashboardServiceInterface
 {
@@ -13,19 +12,16 @@ class DashboardService implements DashboardServiceInterface
     protected $inventarioRepository;
     protected $productoRepository;
     protected $publicacionRepository;
-    protected $almacenRepository;
 
     public function __construct(RegistroProductoRepositoryInterface $registroRepository,
                                 InventarioRepositoryInterface $inventarioRepository,
                                 ProductoRepositoryInterface $productoRepository,
-                                PublicacionRepositoryInterface $publicacionRepository,
-                                AlmacenRepositoryInterface $almacenRepository)
+                                PublicacionRepositoryInterface $publicacionRepository)
     {
         $this->registroRepository = $registroRepository;
         $this->inventarioRepository = $inventarioRepository;
         $this->productoRepository = $productoRepository;
         $this->publicacionRepository = $publicacionRepository;
-        $this->almacenRepository = $almacenRepository;
     }
 
     public function getRegistrosXEstados(){
@@ -78,9 +74,5 @@ class DashboardService implements DashboardServiceInterface
     }
     public function getGarantiaInventario(){
         return $this->registroRepository->paginateAllByColumn('estado','GARANTIA',50);
-    }
-    
-    public function getAllAlmacen(){
-        return $this->almacenRepository->all();
     }
 }

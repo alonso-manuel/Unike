@@ -3,6 +3,7 @@ namespace App\Repositories;
 
 use Illuminate\Support\Facades\DB;
 use App\Models\Producto;
+use App\Models\MarcaProducto;
 use Exception;
 
 class ProductoRepository implements ProductoRepositoryInterface
@@ -52,6 +53,13 @@ class ProductoRepository implements ProductoRepositoryInterface
             if(isset($querys['estado'])){
                 $query->where('estadoProductoWeb','=', $querys['estado']);
             }
+
+            if(isset($querys['almacen'])){
+                $query->whereHas('Inventario', function($q) use ($querys) {
+                    $q->where('idAlmacen', $querys['almacen'])
+                      ->where('stock', '>', 0);
+                });
+            }
         }
 
         return $query->paginate($cant);
@@ -75,7 +83,7 @@ class ProductoRepository implements ProductoRepositoryInterface
         return Producto::where($column, 'LIKE', '%' . $data . '%')->take($cont)->get();
     }
 
-    public function searchPaginateList($column,$cont,$data,$filtros=null)
+    public function searchPaginateList($column,$cont,$data,$filtros = null)
     {
         $this->validateColumns($column);
         $query = Producto::where($column, 'LIKE', '%' . $data . '%');
@@ -84,8 +92,16 @@ class ProductoRepository implements ProductoRepositoryInterface
             if(isset($filtros['marca'])){
                 $query->where('idMarca','=', $filtros['marca']);
             }
+
             if(isset($filtros['estado'])){
                 $query->where('estadoProductoWeb','=', $filtros['estado']);
+            }
+
+            if(isset($filtros['almacen'])){
+                $query->whereHas('Inventario', function($q) use ($filtros) {
+                    $q->where('idAlmacen', $filtros['almacen'])
+                      ->where('stock', '>', 0);
+                });
             }
         }
         
@@ -94,11 +110,20 @@ class ProductoRepository implements ProductoRepositoryInterface
 
     public function getMarcasByColumn($column,$data){
         $this->validateColumns($column);
-        return Producto::where($column,'=',$data)
-                        ->distinct()
-                        ->join('MarcaProducto', 'Producto.idMarca', '=', 'MarcaProducto.idMarca')
-                        ->select('MarcaProducto.idMarca', 'MarcaProducto.nombreMarca')
-                        ->get();
+        return Producto::select('idMarca')->distinct()
+                        ->where($column,'=',$data)->get();
+    }
+
+    public function getMarcasBySearchTerm($query){
+        // Obtener marcas de productos que coinciden con el término de búsqueda
+        return MarcaProducto::whereIn('idMarca', function($subquery) use ($query) {
+            $subquery->select('idMarca')
+                ->from('Producto')
+                ->where('nombreProducto', 'LIKE', '%'.$query.'%')
+                ->orWhere('modelo', 'LIKE', '%'.$query.'%')
+                ->orWhere('codigoProducto', 'LIKE', '%'.$query.'%')
+                ->orWhere('partNumber', 'LIKE', '%'.$query.'%');
+        })->get()->sortBy('nombreMarca');
     }
 
     public function getEstadosByColumn($column,$data){
@@ -164,18 +189,24 @@ class ProductoRepository implements ProductoRepositoryInterface
     
     public function searchIntensiveProducts($query,$cant,$filtros){
         $consulta = Producto::query();
-        $consulta->where(function($q) use ($query) {
-            $q->where('codigoProducto', 'LIKE', '%'.$query.'%')
-              ->orWhere('partNumber', 'LIKE', '%'.$query.'%')
-              ->orWhere('modelo', 'LIKE', '%'.$query.'%');
-        });
+        $consulta->where('codigoProducto', 'LIKE', '%'.$query.'%')
+        ->orWhere('partNumber', 'LIKE', '%'.$query.'%')
+        ->orWhere('modelo', 'LIKE', '%'.$query.'%');
         
         if(isset($filtros)){
             if(isset($filtros['marca'])){
                 $consulta->where('idMarca','=', $filtros['marca']);
             }
+
             if(isset($filtros['estado'])){
                 $consulta->where('estadoProductoWeb','=', $filtros['estado']);
+            }
+
+            if(isset($filtros['almacen'])){
+                $consulta->whereHas('Inventario', function($q) use ($filtros) {
+                    $q->where('idAlmacen', $filtros['almacen'])
+                      ->where('stock', '>', 0);
+                });
             }
         }
         

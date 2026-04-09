@@ -1,50 +1,109 @@
-function loadProducts(url) {
-    let loader = document.getElementById('hidden-loader-paginate');
-    let containerValue = document.getElementById('hidden-container').value;
-    let fullUrl = url + (url.includes('?') ? '&' : '?') + 'container=' + containerValue;
+/**
+ * Obtiene todos los filtros activos del formulario
+ */
+function getActiveFilters() {
+    const filters = {};
 
-    if(loader){
-        loader.style.display = 'block';
+    // Capturar todos los selects con clase .filtro-componente
+    document.querySelectorAll('.filtro-componente').forEach(select => {
+        if (select.name && select.value) {
+            filters[select.name] = select.value;
+        }
+    });
+
+    return filters;
+}
+
+/**
+ * Construye URL con parámetros de búsqueda, contenedor y filtros
+ */
+function buildPaginationUrl(baseUrl) {
+    const container = document.getElementById('hidden-container')?.value || '';
+    const search = document.querySelector('[name="search"]')?.value || '';
+    const activeFilters = getActiveFilters();
+
+    const url = new URL(baseUrl, window.location.origin);
+    const params = new URLSearchParams(url.search);
+
+    // Agregar/actualizar parámetros solo si tienen valor
+    if (container) params.set('container', container);
+    if (search) params.set('search', search);
+
+    // Agregar filtros activos (mantienen la estructura filtro[estado], filtro[marca])
+    Object.keys(activeFilters).forEach(key => {
+        if (activeFilters[key]) {
+            params.set(key, activeFilters[key]);
+        }
+    });
+
+    url.search = params.toString();
+    return url.toString();
+}
+
+/**
+ * Muestra u oculta el loader de paginación
+ */
+function toggleLoader(show) {
+    const loader = document.getElementById('hidden-loader-paginate');
+    if (loader) {
+        loader.style.display = show ? 'block' : 'none';
     }
+}
+
+/**
+ * Carga productos vía AJAX manteniendo los filtros activos
+ * Función unificada para paginación con búsqueda
+ */
+function loadProductsViaPagination(element) {
+    const url = element.getAttribute('data-link');
+    const container = document.getElementById('hidden-container')?.value || '';
+
+    if (!url || !container) {
+        console.error('URL o contenedor no válido para paginación');
+        return;
+    }
+
+    const fullUrl = buildPaginationUrl(url);
+    const target = document.getElementById(container);
+
+    if (!target) {
+        console.error('Contenedor de destino no encontrado:', container);
+        return;
+    }
+
+    toggleLoader(true);
 
     fetch(fullUrl)
         .then(response => {
             if (!response.ok) {
-                throw new Error('Network response was not ok');
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
             return response.json();
         })
         .then(data => {
-            document.getElementById(containerValue).innerHTML = data.html;
-            if(loader){
-                loader.style.display = 'none';
+            if (data.html) {
+                target.innerHTML = data.html;
+            } else {
+                console.error('La respuesta no contiene propiedad html');
             }
         })
-        .catch(error => console.error('Error al cargar los productos:', error));
+        .catch(error => {
+            console.error('Error en paginación AJAX:', error);
+        })
+        .finally(() => {
+            toggleLoader(false);
+        });
 }
 
+/**
+ * Evento para enlaces de paginación (reemplaza la función duplicada)
+ */
 function linkEvent(element) {
-    const url = element.getAttribute('data-link');
-    const container = document.getElementById('hidden-container').value;
+    loadProductsViaPagination(element);
+}
 
-    if (!url) return;
-
-    // La URL ya viene con los parámetros de Laravel (search, filtro, etc.) gracias a appends()
-    // Solo agregamos el container
-    const separator = url.includes('?') ? '&' : '?';
-    const fullUrl = `${url}${separator}container=${container}`;
-
-    const target = document.getElementById(container);
-    const loader = document.getElementById('hidden-loader-paginate');
-    if (loader) loader.style.display = 'block';
-
-    fetch(fullUrl)
-        .then(res => res.json())
-        .then(data => {
-            target.innerHTML = data.html;
-        })
-        .catch(err => console.error('Error en paginación AJAX:', err))
-        .finally(() => {
-            if (loader) loader.style.display = 'none';
-        });
+// Mantener compatibilidad con la función loadProducts original
+function loadProducts(url) {
+    const fakeElement = { getAttribute: () => url };
+    loadProductsViaPagination(fakeElement);
 }

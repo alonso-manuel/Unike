@@ -88,12 +88,9 @@ class HomeController extends Controller
         $userModel = $this->headerService->getModelUser();
 
         $productos = $this->dashboardService->getStockMinProducts();
-        $almacenes = $this->dashboardService->getAllAlmacen();
-        
         return view('stockmin_dashboard',['user' => $userModel,
                                         'productos' => $productos,
-                                        'tc' => $this->calculadoraService->getTasaCambio(),
-                                        'almacenes' => $almacenes]);
+                                        'tc' => $this->calculadoraService->getTasaCambio()]);
     }
 
     private function caseRegistro($estado){

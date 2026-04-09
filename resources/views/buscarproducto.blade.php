@@ -15,10 +15,12 @@
         </div>
         
     </div>
+    <div class="row pt-2 pb-2">
+        <x-filtro_productos :marcas="$filtros['marcas']" :estados="$filtros['estados']" :almacenes="$almacenes" />
+    </div>
     <br>
     <div id="container-buscar-producto">
-        <x-lista_producto :productos="$productos" :container="'container-buscar-producto'" :tc="$tc"
-                          :filtros="$filtros" :almacenes="$almacenes"/>
+        <x-lista_producto :productos="$productos" :container="'container-buscar-producto'" :tc="$tc"/>
     </div>
     @else
     <div class="row d-flex justify-content-between align-items-center" style="height: 80vh;">
@@ -26,4 +28,5 @@
     </div>
     @endif
 </div>
+<script src="{{ asset('js/filtro_componente.js') }}"></script>
 @endsection

@@ -40,6 +40,7 @@
             </div>
         </div>
         <br>
+        
         <div class="row">
             <div class="col-12">
                 <ul class="nav nav-tabs d-none d-sm-none d-md-flex">
@@ -74,9 +75,10 @@
                 </ul>
             </div>
         </div>
+        <x-filtro_productos :marcas="$filtros['marcas']" :estados="$filtros['estados']" />
         <div id="container-list-products">
-            <x-lista_producto :productos="$productos" :tc="$tc" :container="'container-list-products'" 
-                              :filtros="$filtros" :almacenes="$almacenes" />
+            <x-lista_producto :productos="$productos" :tc="$tc" :container="'container-list-products'" />
         </div>
     </div>
+    <script src="{{asset('js/filtro_componente.js')}}"></script>
 @endsection

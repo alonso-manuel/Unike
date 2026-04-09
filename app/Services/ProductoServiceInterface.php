@@ -17,6 +17,7 @@ interface ProductoServiceInterface
     public function getOneLabelCategory($id);
     public function getAllLabelCategory();
     public function getAllLabelMarca();
+    public function getMarcasBySearch($input);
     public function getAllLabelProveedor();
     public function getAllAlmacen();
     public function updateInventory($idProducto,$array);
@@ -27,6 +28,4 @@ interface ProductoServiceInterface
     public function filtroMarcas($column,$data);
     public function filtroEstados($column,$data);
     public function getYoutubeVideoId(?string $url): ?string;
-    public function getMarcasByIds($ids);
-    public function getEstadosList($estados);
 }

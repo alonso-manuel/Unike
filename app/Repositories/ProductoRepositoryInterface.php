@@ -10,7 +10,7 @@ interface ProductoRepositoryInterface
     public function searchOne($column,$data);
     public function searchList($column,$data);
     public function searchTakeList($column, $data,$cont);
-    public function searchPaginateList($column,$cont,$data,$filtros=null);
+    public function searchPaginateList($column,$cont,$data,$filtros = null);
     public function paginateAllByColumn($column, $data,$cant,$querys);
     public function searchIntensiveProducts($data,$cant,$filtros);
     public function create(array $productoData);
@@ -22,6 +22,7 @@ interface ProductoRepositoryInterface
     public function getProductsWithStock();
     public function getProductsCodes();
     public function getMarcasByColumn($column,$data);
+    public function getMarcasBySearchTerm($query);
     public function getEstadosByColumn($column,$data);
     public function getPaginationNull();
 }

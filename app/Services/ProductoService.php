@@ -86,7 +86,13 @@ class ProductoService implements ProductoServiceInterface
                     'nombreMarca' => $mark->nombreMarca,
                     'idMarca' => $mark->idMarca
                 ];
-        }); 
+        });
+        return $marcas;
+    }
+
+    public function getMarcasBySearch($input){
+        // Obtener marcas filtradas por término de búsqueda
+        $marcas = $this->productoRepository->getMarcasBySearchTerm($input);
         return $marcas;
     }
     
@@ -301,22 +307,6 @@ class ProductoService implements ProductoServiceInterface
 
     public function filtroEstados($column,$data){
         return $this->productoRepository->getEstadosByColumn($column,$data);
-    }
-
-    public function getMarcasByIds($ids){
-        if ($ids->isEmpty()) {
-            return collect();
-        }
-        return $this->marcaRepository->whereIn('idMarca', $ids->toArray());
-    }
-
-    public function getEstadosList($estados){
-        if ($estados->isEmpty()) {
-            return collect();
-        }
-        return $estados->map(function($estado) {
-            return (object)['estadoProductoWeb' => $estado];
-        });
     }
 
     private function insertInventory($idProducto){

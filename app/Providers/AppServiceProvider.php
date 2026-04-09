@@ -190,8 +190,6 @@ class AppServiceProvider extends ServiceProvider
         Carbon::setLocale('es');
         Paginator::useBootstrapFive();
         
-        // Compartir almacenes con caché para evitar consultas repetidas a la BD
-        // Se cachea por 24 horas (86400 segundos)
         $almacenes = Cache::remember('almacenes_all', 86400, function () {
             return Almacen::all();
         });

@@ -1,153 +1,103 @@
-<div class="lista_producto" id="lista-producto-container"
-     data-url="{{ $ajaxUrl ?? url()->current() }}"
-     data-tc="{{ $tc ?? '' }}">
-
-    {{-- Filtros --}}
-    @if(isset($filtros) && is_array($filtros))
-    <form action="{{ $ajaxUrl ?? url()->current() }}" method="get" id="form-filtro-componente"
-          data-ajax="{{ $enableAjax ?? true }}">
-        {{-- Mantener parámetros de búsqueda --}}
-        @if(request('search'))
-            <input type="hidden" name="search" value="{{ request('search') }}">
-        @endif
-        <div class="row mb-2 mt-3">
-            @if(isset($filtros['marcas']) && $filtros['marcas']->isNotEmpty())
-            <div class="col-4 col-lg-2">
-                <small>Marca</small>
-                <select class="form-select form-select-sm filtro-componente" name="filtro[marca]">
-                    <option value="">Todos</option>
-                    @foreach ($filtros['marcas'] as $marca)
-                    <option value="{{$marca->idMarca}}"
-                            {{ (request('filtro.marca') == $marca->idMarca) ? 'selected' : '' }}>
-                        {{$marca->nombreMarca}}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
-            @endif
-            
-            @if(isset($filtros['estados']) && $filtros['estados']->isNotEmpty())
-            <div class="col-4 col-lg-2">
-                <small>Estado</small>
-                <select class="form-select form-select-sm filtro-componente" name="filtro[estado]">
-                    <option value="">Todos</option>
-                    @foreach ($filtros['estados'] as $estado)
-                    <option value="{{$estado->estadoProductoWeb}}" 
-                            {{ (request('filtro.estado') == $estado->estadoProductoWeb) ? 'selected' : '' }}>
-                        {{$estado->estadoProductoWeb}}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
-            @endif
-        </div>
-    </form>
-    @endif
-
-    {{-- Lista de Productos --}}
-    <div id="productos-lista-content">
-        @if(!$productos->isEmpty())
-        <div class="row">
-            <div class="col-12" style="overflow-x: hidden;overflow-y:auto;height: 70vh">
-                <ul class="list-group ">
-                    <li class="list-group-item d-flex bg-sistema-uno text-light"
-                        style="position:sticky; top: 0;z-index:800">
-                        <div class="row w-100 h-100 align-items-center">
-                            <div class="col-12 col-md-8 col-lg-6 text-center">
-                                <h6>Producto</h6>
-                            </div>
-                            <div class="d-none d-lg-block col-lg-1 text-center">
-                                <h6><a style="cursor:pointer" onclick="changePriceList()"><i
-                                            class="bi bi-caret-down-fill d-none d-md-inline"></i>Precio</a></h6>
-                            </div>
-                            <div class="d-none d-md-block col-md-4 col-lg-4 text-center">
-                                <h6>Stock</h6>
-                            </div>
-                            <div class="d-none d-lg-block col-lg-1 text-center">
-                                <h6>Proveedor</h6>
-                            </div>
+<div class="lista_producto">
+    @if(!$productos->isEmpty())
+    <div class="row">
+        <div class="col-12" style="overflow-x: hidden;overflow-y:auto;height: 70vh">
+            <ul class="list-group ">
+                <li class="list-group-item d-flex bg-sistema-uno text-light"
+                    style="position:sticky; top: 0;z-index:800">
+                    <div class="row w-100 h-100 align-items-center">
+                        <div class="col-12 col-md-8 col-lg-6 text-center">
+                            <h6>Producto</h6>
                         </div>
-                    </li>
-                    @foreach($productos as $pro)
-                    <li
-                        class="list-group-item justify-content-between align-items-center li-item-product-{{$pro->estadoProductoWeb}} li-item-product-all">
-                        <div class="row w-100 ">
-                            <div class="col-2 col-lg-1 text-center" style="position:relative;cursor:pointer">
-                                <img onmouseover="mostrarImg({{ $pro->idProducto }})"
-                                    onmouseout="ocultarImg({{ $pro->idProducto }})"
-                                    src="{{ asset('storage/'.$pro->imagenProducto1) }}" alt="Tooltip Imagen"
+                        <div class="d-none d-lg-block col-lg-1 text-center">
+                            <h6><a style="cursor:pointer" onclick="changePriceList()"><i
+                                        class="bi bi-caret-down-fill d-none d-md-inline"></i>Precio</a></h6>
+                        </div>
+                        <div class="d-none d-md-block col-md-4 col-lg-4 text-center">
+                            <h6>Stock</h6>
+                        </div>
+                        <div class="d-none d-lg-block col-lg-1 text-center">
+                            <h6>Proveedor</h6>
+                        </div>
+                    </div>
+                </li>
+                @foreach($productos as $pro)
+                <li
+                    class="list-group-item justify-content-between align-items-center li-item-product-{{$pro->estadoProductoWeb}} li-item-product-all">
+                    <div class="row w-100 ">
+                        <div class="col-2 col-lg-1 text-center" style="position:relative;cursor:pointer">
+                            <img onmouseover="mostrarImg({{ $pro->idProducto }})"
+                                onmouseout="ocultarImg({{ $pro->idProducto }})"
+                                src="{{ asset('storage/'.$pro->imagenProducto1) }}" alt="Tooltip Imagen"
+                                style="width:100%" class="rounded-3">
+                            <div class="border border-secondary rounded-3 justify-content-top"
+                                style="width: 200px;position: absolute;z-index: 900;top:0;left:100%;display:none"
+                                id="img-{{$pro->idProducto}}">
+                                <img src="{{ asset('storage/'.$pro->imagenProducto1) }}" alt="Tooltip Imagen"
                                     style="width:100%" class="rounded-3">
-                                <div class="border border-secondary rounded-3 justify-content-top"
-                                    style="width: 200px;position: absolute;z-index: 900;top:0;left:100%;display:none"
-                                    id="img-{{$pro->idProducto}}">
-                                    <img src="{{ asset('storage/'.$pro->imagenProducto1) }}" alt="Tooltip Imagen"
-                                        style="width:100%" class="rounded-3">
-                                </div>
                             </div>
-                            <div class="col-10 col-md-6 col-lg-5">
-                                <div class="row h-100">
-                                    <div class="col-12" data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="Cod: {{$pro->codigoProducto}}">
-                                        <a class="link-sistema fw-bold"
-                                            href="{{route('producto',[encrypt($pro->idProducto)])}}">
-                                            <small>{{$pro->nombreProducto}}</small>
-                                        </a>
-                                    </div>
-                                    <div class="col-9 d-flex flex-column justify-content-end text-start pb-2">
-                                        <small class="text-secondary">{{$pro->modelo}}</small>
-                                    </div>
-                                    <div class="col-3 d-flex flex-column justify-content-end text-end pb-2">
-                                        <small class="text-secondary">{{$pro->MarcaProducto->nombreMarca}}</small>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-1 d-none d-lg-block text-center">
-                                <small data-value="{{$pro->precioDolar}}"
-                                    class="price-list-product">${{$pro->precioDolar}}</small>
-                            </div>
-                            <div class="d-none d-md-block col-md-4">
-                                <div class="row text-center">
-
-                                    @foreach($almacenes as $almacen)
-                                        @php
-                                            $inventario = $pro->Inventario
-                                                ->where('idAlmacen', $almacen->idAlmacen)
-                                                ->first();
-
-                                            $stock = $inventario ? $inventario->stock : 0;
-                                        @endphp
-
-                                        <div class="col-6 {{ $stock < $pro->stockMin ? 'text-danger' : '' }}">
-                                            <small>{{ $almacen->descripcion }}</small>
-                                            <br>
-                                            <small>{{ $stock }}</small>
-                                        </div>
-                                    @endforeach
-
-                                </div>
-                            </div>
-                            <div class="d-none d-lg-block col-md-1 text-center">
-                                <small>{{$pro->Inventario_Proveedor->Preveedor->nombreProveedor}}</small>
-                                <br>
-                                <small>{{$pro->Inventario_Proveedor->stock}}</small>
-                            </div>
-
                         </div>
-                    </li>
-                    @endforeach
-                </ul>
-            </div>
-        </div>
-        <br>
+                        <div class="col-10 col-md-6 col-lg-5">
+                            <div class="row h-100">
+                                <div class="col-12" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="Cod: {{$pro->codigoProducto}}">
+                                    <a class="link-sistema fw-bold"
+                                        href="{{route('producto',[encrypt($pro->idProducto)])}}">
+                                        <small>{{$pro->nombreProducto}}</small>
+                                    </a>
+                                </div>
+                                <div class="col-9 d-flex flex-column justify-content-end text-start pb-2">
+                                    <small class="text-secondary">{{$pro->modelo}}</small>
+                                </div>
+                                <div class="col-3 d-flex flex-column justify-content-end text-end pb-2">
+                                    <small class="text-secondary">{{$pro->MarcaProducto->nombreMarca}}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-1 d-none d-lg-block text-center">
+                            <small data-value="{{$pro->precioDolar}}"
+                                class="price-list-product">${{$pro->precioDolar}}</small>
+                        </div>
+                        <div class="d-none d-md-block col-md-4">
+                            <div class="row text-center">
 
-        @else
-        <div class="row align-items-center" style="height:50vh">
-            <x-aviso_no_encontrado :mensaje="''" />
+                                @foreach($almacenes as $almacen)
+                                    @php
+                                        $inventario = $pro->Inventario
+                                            ->where('idAlmacen', $almacen->idAlmacen)
+                                            ->first();
+
+                                        $stock = $inventario ? $inventario->stock : 0;
+                                    @endphp
+
+                                    <div class="col-6 {{ $stock < $pro->stockMin ? 'text-danger' : '' }}">
+                                        <small>{{ $almacen->descripcion }}</small>
+                                        <br>
+                                        <small>{{ $stock }}</small>
+                                    </div>
+                                @endforeach
+
+                            </div>
+                        </div>
+                        <div class="d-none d-lg-block col-md-1 text-center">
+                            <small>{{$pro->Inventario_Proveedor->Preveedor->nombreProveedor}}</small>
+                            <br>
+                            <small>{{$pro->Inventario_Proveedor->stock}}</small>
+                        </div>
+
+                    </div>
+                </li>
+                @endforeach
+            </ul>
         </div>
-        @endif
-        <x-paginacion :justify="'end'" :coleccion="$productos" :container="$container"/>
     </div>
-    
+    <br>
+
+    @else
+    <div class="row align-items-center" style="height:50vh">
+        <x-aviso_no_encontrado :mensaje="''" />
+    </div>
+    @endif
+    <x-paginacion :justify="'end'" :coleccion="$productos" :container="$container"/>
     <script src="{{ route('js.list-product-scripts',[$tc]) }}"></script>
-    <script src="{{ asset('js/lista-producto-ajax.js') }}"></script>
 </div>
