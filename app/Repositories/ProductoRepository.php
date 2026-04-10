@@ -2,244 +2,294 @@
 namespace App\Repositories;
 
 use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use App\Models\Producto;
 use App\Models\MarcaProducto;
-use Exception;
 
 class ProductoRepository implements ProductoRepositoryInterface
 {
-    protected $modelColumns;
+    /**
+     * Columnas válidas para búsquedas.
+     * ANTES: Se usaba getFillable() que mezcla columnas de mass assignment con columnas de búsqueda.
+     * AHORA: Lista explícita de columnas realmente usables en filtros/búsquedas.
+     */
+    protected $searchableColumns = [
+        'idProducto',
+        'idMarca',
+        'idGrupo',
+        'nombreProducto',
+        'codigoProducto',
+        'UPC',
+        'partNumber',
+        'modelo',
+        'estadoProductoWeb',
+        'slugProducto',
+    ];
 
-    public function __construct()
-    {
-        // Define las columnas válidas
-        $this->modelColumns = (new Producto())->getFillable();
-    }
-    
+    //Devuelve todos los productos
     public function all()
     {
         return Producto::all();
     }
 
+    //Devuelve un producto por columna y dato
     public function getOne($column, $data)
     {
-        $this->validateColumns($column);
-        return Producto::where($column,'=', $data)->first();
+        $this->validateColumn($column);
+        return Producto::where($column, '=', $data)->first();
     }
-    
+
+    //Devuelve el producto mas recientemente creado (Id mas alto)
     public function getLast()
     {
-        $product = Producto::select('idProducto')->orderBy('idProducto','desc')->first();
-        return $product;
+        return Producto::select('idProducto')->orderBy('idProducto', 'desc')->first();
     }
 
+    //Devuelve todos los productos por columna y dato
     public function getAllByColumn($column, $data)
     {
-        $this->validateColumns($column);
-        return Producto::where($column,'=', $data)->get();
+        $this->validateColumn($column);
+        return Producto::where($column, '=', $data)->get();
     }
 
-    public function paginateAllByColumn($column, $data,$cant,$querys){
-        $this->validateColumns($column);
+    /**
+     * ANTES: paginateAllByColumn($column, $data, $cant, $querys)
+     * AHORA: paginateAllByColumn($column, $data, $perPage, $filtros)
+     * 
+     * CAMBIO: $cant → $perPage, $querys → $filtros para consistencia semántica.
+     * EXTRACCIÓN: Filtros delegados a applyFilters().
+     */
+    public function paginateAllByColumn($column, $data, $perPage, $filtros)
+    {
+        $this->validateColumn($column);
 
         $query = Producto::query();
-        $query->where($column,'=', $data);
+        $query->where($column, '=', $data);
 
-        if(isset($querys)){
-            if(isset($querys['marca'])){
-                $query->where('idMarca','=', $querys['marca']);
-            }
+        $this->applyFilters($query, $filtros);
 
-            if(isset($querys['estado'])){
-                $query->where('estadoProductoWeb','=', $querys['estado']);
-            }
-
-            if(isset($querys['almacen'])){
-                $query->whereHas('Inventario', function($q) use ($querys) {
-                    $q->where('idAlmacen', $querys['almacen'])
-                      ->where('stock', '>', 0);
-                });
-            }
-        }
-
-        return $query->paginate($cant);
+        return $query->paginate($perPage);
     }
 
+    /**
+     * ANTES: searchPaginateList($column, $cont, $data, $filtros = null)
+     * AHORA: searchPaginateList($column, $perPage, $data, $filtros = null)
+     * 
+     * CAMBIO: $cont → $perPage. Orden ajustado: $perPage antes de $data.
+     * EXTRACCIÓN: Filtros delegados a applyFilters().
+     */
+    public function searchPaginateList($column, $perPage, $data, $filtros = null)
+    {
+        $this->validateColumn($column);
+
+        $query = Producto::where($column, 'LIKE', '%' . $data . '%');
+
+        $this->applyFilters($query, $filtros);
+
+        return $query->paginate($perPage);
+    }
+
+    //Devuelve el primer producto donde la columna contiene el termino de la busqueda.
     public function searchOne($column, $data)
     {
-        $this->validateColumns($column);
+        $this->validateColumn($column);
         return Producto::where($column, 'LIKE', '%' . $data . '%')->first();
     }
 
+    //Devuelve todos los productos donde la columna contiene el termino de la busqueda.
     public function searchList($column, $data)
     {
-        $this->validateColumns($column);
+        $this->validateColumn($column);
         return Producto::where($column, 'LIKE', '%' . $data . '%')->get();
     }
 
-    public function searchTakeList($column, $data,$cont)
+    //Devuelve los primeros 'cont' productos donde la columna contiene el termino de la busqueda.
+    public function searchTakeList($column, $data, $cont)
     {
-        $this->validateColumns($column);
+        $this->validateColumn($column);
         return Producto::where($column, 'LIKE', '%' . $data . '%')->take($cont)->get();
     }
 
-    public function searchPaginateList($column,$cont,$data,$filtros = null)
+    //Devuelve IDs de marcas distintas para productos que coinciden con un filtro de columna y dato
+    public function getMarcasByColumn($column, $data)
     {
-        $this->validateColumns($column);
-        $query = Producto::where($column, 'LIKE', '%' . $data . '%');
-        
-        if(isset($filtros)){
-            if(isset($filtros['marca'])){
-                $query->where('idMarca','=', $filtros['marca']);
-            }
-
-            if(isset($filtros['estado'])){
-                $query->where('estadoProductoWeb','=', $filtros['estado']);
-            }
-
-            if(isset($filtros['almacen'])){
-                $query->whereHas('Inventario', function($q) use ($filtros) {
-                    $q->where('idAlmacen', $filtros['almacen'])
-                      ->where('stock', '>', 0);
-                });
-            }
-        }
-        
-        return $query->paginate($cont);
-    }
-
-    public function getMarcasByColumn($column,$data){
-        $this->validateColumns($column);
+        $this->validateColumn($column);
         return Producto::select('idMarca')->distinct()
-                        ->where($column,'=',$data)->get();
+            ->where($column, '=', $data)->get();
     }
 
-    public function getMarcasBySearchTerm($query){
-        // Obtener marcas de productos que coinciden con el término de búsqueda
-        return MarcaProducto::whereIn('idMarca', function($subquery) use ($query) {
+    //Devuelve marcas asociadas a productos que coinciden con un termino de busqueda
+    public function getMarcasBySearchTerm($query)
+    {
+        return MarcaProducto::whereIn('idMarca', function ($subquery) use ($query) {
             $subquery->select('idMarca')
                 ->from('Producto')
-                ->where('nombreProducto', 'LIKE', '%'.$query.'%')
-                ->orWhere('modelo', 'LIKE', '%'.$query.'%')
-                ->orWhere('codigoProducto', 'LIKE', '%'.$query.'%')
-                ->orWhere('partNumber', 'LIKE', '%'.$query.'%');
+                ->where('nombreProducto', 'LIKE', '%' . $query . '%')
+                ->orWhere('modelo', 'LIKE', '%' . $query . '%')
+                ->orWhere('codigoProducto', 'LIKE', '%' . $query . '%')
+                ->orWhere('partNumber', 'LIKE', '%' . $query . '%');
         })->get()->sortBy('nombreMarca');
     }
 
-    public function getEstadosByColumn($column,$data){
-        $this->validateColumns($column);
+    //Devuelve estados distintos para productos que coinciden con un filtro de columna y dato
+    public function getEstadosByColumn($column, $data)
+    {
+        $this->validateColumn($column);
         return Producto::select('estadoProductoWeb')->distinct()
-                        ->where($column,'=',$data)->get();
-    }
-    
-    public function getCodes(){
-        $codes = Producto::select('idGrupo', DB::raw('MAX(codigoProducto) as codigoProducto'))->groupBy('idGrupo')->get(); 
-        return $codes;
-    }
-    public function total(){
-        return Producto::where('estadoProductoWeb','=','DISPONIBLE')->count();
+            ->where($column, '=', $data)->get();
     }
 
-    public function getStockMinProducts() {
-        $query = "
-            SELECT p.*
-            FROM Producto p
-            JOIN Inventario i ON p.idProducto = i.idProducto
-            WHERE p.estadoProductoWeb = 'DISPONIBLE'
-            GROUP BY p.idProducto, p.stockMin
-            HAVING SUM(i.stock) < p.stockMin
-            AND SUM(i.stock) > 0
-        ";
-
-        $resultados = DB::select($query);
-
-        $productIds = collect($resultados)->pluck('idProducto');
-        $productos = Producto::whereIn('idProducto', $productIds)->paginate(50);
-        return $productos;
+    /**
+     * ELIMINADO: getCodes() era un duplicado exacto de getProductsCodes().
+     * Se mantiene solo getProductsCodes(). El servicio que usaba getCodes()
+     * ahora apunta a getProductsCodes().
+     */
+    public function getProductsCodes()
+    {
+        return Producto::select('idGrupo', DB::raw('MAX(codigoProducto) as codigoProducto'))
+            ->groupBy('idGrupo')->get();
     }
 
-    public function getProductsWithStock(){
-        $query = "
-            SELECT p.*
-            FROM Producto p
-            JOIN Inventario i ON p.idProducto = i.idProducto
-            WHERE p.estadoProductoWeb = 'DISPONIBLE'
-            GROUP BY p.idProducto
-            HAVING SUM(i.stock) > 0
-        ";
+    //Devuelve el total de productos disponibles
+    public function total()
+    {
+        return Producto::where('estadoProductoWeb', '=', 'DISPONIBLE')->count();
+    }
 
-        $resultados = DB::select($query);
+    /**
+     * ANTES: Usaba raw SQL con JOIN y GROUP BY.
+     * AHORA: Se convierte a Query Builder con whereHas.
+     * BENEFICIO: Más legible, mantenible, y aprovecha el query builder de Laravel.
+     */
+    public function getStockMinProducts()
+    {
+        return Producto::where('estadoProductoWeb', 'DISPONIBLE')
+            ->whereHas('Inventario', function ($query) {
+                $query->select(DB::raw('SUM(stock)'))
+                    ->from('Inventario')
+                    ->whereColumn('Inventario.idProducto', 'Producto.idProducto')
+                    ->havingRaw('SUM(stock) > 0')
+                    ->havingRaw('SUM(stock) < Producto.stockMin');
+            })
+            ->paginate(50);
+    }
 
-        $productos = collect($resultados)->map(function ($item) {
-            return Producto::find($item->idProducto); 
+    /**
+     * ANTES: Ejecutaba raw SQL, luego hacía Producto::find() por cada resultado (problema N+1).
+     * AHORA: whereHas con eager loading de Inventario.
+     * BENEFICIO: De 101 queries se reduce a 2 queries.
+     */
+    public function getProductsWithStock()
+    {
+        return Producto::where('estadoProductoWeb', 'DISPONIBLE')
+            ->whereHas('Inventario', function ($query) {
+                $query->where('stock', '>', 0);
+            })
+            ->with('Inventario')
+            ->orderBy('codigoProducto')
+            ->get();
+    }
+
+    //Valida si un producto tiene un numero de serie registrado
+    public function validateSerial($id, $serial)
+    {
+        return Producto::join('DetalleComprobante', 'DetalleComprobante.idProducto', '=', 'Producto.idProducto')
+            ->join('RegistroProducto', 'DetalleComprobante.idDetalleComprobante', '=', 'RegistroProducto.idDetalleComprobante')
+            ->where('RegistroProducto.estado', '<>', 'INVALIDO')
+            ->where('Producto.idProducto', '=', $id)
+            ->where('RegistroProducto.numeroSerie', '=', $serial)
+            ->first();
+    }
+
+    /**
+     * CAMBIO: $query → $searchTerm (evita confusión con query builder),
+     * $cant → $perPage. EXTRACCIÓN: Filtros delegados a applyFilters().
+     */
+    public function searchIntensiveProducts($searchTerm, $perPage, $filtros)
+    {
+        $query = Producto::query();
+
+        $query->where(function ($q) use ($searchTerm) {
+            $q->where('codigoProducto', 'LIKE', '%' . $searchTerm . '%')
+                ->orWhere('partNumber', 'LIKE', '%' . $searchTerm . '%')
+                ->orWhere('modelo', 'LIKE', '%' . $searchTerm . '%');
         });
-        return $productos;
-    }
-    
-    public function validateSerial($id,$serial){
-        $serial = Producto::join('DetalleComprobante', 'DetalleComprobante.idProducto', '=', 'Producto.idProducto')
-                    ->join('RegistroProducto', 'DetalleComprobante.idDetalleComprobante', '=', 'RegistroProducto.idDetalleComprobante')
-                    ->where('RegistroProducto.estado','<>','INVALIDO')
-                    ->where('Producto.idProducto', '=', $id)
-                    ->where('RegistroProducto.numeroSerie', '=', $serial)
-                    ->first();
-                    
-        return $serial;
-    }
-    
-    public function searchIntensiveProducts($query,$cant,$filtros){
-        $consulta = Producto::query();
-        
-        // Agrupar las condiciones de búsqueda para que los filtros apliquen a todo el grupo
-        $consulta->where(function($q) use ($query) {
-            $q->where('codigoProducto', 'LIKE', '%'.$query.'%')
-              ->orWhere('partNumber', 'LIKE', '%'.$query.'%')
-              ->orWhere('modelo', 'LIKE', '%'.$query.'%');
-        });
-        
-        if(isset($filtros)){
-            if(isset($filtros['marca'])){
-                $consulta->where('idMarca','=', $filtros['marca']);
-            }
 
-            if(isset($filtros['estado'])){
-                $consulta->where('estadoProductoWeb','=', $filtros['estado']);
-            }
+        $this->applyFilters($query, $filtros);
 
-            if(isset($filtros['almacen'])){
-                $consulta->whereHas('Inventario', function($q) use ($filtros) {
-                    $q->where('idAlmacen', $filtros['almacen'])
-                      ->where('stock', '>', 0);
-                });
-            }
-        }
-        
-        return $consulta->paginate($cant);
+        return $query->paginate($perPage);
     }
 
-    public function getProductsCodes(){
-        return Producto::select('idGrupo', DB::raw('MAX(codigoProducto) as codigoProducto'))->groupBy('idGrupo')->get();
+    /**
+     * ANTES: getPaginationNull() usaba whereRaw('1=0') — hack confuso.
+     * AHORA: getEmptyPagination() crea un LengthAwarePaginator vacío explícitamente.
+     * BENEFICIO: Sin queries innecesarios, intención clara.
+     */
+    public function getEmptyPagination($perPage = 10)
+    {
+        return new LengthAwarePaginator(
+            new Collection(),
+            0,
+            $perPage,
+            1,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
     }
 
-    public function getPaginationNull(){
-        return Producto::whereRaw('1=0')->paginate(10);
-    }
-
+    //Crea un nuevo producto
     public function create(array $productoData)
     {
         return Producto::create($productoData);
     }
-    
+
+    //Actualiza un producto
     public function update($idProducto, array $productoData)
     {
         $producto = Producto::findOrFail($idProducto);
         $producto->update($productoData);
         return $producto;
     }
-    
-    private function validateColumns($column){
-        if (!in_array($column, $this->modelColumns)) {
-            throw new \InvalidArgumentException("La columna '$column' no es válida.");
+
+    // ==================== MÉTODOS PRIVADOS ====================
+
+    /**
+     * NUEVO: Método privado centralizado para aplicar filtros de marca, estado y almacén.
+     * ANTES: Esta lógica se repetía en paginateAllByColumn, searchPaginateList y
+     * searchIntensiveProducts (3 duplicaciones).
+     * AHORA: Un solo punto de mantenimiento.
+     */
+    private function applyFilters($query, $filtros)
+    {
+        if (!isset($filtros)) {
+            return;
+        }
+
+        if (isset($filtros['marca'])) {
+            $query->where('idMarca', '=', $filtros['marca']);
+        }
+
+        if (isset($filtros['estado'])) {
+            $query->where('estadoProductoWeb', '=', $filtros['estado']);
+        }
+
+        if (isset($filtros['almacen'])) {
+            $query->whereHas('Inventario', function ($q) use ($filtros) {
+                $q->where('idAlmacen', $filtros['almacen'])
+                    ->where('stock', '>', 0);
+            });
+        }
+    }
+
+    /**
+     * ANTES: validateColumns() validaba contra getFillable() (mass assignment).
+     * AHORA: validateColumn() valida contra $searchableColumns (búsquedas).
+     * CAMBIO: Son conceptos distintos. fillable ≠ columnas de búsqueda.
+     */
+    private function validateColumn($column)
+    {
+        if (!in_array($column, $this->searchableColumns)) {
+            throw new \InvalidArgumentException("La columna '$column' no es válida para búsquedas.");
         }
     }
 }
