@@ -141,7 +141,15 @@ class ProductoService implements ProductoServiceInterface
     }
     
     public function getLastCodesProducts(){
-        $codes = $this->productoRepository->getCodes();
+        /**
+         * ANTES: $this->productoRepository->getCodes()
+         * AHORA: $this->productoRepository->getProductsCodes()
+         * 
+         * CAMBIO: getCodes() fue eliminado por ser duplicado exacto de getProductsCodes().
+         * Ambos ejecutaban el mismo query. Se mantiene getProductsCodes() que es el nombre
+         * más descriptivo y explícito sobre lo que retorna.
+         */
+        $codes = $this->productoRepository->getProductsCodes();
         return $codes;
     }
     
@@ -151,7 +159,15 @@ class ProductoService implements ProductoServiceInterface
     }
     
     public function searchProducts($input,$cont,$filtros){
-        $productos = $this->productoRepository->getPaginationNull();
+        /**
+         * ANTES: $productos = $this->productoRepository->getPaginationNull();
+         * AHORA: $productos = $this->productoRepository->getEmptyPagination();
+         * 
+         * CAMBIO: getPaginationNull() usaba whereRaw('1=0') que es un hack confuso.
+         * getEmptyPagination() crea un LengthAwarePaginator vacío sin queries a la BD.
+         * Se usa como placeholder inicial hasta que se encuentren resultados reales.
+         */
+        $productos = $this->productoRepository->getEmptyPagination();
         $marca = $this->marcaRepository->searchOne('nombreMarca',$input);
 
         if ($marca) {
