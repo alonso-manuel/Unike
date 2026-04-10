@@ -11,7 +11,7 @@ class ProductoRepository implements ProductoRepositoryInterface
 {
     /**
      * Columnas válidas para búsquedas.
-     * ANTES: Se usaba getFillable() que mezcla columnas de mass assignment con columnas de búsqueda.
+     * ANTES: Se usaba getFillable() que mezcla columnas con columnas de búsqueda.
      * AHORA: Lista explícita de columnas realmente usables en filtros/búsquedas.
      */
     protected $searchableColumns = [
@@ -158,7 +158,7 @@ class ProductoRepository implements ProductoRepositoryInterface
     }
 
     /**
-     * ANTES: Usaba raw SQL con JOIN y GROUP BY.
+     * Usaba raw SQL con JOIN y GROUP BY.
      * AHORA: Se convierte a Query Builder con whereHas.
      * BENEFICIO: Más legible, mantenible, y aprovecha el query builder de Laravel.
      */
@@ -176,7 +176,7 @@ class ProductoRepository implements ProductoRepositoryInterface
     }
 
     /**
-     * ANTES: Ejecutaba raw SQL, luego hacía Producto::find() por cada resultado (problema N+1).
+     * Ejecutaba raw SQL, luego hacía Producto::find() por cada resultado (problema N+1).
      * AHORA: whereHas con eager loading de Inventario.
      * BENEFICIO: De 101 queries se reduce a 2 queries.
      */
@@ -203,7 +203,7 @@ class ProductoRepository implements ProductoRepositoryInterface
     }
 
     /**
-     * CAMBIO: $query → $searchTerm (evita confusión con query builder),
+     * $query → $searchTerm (evita confusión con query builder),
      * $cant → $perPage. EXTRACCIÓN: Filtros delegados a applyFilters().
      */
     public function searchIntensiveProducts($searchTerm, $perPage, $filtros)
@@ -222,9 +222,9 @@ class ProductoRepository implements ProductoRepositoryInterface
     }
 
     /**
-     * ANTES: getPaginationNull() usaba whereRaw('1=0') — hack confuso.
-     * AHORA: getEmptyPagination() crea un LengthAwarePaginator vacío explícitamente.
-     * BENEFICIO: Sin queries innecesarios, intención clara.
+     * getPaginationNull() usaba whereRaw('1=0') — hack confuso.
+     * getEmptyPagination() crea un LengthAwarePaginator vacío explícitamente.
+     * Sin queries innecesarios, intención clara.
      */
     public function getEmptyPagination($perPage = 10)
     {
@@ -251,13 +251,11 @@ class ProductoRepository implements ProductoRepositoryInterface
         return $producto;
     }
 
-    // ==================== MÉTODOS PRIVADOS ====================
-
     /**
-     * NUEVO: Método privado centralizado para aplicar filtros de marca, estado y almacén.
+     * Método privado centralizado para aplicar filtros de marca, estado y almacén.
      * ANTES: Esta lógica se repetía en paginateAllByColumn, searchPaginateList y
      * searchIntensiveProducts (3 duplicaciones).
-     * AHORA: Un solo punto de mantenimiento.
+     * Un solo punto de mantenimiento.
      */
     private function applyFilters($query, $filtros)
     {
@@ -282,10 +280,8 @@ class ProductoRepository implements ProductoRepositoryInterface
     }
 
     /**
-     * ANTES: validateColumns() validaba contra getFillable() (mass assignment).
-     * AHORA: validateColumn() valida contra $searchableColumns (búsquedas).
-     * CAMBIO: Son conceptos distintos. fillable ≠ columnas de búsqueda.
-     */
+    * CAMBIO: Son conceptos distintos. fillable ≠ columnas de búsqueda.
+    */
     private function validateColumn($column)
     {
         if (!in_array($column, $this->searchableColumns)) {
