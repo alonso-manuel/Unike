@@ -459,21 +459,17 @@ class ProductoController extends Controller
                     
                     $arrayProduct['usar_tc_fijo'] = $request->boolean('usar_tc_fijo');   
 
-                    // NUEVO: Procesar URLs de YouTube y guardar solo el ID
-                    // Video 1
+                    // Procesar URLs de YouTube y guardar solo el ID
+                    // Solo se actualiza si el usuario envió un valor nuevo.
+                    // Si el campo viene vacío, se mantiene el valor existente en BD.
                     if (!empty($video1)) {
                         $videoId1 = $this->productoService->getYoutubeVideoId($video1);
                         $arrayProduct['videoUrl1'] = $videoId1 ?: null;
-                    } else {
-                        $arrayProduct['videoUrl1'] = null;
                     }
 
-                    // Video 2
                     if (!empty($video2)) {
                         $videoId2 = $this->productoService->getYoutubeVideoId($video2);
                         $arrayProduct['videoUrl2'] = $videoId2 ?: null;
-                    } else {
-                        $arrayProduct['videoUrl2'] = null;
                     }
 
                     $this->productoService->updateProduct(decrypt($idProducto),$arrayProduct,$request->file('imgone'),$request->file('imgtwo'),$request->file('imgtree'),$request->file('imgfour'));
@@ -495,7 +491,7 @@ class ProductoController extends Controller
                     return redirect()->back();
 
                 }catch(Exception $e){
-                    $this->headerService->sendFlashAlerts('Error en la operacion','Hubo un error en la transaccion','error','btn-danger');
+                    $this->headerService->sendFlashAlerts('Error en la operacion','Hubo un error valida peus hijo ','error','btn-danger');
                     return redirect()->back();
                 }
             }
